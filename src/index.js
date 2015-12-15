@@ -1,4 +1,4 @@
-import Link from './components/Link';
+export Link from './components/Link';
 
 export const PUSH_WINDOW_PATH = 'PUSH_WINDOW_PATH';
 export const REPLACE_WINDOW_PATH = 'REPLACE_WINDOW_PATH';
@@ -83,4 +83,4 @@ const enhancer = next => (reducer, initialState) => {
   return store;
 };
 
-export default { actions, reducers, enhancer, Link };
+export default { actions, reducers, enhancer };
