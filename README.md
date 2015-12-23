@@ -15,8 +15,6 @@ npm install react-redux-provide-history --save
 
 ## Usage
 
-> **Note:**  This will only work clientside at the moment.  Server rendering coming soon!
-
 This provides React components with the HTML5 History API via the following `propTypes`:
 
 - `pushWindowPath` - works exactly like `window.history.pushState` except arguments are reversed (`path` then `title` then `state`)

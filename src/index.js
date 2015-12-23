@@ -1,3 +1,5 @@
+import { canUseDOM } from 'exenv';
+
 export Link from './components/Link';
 
 export const PUSH_WINDOW_PATH = 'PUSH_WINDOW_PATH';
@@ -19,14 +21,18 @@ const actions = {
 };
 
 const reducers = {
-  windowPath(state = window.location.pathname, action) {
+  windowPath(state = canUseDOM && window.location.pathname, action) {
     switch (action.type) {
       case PUSH_WINDOW_PATH:
-        window.history.pushState(action, action.title, action.path);
+        if (canUseDOM) {
+          window.history.pushState(action, action.title, action.path);
+        }
         return action.path;
 
       case REPLACE_WINDOW_PATH:
-        window.history.replaceState(action, action.title, action.path);
+        if (canUseDOM) {
+          window.history.replaceState(action, action.title, action.path);
+        }
         return action.path;
 
       default:
@@ -34,12 +40,14 @@ const reducers = {
     }
   },
 
-  documentTitle(state = document.title, action) {
+  documentTitle(state = canUseDOM && document.title, action) {
     switch (action.type) {
       case PUSH_WINDOW_PATH:
       case REPLACE_WINDOW_PATH:
       case SET_DOCUMENT_TITLE:
-        document.title = action.title;
+        if (canUseDOM) {
+          document.title = action.title;
+        }
         return action.title;
 
       default:
@@ -47,7 +55,7 @@ const reducers = {
     }
   },
 
-  historyData(state = window.history.state, action) {
+  historyData(state = canUseDOM && window.history.state, action) {
     switch (action.type) {
       case PUSH_WINDOW_PATH:
       case REPLACE_WINDOW_PATH:
@@ -62,23 +70,25 @@ const reducers = {
 const enhancer = next => (reducer, initialState) => {
   const store = next(reducer, initialState);
 
-  store.dispatch(actions.replaceWindowPath(
-    window.location.pathname,
-    document.title,
-    window.history.state
-  ));
+  if (canUseDOM) {
+    store.dispatch(actions.replaceWindowPath(
+      window.location.pathname,
+      document.title,
+      window.history.state
+    ));
 
-  window.addEventListener('popstate', (event) => {
-    const action = window.history.state;
+    window.addEventListener('popstate', (event) => {
+      const action = window.history.state;
 
-    if (action) {
-      if (action.path !== undefined) {
-        store.dispatch({ ...action, type: REPLACE_WINDOW_PATH });
-      } else if (action.title !== undefined) {
-        store.dispatch({ ...action, type: SET_DOCUMENT_TITLE });
+      if (action) {
+        if (action.path !== undefined) {
+          store.dispatch({ ...action, type: REPLACE_WINDOW_PATH });
+        } else if (action.title !== undefined) {
+          store.dispatch({ ...action, type: SET_DOCUMENT_TITLE });
+        }
       }
-    }
-  });
+    });
+  }
 
   return store;
 };
