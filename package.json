@@ -1,6 +1,6 @@
 {
   "name": "react-redux-provide-history",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Provides the HTML5 History API to React components.",
   "main": "./lib/index.js",
   "scripts": {
