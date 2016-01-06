@@ -3,10 +3,27 @@ import expect from 'expect';
 import React, { PropTypes } from 'react';
 import { Simulate } from 'react-addons-test-utils';
 import { renderTest } from 'react-redux-provide-test-utils';
-import Test from './components/Test';
+import { Test } from './components/index';
+import providers from './providers/index';
+
+const context = {
+  providers,
+  providedState: {
+    list: [
+      {
+        href: '/test-one',
+        hrefTitle: 'Test One'
+      },
+      {
+        href: '/test-two',
+        hrefTitle: 'Test Two'
+      }
+    ]
+  }
+};
 
 const host = 'http://localhost:8080';
-const test = renderTest(Test);
+const test = renderTest(Test, { ...context });
 
 // need manually trigger popstate event in simulated env
 function triggerPopstate() {
