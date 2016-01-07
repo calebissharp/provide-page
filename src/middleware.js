@@ -62,6 +62,12 @@ export default function middleware ({
         return pageStore;
       });
 
+      if (props.combinedProviders) {
+        props.combinedProviders = [].concat(props.combinedProviders).map(
+          providers => providers.page ? { ...providers, page } : providers
+        );
+      }
+
       const html = renderToString(props);
       const pageState = pageStore.getState();
       const { headers, statusCode } = pageState;
