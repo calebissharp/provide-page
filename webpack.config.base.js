@@ -17,7 +17,7 @@ module.exports = {
     ]
   },
   output: {
-    library: 'provideHistory',
+    library: 'providePage',
     libraryTarget: 'umd'
   },
   resolve: {

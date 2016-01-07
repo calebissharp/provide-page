@@ -32,7 +32,7 @@ function triggerPopstate() {
   window.dispatchEvent(event);
 }
 
-describe('react-redux-provide-history', () => {
+describe('react-redux-provide-page', () => {
   it('should have initialized windowPath and documentTitle', () => {
     expect(test.wrappedInstance.props.windowPath).toBe('/test-index');
     expect(test.wrappedInstance.props.documentTitle).toBe('Testing');

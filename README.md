@@ -1,15 +1,15 @@
-# react-redux-provide-history
+# react-redux-provide-page
 
-[![build status](https://img.shields.io/travis/loggur/react-redux-provide-history/master.svg?style=flat-square)](https://travis-ci.org/loggur/react-redux-provide-history) [![npm version](https://img.shields.io/npm/v/react-redux-provide-history.svg?style=flat-square)](https://www.npmjs.com/package/react-redux-provide-history)
-[![npm downloads](https://img.shields.io/npm/dm/react-redux-provide-history.svg?style=flat-square)](https://www.npmjs.com/package/react-redux-provide-history)
+[![build status](https://img.shields.io/travis/loggur/react-redux-provide-page/master.svg?style=flat-square)](https://travis-ci.org/loggur/react-redux-provide-page) [![npm version](https://img.shields.io/npm/v/react-redux-provide-page.svg?style=flat-square)](https://www.npmjs.com/package/react-redux-provide-page)
+[![npm downloads](https://img.shields.io/npm/dm/react-redux-provide-page.svg?style=flat-square)](https://www.npmjs.com/package/react-redux-provide-page)
 
-An alternative to `react-router` which provides the HTML5 History API to React components.
+Provides routing and server rendering utilities via the HTML5 History API to React components.  Use this with [`react-redux-provide`](https://github.com/loggur/react-redux-provide) as a simpler alternative to `react-router`.
 
 
 ## Installation
 
 ```
-npm install react-redux-provide-history --save
+npm install react-redux-provide-page --save
 ```
 
 
@@ -33,7 +33,7 @@ A few notes:
 
 2.  When navigating through history (i.e., when the `popstate` event is triggered on the `window`), if a `path` is present within the `window.history.state`, the `REPLACE_WINDOW_PATH` action type will be dispatched on top of the `window.history.state` (stored action) to indicate that the `window.location.pathname` has been changed; or if only a `title` is present for some reason, the `SET_DOCUMENT_TITLE` action type will be dispatched instead.
 
-3.  If you're migrating to this from `react-router` or if you want a quick and easy way to include links in your app that work both clientside and serverside, you can `import { Link } from 'react-redux-provide-history';` and use it like any other `a` element.
+3.  If you're migrating to this from `react-router` or if you want a quick and easy way to include links in your app that work both clientside and serverside, you can `import { Link } from 'react-redux-provide-page';` and use it like any other `a` element.
 
 4.  The equivalent of `router.transitionTo` is to provide the `pushWindowPath` and/or `replaceWindowPath` to your components and use wherever necessary.
 

@@ -1,7 +1,7 @@
-import history from './history';
 import list from './list';
+import page from './page';
 
 export default {
-  history,
-  list
+  list,
+  page
 };

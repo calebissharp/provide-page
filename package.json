@@ -1,12 +1,12 @@
 {
-  "name": "react-redux-provide-history",
+  "name": "react-redux-provide-page",
   "version": "0.0.4",
-  "description": "Provides the HTML5 History API to React components.",
+  "description": "Provides routing and server rendering utilities via the HTML5 History API to React components.",
   "main": "./lib/index.js",
   "scripts": {
     "build:lib": "babel src --out-dir lib",
-    "build:umd": "webpack src/index.js dist/react-redux-provide-history.js --config webpack.config.development.js",
-    "build:umd:min": "webpack src/index.js dist/react-redux-provide-history.min.js --config webpack.config.production.js",
+    "build:umd": "webpack src/index.js dist/react-redux-provide-page.js --config webpack.config.development.js",
+    "build:umd:min": "webpack src/index.js dist/react-redux-provide-page.min.js --config webpack.config.production.js",
     "build": "npm run build:lib && npm run build:umd && npm run build:umd:min",
     "clean": "rimraf lib dist coverage",
     "prepublish": "npm run clean && npm run build",
@@ -16,12 +16,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/loggur/react-redux-provide-history.git"
+    "url": "https://github.com/loggur/react-redux-provide-page.git"
   },
   "keywords": [
     "react",
     "redux",
     "provide",
+    "page",
     "history",
     "router",
     "routes"
@@ -29,9 +30,9 @@
   "author": "loggur",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/loggur/react-redux-provide-history/issues"
+    "url": "https://github.com/loggur/react-redux-provide-page/issues"
   },
-  "homepage": "https://github.com/loggur/react-redux-provide-history",
+  "homepage": "https://github.com/loggur/react-redux-provide-page",
   "devDependencies": {
     "babel": "^5.8.21",
     "babel-core": "^5.8.22",
