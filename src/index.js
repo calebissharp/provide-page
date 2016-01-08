@@ -14,13 +14,19 @@ export const SET_ICON_FILE = 'SET_ICON_FILE';
 export const SET_CSS_FILE = 'SET_CSS_FILE';
 export const SET_JS_FILE = 'SET_JS_FILE';
 
+const splitPath = path => path.replace(/^\//, '').split('/');
+
 const actions = {
   pushWindowPath(path = '', title = '', data = null) {
-    return { type: PUSH_WINDOW_PATH, path, title, data };
+    const pathSplit = splitPath(path);
+
+    return { type: PUSH_WINDOW_PATH, path, pathSplit, title, data };
   },
 
   replaceWindowPath(path = '', title = '', data = null) {
-    return { type: REPLACE_WINDOW_PATH, path, title, data };
+    const pathSplit = splitPath(path);
+
+    return { type: REPLACE_WINDOW_PATH, path, pathSplit, title, data };
   },
 
   setHeaders(headers) {
@@ -70,6 +76,20 @@ const reducers = {
           window.history.replaceState(action, action.title, action.path);
         }
         return action.path;
+
+      default:
+        return state;
+    }
+  },
+
+  splitWindowPath(
+    state = canUseDOM && splitPath(window.location.pathname),
+    action
+  ) {
+    switch (action.type) {
+      case PUSH_WINDOW_PATH:
+      case REPLACE_WINDOW_PATH:
+        return action.pathSplit;
 
       default:
         return state;
@@ -194,6 +214,12 @@ const enhancer = next => (reducer, initialState) => {
         }
       }
     });
+  } else if (initialState.windowPath || initialState.documentTitle) {
+    store.dispatch(actions.replaceWindowPath(
+      initialState.windowPath,
+      initialState.documentTitle,
+      initialState.historyData
+    ));
   }
 
   return store;
