@@ -1,5 +1,12 @@
 import { addEnhancer } from 'react-redux-provide';
 
+const renderCssFileString = cssFile => (
+  `<link rel="stylesheet" type="text/css" href="${cssFile}"/>`
+);
+const renderJsFileString = jsFile => (
+  `<script src="${jsFile}"></script>`
+);
+
 export default function middleware ({
   renderToString,
   defaultProps,
@@ -10,8 +17,8 @@ export default function middleware ({
     metaDescription = `Built with react-redux-provide-page.`,
     metaRobots = `index,follow`,
     iconFile = `${staticDir}favicon.ico`,
-    cssFile = `${staticDir}app.css`,
-    jsFile = `${staticDir}app.js`
+    cssFiles = [`${staticDir}app.css`],
+    jsFiles = [`${staticDir}app.js`]
   }) => (
     `<!DOCTYPE html>`
     + `<html>`
@@ -23,11 +30,11 @@ export default function middleware ({
     + `<meta name="description" content="${metaDescription}"/>`
     + `<meta name="robots" content="${metaRobots}"/>`
     + `<link rel="shortcut icon" type="image/ico" href="${iconFile}"/>`
-    + `<link rel="stylesheet" type="text/css" href="${cssFile}"/>`
+    + cssFiles.map(renderCssFileString).join('')
     + `</head>`
     + `<body>`
     + `<div id="root">${html}</div>`
-    + `<script src="${jsFile}"></script>`
+    + jssFiles.map(renderJsFileString).join('')
     + `</body>`
     + `</html>`
   );

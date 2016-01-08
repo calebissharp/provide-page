@@ -11,8 +11,8 @@ export const SET_DOCUMENT_TITLE = 'SET_DOCUMENT_TITLE';
 export const SET_META_DESCRIPTION = 'SET_META_DESCRIPTION';
 export const SET_META_ROBOTS = 'SET_META_ROBOTS';
 export const SET_ICON_FILE = 'SET_ICON_FILE';
-export const SET_CSS_FILE = 'SET_CSS_FILE';
-export const SET_JS_FILE = 'SET_JS_FILE';
+export const SET_CSS_FILES = 'SET_CSS_FILES';
+export const SET_JS_FILES = 'SET_JS_FILES';
 
 const splitPath = path => path.replace(/^\//, '').split('/');
 
@@ -53,12 +53,12 @@ const actions = {
     return { type: SET_ICON_FILE, iconFile };
   },
 
-  setCssFile(cssFile = '') {
-    return { type: SET_CSS_FILE, cssFile };
+  setCssFiles(cssFiles = []) {
+    return { type: SET_CSS_FILES, cssFiles };
   },
 
-  setJsFile(jsFile = '') {
-    return { type: SET_JS_FILE, jsFile };
+  setJsFiles(jsFiles = []) {
+    return { type: SET_JS_FILES, jsFiles };
   }
 };
 
@@ -161,20 +161,20 @@ const reducers = {
     }
   },
 
-  cssFile(state = '/dist/app.css', action) {
+  cssFiles(state = ['/dist/app.css'], action) {
     switch (action.type) {
-      case SET_CSS_FILE:
-        return action.cssFile;
+      case SET_CSS_FILES:
+        return action.cssFiles;
 
       default:
         return state;
     }
   },
 
-  jsFile(state = '/dist/app.js', action) {
+  jsFiles(state = ['/dist/app.js'], action) {
     switch (action.type) {
-      case SET_JS_FILE:
-        return action.jsFile;
+      case SET_JS_FILES:
+        return action.jsFiles;
 
       default:
         return state;
