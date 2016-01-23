@@ -1,6 +1,6 @@
 import { canUseDOM } from 'exenv';
 
-export middleware from './middleware';
+export createMiddleware from './createMiddleware';
 export Link from './components/Link';
 
 export const PUSH_WINDOW_PATH = 'PUSH_WINDOW_PATH';
@@ -151,7 +151,7 @@ const reducers = {
     }
   },
 
-  iconFile(state = '/dist/favicon.ico', action) {
+  iconFile(state = '/favicon.ico', action) {
     switch (action.type) {
       case SET_ICON_FILE:
         return action.iconFile;
@@ -161,7 +161,7 @@ const reducers = {
     }
   },
 
-  cssFiles(state = ['/dist/app.css'], action) {
+  cssFiles(state = [], action) {
     switch (action.type) {
       case SET_CSS_FILES:
         return action.cssFiles;
@@ -171,7 +171,7 @@ const reducers = {
     }
   },
 
-  jsFiles(state = ['/dist/app.js'], action) {
+  jsFiles(state = [], action) {
     switch (action.type) {
       case SET_JS_FILES:
         return action.jsFiles;
