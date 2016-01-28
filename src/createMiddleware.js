@@ -1,3 +1,8 @@
+import { mergeStoresStates } from 'redux-replicate';
+import bodyParser from 'body-parser';
+
+const jsonParser = bodyParser.json();
+
 const defaultRenderDocumentToString = (html, stores, getClientState) => {
   const {
     documentTitle = `Page`,
@@ -40,56 +45,62 @@ export default function createMiddleware ({
   defaultProps,
   renderToString,
   renderDocumentToString = defaultRenderDocumentToString,
-  getClientState = stores => {
-    const clientState = {};
-
-    for (let name in stores) {
-      Object.assign(clientState, stores[name].getState());
-    }
-
-    return clientState;
-  }
+  getClientState = mergeStoresStates()
 }) {
   return (request, response, next) => {
-    const { originalUrl: windowPath } = request;
+    jsonParser(request, response, () => {
+      const {
+        originalUrl: windowPath,
+        method: requestMethod,
+        body: requestBody
+      } = request;
 
-    try {
-      const stores = {};
-      const props = {
-        ...defaultProps,
-        providedState: {
-          ...(defaultProps.providedState || {}),
-          windowPath
-        },
-        providerReady: [
-          ...(defaultProps.providerReady || []),
-          ({ name, store }) => {
-            stores[name] = store;
-          }
-        ]
-      };
-      const html = renderToString(props);
-      const { headers, statusCode } = stores.page.getState();
-      let documentString = null;
+      try {
+        const stores = {};
+        const props = {
+          ...defaultProps,
+          providedState: {
+            ...(defaultProps.providedState || {}),
+            windowPath,
+            requestMethod,
+            requestBody
+          },
+          providerReady: [
+            ...(defaultProps.providerReady || []),
+            ({ name, store }) => {
+              stores[name] = store;
+            }
+          ]
+        };
+        const html = renderToString(props);
+        const { headers, statusCode } = stores.page.getState();
+        let documentString = null;
 
-      if (headers) {
-        response.set(headers);
-      }
-
-      if (html) {
-        documentString = renderDocumentToString(html, stores, getClientState);
-
-        if (statusCode) {
-          response.status(statusCode).send(documentString);
-        } else {
-          response.send(documentString);
+        if (headers) {
+          response.set(headers);
         }
-      } else if (statusCode) {
-        response.sendStatus(statusCode);
+
+        if (html) {
+          documentString = renderDocumentToString(
+            html,
+            stores,
+            typeof getClientState === 'function'
+              ? getClientState
+              : mergeStoresStates(getClientState)
+          );
+
+          if (statusCode) {
+            response.status(statusCode).send(documentString);
+          } else {
+            response.send(documentString);
+          }
+        } else if (statusCode) {
+          response.sendStatus(statusCode);
+        }
+      } catch (error) {
+        console.error(error.stack);
+        response.sendStatus(500);
       }
-    } catch (error) {
-      console.error(error.stack);
-      response.sendStatus(500);
-    }
+    });
   };
 }

@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import provide from 'react-redux-provide';
+import eventsPropTypes from '../eventsPropTypes';
 
 @provide
 export default class Link extends Component {
@@ -13,24 +14,16 @@ export default class Link extends Component {
     id: PropTypes.string,
     rel: PropTypes.string,
     target: PropTypes.string,
-    onClick: PropTypes.func,
-    onContextMenu: PropTypes.func,
-    onDoubleClick: PropTypes.func,
-    onMouseDown: PropTypes.func,
-    onMouseUp: PropTypes.func,
-    onMouseEnter: PropTypes.func,
-    onMouseLeave: PropTypes.func,
-    onMouseOver: PropTypes.func,
-    onMouseOut: PropTypes.func,
     children: PropTypes.any,
-    pushWindowPath: PropTypes.func.isRequired
+    pushWindowPath: PropTypes.func.isRequired,
+    ...eventsPropTypes
   };
 
   render() {
     const { onClick } = this.props;
     const aProps = {
       ...this.props,
-      onClick: (event) => {
+      onClick: event => {
         event.stopPropagation();
         event.preventDefault();
 

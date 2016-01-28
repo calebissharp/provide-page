@@ -1,6 +1,7 @@
 import { canUseDOM } from 'exenv';
 
 export createMiddleware from './createMiddleware';
+export Form from './components/Form';
 export Link from './components/Link';
 
 export const PUSH_WINDOW_PATH = 'PUSH_WINDOW_PATH';
@@ -13,6 +14,7 @@ export const SET_META_ROBOTS = 'SET_META_ROBOTS';
 export const SET_ICON_FILE = 'SET_ICON_FILE';
 export const SET_CSS_FILES = 'SET_CSS_FILES';
 export const SET_JS_FILES = 'SET_JS_FILES';
+export const SUBMIT_REQUEST = 'SUBMIT_REQUEST';
 
 const splitPath = path => path.replace(/^\//, '').split('/');
 
@@ -59,6 +61,10 @@ const actions = {
 
   setJsFiles(jsFiles = []) {
     return { type: SET_JS_FILES, jsFiles };
+  },
+
+  submitRequest(requestBody = {}, requestMethod = 'POST') {
+    return { type: SUBMIT_REQUEST, requestBody, requestMethod };
   }
 };
 
@@ -190,7 +196,38 @@ const reducers = {
       default:
         return state;
     }
+  },
+
+  requestBody(state = null, action) {
+    switch (action.type) {
+      case SUBMIT_REQUEST:
+        return action.requestBody;
+
+      default:
+        return state;
+    }
+  },
+
+  requestMethod(state = null, action) {
+    switch (action.type) {
+      case SUBMIT_REQUEST:
+        return action.requestMethod;
+
+      default:
+        return state;
+    }
   }
+};
+
+const merge = (stateProps, dispatchProps, parentProps) => {
+  const { requestBody } = stateProps;
+
+  return {
+    ...parentProps,
+    formData: requestBody && requestBody._formId === parentProps.formId
+      ? requestBody
+      : null
+  };
 };
 
 const enhancer = next => (reducer, initialState) => {
@@ -225,4 +262,4 @@ const enhancer = next => (reducer, initialState) => {
   return store;
 };
 
-export default { actions, reducers, enhancer };
+export default { actions, reducers, merge, enhancer };
