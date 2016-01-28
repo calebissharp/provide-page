@@ -51,7 +51,6 @@
     "webpack": "^1.11.0"
   },
   "dependencies": {
-    "body-parser": "^1.14.2",
     "exenv": "^1.2.0",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",

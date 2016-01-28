@@ -1,7 +1,4 @@
 import { mergeStoresStates } from 'redux-replicate';
-import bodyParser from 'body-parser';
-
-const jsonParser = bodyParser.json();
 
 const defaultRenderDocumentToString = (html, stores, getClientState) => {
   const {
@@ -48,59 +45,61 @@ export default function createMiddleware ({
   getClientState = mergeStoresStates()
 }) {
   return (request, response, next) => {
-    jsonParser(request, response, () => {
-      const {
-        originalUrl: windowPath,
-        method: requestMethod,
-        body: requestBody
-      } = request;
+    const {
+      originalUrl: windowPath,
+      method: requestMethod,
+      body: requestBody
+    } = request;
 
-      try {
-        const stores = {};
-        const props = {
-          ...defaultProps,
-          providedState: {
-            ...(defaultProps.providedState || {}),
-            windowPath,
-            requestMethod,
-            requestBody
-          },
-          providerReady: [
-            ...(defaultProps.providerReady || []),
-            ({ name, store }) => {
-              stores[name] = store;
-            }
-          ]
-        };
-        const html = renderToString(props);
-        const { headers, statusCode } = stores.page.getState();
-        let documentString = null;
+    if (typeof requestBody === 'undefined') {
+      console.warn('Server needs to use `bodyParser.json()`!');
+    }
 
-        if (headers) {
-          response.set(headers);
-        }
-
-        if (html) {
-          documentString = renderDocumentToString(
-            html,
-            stores,
-            typeof getClientState === 'function'
-              ? getClientState
-              : mergeStoresStates(getClientState)
-          );
-
-          if (statusCode) {
-            response.status(statusCode).send(documentString);
-          } else {
-            response.send(documentString);
+    try {
+      const stores = {};
+      const props = {
+        ...defaultProps,
+        providedState: {
+          ...(defaultProps.providedState || {}),
+          windowPath,
+          requestMethod,
+          requestBody
+        },
+        providerReady: [
+          ...(defaultProps.providerReady || []),
+          ({ name, store }) => {
+            stores[name] = store;
           }
-        } else if (statusCode) {
-          response.sendStatus(statusCode);
-        }
-      } catch (error) {
-        console.error(error.stack);
-        response.sendStatus(500);
+        ]
+      };
+      const html = renderToString(props);
+      const { headers, statusCode } = stores.page.getState();
+      let documentString = null;
+
+      if (headers) {
+        response.set(headers);
       }
-    });
+
+      if (html) {
+        documentString = renderDocumentToString(
+          html,
+          stores,
+          typeof getClientState === 'function'
+            ? getClientState
+            : mergeStoresStates(getClientState)
+        );
+
+        if (statusCode) {
+          response.status(statusCode).send(documentString);
+        } else {
+          response.send(documentString);
+        }
+      } else if (statusCode) {
+        response.sendStatus(statusCode);
+      }
+    } catch (error) {
+      console.error(error.stack);
+      response.sendStatus(500);
+    }
   };
 }
