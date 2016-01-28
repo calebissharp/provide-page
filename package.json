@@ -1,6 +1,6 @@
 {
   "name": "react-redux-provide-page",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Provides routing and server rendering utilities via the HTML5 History API to React components.",
   "main": "./lib/index.js",
   "scripts": {
