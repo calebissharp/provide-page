@@ -1,7 +1,7 @@
 const defaultRenderDocumentToString = (html, providedState, clientState) => {
   const {
     documentTitle = `Page`,
-    metaDescription = `Built with react-redux-provide-page.`,
+    metaDescription = `Built with provide-page.`,
     metaRobots = `index,follow`,
     iconFile = `/static/favicon.ico`,
     cssFiles = [],

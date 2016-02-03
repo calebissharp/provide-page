@@ -145,7 +145,7 @@ const reducers = {
     }
   },
 
-  metaDescription(state = 'Built with react-redux-provide-page.', action) {
+  metaDescription(state = 'Built with provide-page.', action) {
     switch (action.type) {
       case SET_META_DESCRIPTION:
         return action.metaDescription;
