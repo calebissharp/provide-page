@@ -12,11 +12,11 @@ const context = {
     list: [
       {
         href: '/test-one',
-        hrefTitle: 'Test One'
+        children: 'Test One'
       },
       {
         href: '/test-two',
-        hrefTitle: 'Test Two'
+        children: 'Test Two'
       }
     ]
   }

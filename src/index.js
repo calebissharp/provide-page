@@ -1,8 +1,11 @@
 import { canUseDOM } from 'exenv';
 
-export createMiddleware from './createMiddleware';
 export Form from './components/Form';
 export Link from './components/Link';
+
+export createMiddleware from './createMiddleware';
+export defaultRenderDocumentToString from './defaultRenderDocumentToString';
+export eventsPropTypes from './eventsPropTypes';
 
 export const PUSH_WINDOW_PATH = 'PUSH_WINDOW_PATH';
 export const REPLACE_WINDOW_PATH = 'REPLACE_WINDOW_PATH';
@@ -16,55 +19,58 @@ export const SET_CSS_FILES = 'SET_CSS_FILES';
 export const SET_JS_FILES = 'SET_JS_FILES';
 export const SUBMIT_REQUEST = 'SUBMIT_REQUEST';
 
+const _rerender = false;
 const splitPath = path => path.replace(/^\//, '').split('/');
 
 const actions = {
-  pushWindowPath(path = '', title = '', data = null) {
-    const pathSplit = splitPath(path);
+  pushWindowPath(windowPath = '') {
+    const windowPathSplit = splitPath(windowPath);
 
-    return { type: PUSH_WINDOW_PATH, path, pathSplit, title, data };
+    return { type: PUSH_WINDOW_PATH, windowPath, windowPathSplit, _rerender };
   },
 
-  replaceWindowPath(path = '', title = '', data = null) {
-    const pathSplit = splitPath(path);
+  replaceWindowPath(windowPath = '') {
+    const windowPathSplit = splitPath(windowPath);
 
-    return { type: REPLACE_WINDOW_PATH, path, pathSplit, title, data };
+    return {
+      type: REPLACE_WINDOW_PATH, windowPath, windowPathSplit, _rerender
+    };
   },
 
   setHeaders(headers) {
-    return { type: SET_HEADERS, headers };
+    return { type: SET_HEADERS, headers, _rerender };
   },
 
   setStatusCode(statusCode) {
-    return { type: SET_STATUS_CODE, statusCode };
+    return { type: SET_STATUS_CODE, statusCode, _rerender };
   },
 
-  setDocumentTitle(title = '') {
-    return { type: SET_DOCUMENT_TITLE, title };
+  setDocumentTitle(documentTitle = '') {
+    return { type: SET_DOCUMENT_TITLE, documentTitle, _rerender };
   },
 
   setMetaDescription(metaDescription = '') {
-    return { type: SET_META_DESCRIPTION, metaDescription };
+    return { type: SET_META_DESCRIPTION, metaDescription, _rerender };
   },
 
   setMetaRobots(metaRobots = '') {
-    return { type: SET_META_ROBOTS, metaRobots };
+    return { type: SET_META_ROBOTS, metaRobots, _rerender };
   },
 
   setIconFile(iconFile = '') {
-    return { type: SET_ICON_FILE, iconFile };
+    return { type: SET_ICON_FILE, iconFile, _rerender };
   },
 
   setCssFiles(cssFiles = []) {
-    return { type: SET_CSS_FILES, cssFiles };
+    return { type: SET_CSS_FILES, cssFiles, _rerender };
   },
 
   setJsFiles(jsFiles = []) {
-    return { type: SET_JS_FILES, jsFiles };
+    return { type: SET_JS_FILES, jsFiles, _rerender };
   },
 
-  submitRequest(requestBody = {}, requestMethod = 'POST') {
-    return { type: SUBMIT_REQUEST, requestBody, requestMethod };
+  submitRequest(requestBody = {}, requestMethod = 'POST', acceptJson = true) {
+    return { type: SUBMIT_REQUEST, requestBody, requestMethod, acceptJson };
   }
 };
 
@@ -73,15 +79,19 @@ const reducers = {
     switch (action.type) {
       case PUSH_WINDOW_PATH:
         if (canUseDOM) {
-          window.history.pushState(action, action.title, action.path);
+          window.history.pushState(
+            action, document.title, action.windowPath
+          );
         }
-        return action.path;
+        return action.windowPath;
 
       case REPLACE_WINDOW_PATH:
         if (canUseDOM) {
-          window.history.replaceState(action, action.title, action.path);
+          window.history.replaceState(
+            action, document.title, action.windowPath
+          );
         }
-        return action.path;
+        return action.windowPath;
 
       default:
         return state;
@@ -95,7 +105,7 @@ const reducers = {
     switch (action.type) {
       case PUSH_WINDOW_PATH:
       case REPLACE_WINDOW_PATH:
-        return action.pathSplit;
+        return action.windowPathSplit;
 
       default:
         return state;
@@ -124,13 +134,11 @@ const reducers = {
 
   documentTitle(state = canUseDOM && document.title, action) {
     switch (action.type) {
-      case PUSH_WINDOW_PATH:
-      case REPLACE_WINDOW_PATH:
       case SET_DOCUMENT_TITLE:
         if (canUseDOM) {
-          document.title = action.title;
+          document.title = action.documentTitle;
         }
-        return action.title;
+        return action.documentTitle;
 
       default:
         return state;
@@ -157,7 +165,7 @@ const reducers = {
     }
   },
 
-  iconFile(state = '/favicon.ico', action) {
+  iconFile(state = '/static/favicon.ico', action) {
     switch (action.type) {
       case SET_ICON_FILE:
         return action.iconFile;
@@ -187,17 +195,6 @@ const reducers = {
     }
   },
 
-  historyData(state = canUseDOM && window.history.state, action) {
-    switch (action.type) {
-      case PUSH_WINDOW_PATH:
-      case REPLACE_WINDOW_PATH:
-        return action.data;
-
-      default:
-        return state;
-    }
-  },
-
   requestBody(state = null, action) {
     switch (action.type) {
       case SUBMIT_REQUEST:
@@ -212,6 +209,16 @@ const reducers = {
     switch (action.type) {
       case SUBMIT_REQUEST:
         return action.requestMethod;
+
+      default:
+        return state;
+    }
+  },
+
+  acceptJson(state = null, action) {
+    switch (action.type) {
+      case SUBMIT_REQUEST:
+        return action.acceptJson;
 
       default:
         return state;
@@ -234,29 +241,21 @@ const enhancer = next => (reducer, initialState) => {
   const store = next(reducer, initialState);
 
   if (canUseDOM) {
-    store.dispatch(actions.replaceWindowPath(
-      window.location.pathname,
-      document.title,
-      window.history.state
-    ));
+    store.dispatch(actions.replaceWindowPath(window.location.pathname));
 
     window.addEventListener('popstate', (event) => {
       const action = window.history.state;
 
       if (action) {
-        if (action.path !== undefined) {
+        if (action.windowPath !== undefined) {
           store.dispatch({ ...action, type: REPLACE_WINDOW_PATH });
-        } else if (action.title !== undefined) {
+        } else if (action.documentTitle !== undefined) {
           store.dispatch({ ...action, type: SET_DOCUMENT_TITLE });
         }
       }
     });
   } else if (initialState.windowPath || initialState.documentTitle) {
-    store.dispatch(actions.replaceWindowPath(
-      initialState.windowPath,
-      initialState.documentTitle,
-      initialState.historyData
-    ));
+    store.dispatch(actions.replaceWindowPath(initialState.windowPath));
   }
 
   return store;

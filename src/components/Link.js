@@ -7,7 +7,6 @@ export default class Link extends Component {
   static propTypes = {
     className: PropTypes.string,
     href: PropTypes.string,
-    hrefTitle: PropTypes.string,
     hrefLang: PropTypes.string,
     media: PropTypes.string,
     type: PropTypes.string,
@@ -27,7 +26,7 @@ export default class Link extends Component {
         event.stopPropagation();
         event.preventDefault();
 
-        this.props.pushWindowPath(this.props.href, this.props.hrefTitle);
+        this.props.pushWindowPath(this.props.href);
 
         if (onClick) {
           onClick.apply(this, arguments);

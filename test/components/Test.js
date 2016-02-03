@@ -24,11 +24,7 @@ export default class Test extends Component {
 
   renderItems() {
     return this.props.list.map(
-      (item, index) => (
-        <Link key={index} { ...item }>
-          {item.hrefTitle}
-        </Link>
-      )
+      (item, index) => <Link key={index} { ...item } />
     );
   }
 }

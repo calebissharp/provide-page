@@ -29,7 +29,7 @@ export default class Form extends Component {
     const { onSubmit, formData } = this.props;
 
     if (formData) {
-      onSubmit({ formData });
+      onSubmit(null, formData);
     }
   }
 
@@ -41,11 +41,6 @@ export default class Form extends Component {
         const { elements } = this.refs.form;
         const formData = {};
 
-        if (event.stopPropagation) {
-          event.stopPropagation();
-          event.preventDefault();
-        }
-
         for (let element of elements) {
           if (element.name) {
             if (!element.value && element.innerText) {
@@ -56,8 +51,27 @@ export default class Form extends Component {
           }
         }
 
+        if (event.stopPropagation) {
+          const xhr = new XMLHttpRequest();
+          const { pathname, search } = window.location;
+          const contentType = 'application/json;charset=UTF-8';
+          const accept = 'application/json';
+
+          xhr.open('POST', pathname + search, true);
+          xhr.setRequestHeader('Content-Type', contentType);
+          xhr.setRequestHeader('Accept', accept);
+          /* TODO: merge response into stores
+          xhr.onload = () => {
+            console.log(xhr.response);
+          };*/
+          xhr.send(JSON.stringify(formData));
+
+          event.stopPropagation();
+          event.preventDefault();
+        }
+
         if (onSubmit) {
-          onSubmit.apply(this, arguments);
+          onSubmit(event, formData);
         }
       }
     };

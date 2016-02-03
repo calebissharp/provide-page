@@ -1,102 +1,159 @@
-import { mergeStoresStates } from 'redux-replicate';
-
-const defaultRenderDocumentToString = (html, stores, getClientState) => {
-  const {
-    documentTitle = `Page`,
-    metaDescription = `Built with react-redux-provide-page.`,
-    metaRobots = `index,follow`,
-    iconFile = `favicon.ico`,
-    cssFiles = [],
-    jsFiles = []
-  } = stores.page.getState();
-
-  return (
-    `<!DOCTYPE html>`
-    + `<html>`
-    + `<head>`
-    + `<title>${documentTitle}</title>`
-    + `<meta charset="utf-8"/>`
-    + `<meta http-equiv="X-UA-Compatible" content="IE=edge"/>`
-    + `<meta name="viewport" content="width=device-width, initial-scale=1.0"/>`
-    + `<meta name="description" content="${metaDescription}"/>`
-    + `<meta name="robots" content="${metaRobots}"/>`
-    + `<link rel="shortcut icon" type="image/ico" href="${iconFile}"/>`
-    + cssFiles.map(cssFile => (
-      `<link rel="stylesheet" type="text/css" href="${cssFile}"/>`
-    )).join('')
-    + `</head>`
-    + `<body>`
-    + `<div id="root">${html}</div>`
-    + `<script>`
-    + `window.clientState = ${JSON.stringify(getClientState(stores))};`
-    + `</script>`
-    + jsFiles.map(jsFile => (
-      `<script src="${jsFile}"></script>`
-    )).join('')
-    + `</body>`
-    + `</html>`
-  );
-};
+import { unshiftMiddleware } from 'react-redux-provide';
+import { selectKeys, mergeStoresStates } from 'redux-replicate';
+import defaultRenderDocumentToString from './defaultRenderDocumentToString';
 
 export default function createMiddleware ({
   defaultProps,
   renderToString,
   renderDocumentToString = defaultRenderDocumentToString,
-  getClientState = mergeStoresStates()
+  getProvidedState = mergedStates => mergedStates,
+  getClientState = providedState => providedState,
+  maxRenders = 2,
+  maxResponseTime = 2000
 }) {
   return (request, response, next) => {
-    const {
+    let {
       originalUrl: windowPath,
       method: requestMethod,
       body: requestBody
     } = request;
+    let acceptJson = request.headers.accept.indexOf('json') > -1;
 
     if (typeof requestBody === 'undefined') {
-      console.warn('Server needs to use `bodyParser.json()`!');
+      console.warn('Server needs to use `body-parser` or something like it!');
     }
 
     try {
-      const stores = {};
-      const props = {
-        ...defaultProps,
-        providedState: {
-          ...(defaultProps.providedState || {}),
-          windowPath,
-          requestMethod,
-          requestBody
-        },
-        providerReady: [
-          ...(defaultProps.providerReady || []),
-          ({ name, store }) => {
-            stores[name] = store;
+      let stores = null;
+      let thunks = null;
+      let rerender = null;
+      let renders = 0;
+      let html = null;
+      let mergedStates = null;
+      let providedState = null;
+      let clientState = null;
+      let redirectStatus = 0;
+      let responded = false;
+      const responseTimeout = setTimeout(send408Status, maxResponseTime);
+      const providers = {};
+
+      for (let name in defaultProps.providers) {
+        providers[name] = { ...defaultProps.providers[name] };
+      }
+
+      unshiftMiddleware(providers, ({ dispatch, getState }) => {
+        return next => action => {
+          if (!rerender && action._rerender !== false) {
+            rerender = true;
           }
-        ]
+
+          if (typeof action !== 'function') {
+            return next(action);
+          }
+
+          const newDispatch = action => {
+            thunks--;
+            dispatch(action);
+            respondOrRerender();
+          };
+
+          thunks++;
+          return action(newDispatch, getState);
+        };
+      });
+
+      const renderState = () => {
+        stores = {};
+        thunks = 0;
+        rerender = false;
+        renders++;
+        html = renderToString({
+          ...defaultProps,
+          providers,
+          providedState: {
+            ...(defaultProps.providedState || {}),
+            windowPath,
+            requestMethod,
+            requestBody,
+            acceptJson
+          },
+          providerReady: [
+            ...(defaultProps.providerReady || []),
+            ({ name, store }) => {
+              stores[name] = store;
+            }
+          ]
+        });
+        mergedStates = mergeStoresStates()(stores);
+        providedState = typeof getProvidedState === 'object'
+          ? selectKeys(getProvidedState, mergedStates)
+          : getProvidedState(mergedStates);
+        clientState = typeof getClientState === 'object'
+          ? selectKeys(getClientState, providedState)
+          : getClientState(providedState);
+
+        respondOrRerender();
       };
-      const html = renderToString(props);
-      const { headers, statusCode } = stores.page.getState();
-      let documentString = null;
 
-      if (headers) {
-        response.set(headers);
-      }
-
-      if (html) {
-        documentString = renderDocumentToString(
-          html,
-          stores,
-          typeof getClientState === 'function'
-            ? getClientState
-            : mergeStoresStates(getClientState)
-        );
-
-        if (statusCode) {
-          response.status(statusCode).send(documentString);
-        } else {
-          response.send(documentString);
+      const respondOrRerender = () => {
+        const { windowPath: nextWindowPath } = stores.page.getState();
+        if (nextWindowPath !== windowPath) {
+          windowPath = nextWindowPath;
+          redirectStatus = 303;
         }
-      } else if (statusCode) {
-        response.sendStatus(statusCode);
-      }
+
+        if (renders === maxRenders || !rerender) {
+          respond();
+        } else if (thunks === 0) {
+          requestMethod = 'GET';
+          requestBody = {};
+          setTimeout(renderState, 1);
+        }
+      };
+
+      const respond = () => {
+        if (responded) {
+          return;
+        }
+
+        const { headers, statusCode } = providedState;
+        let documentString = null;
+
+        if (headers) {
+          response.set(headers);
+        }
+
+        if (acceptJson) {
+          if (statusCode) {
+            response.status(statusCode).send(clientState);
+          } else {
+            response.send(clientState);
+          }
+        } else if (redirectStatus) {
+          response.redirect(redirectStatus, windowPath);
+        } else if (html) {
+          documentString = renderDocumentToString(
+            html, providedState, clientState
+          );
+
+          if (statusCode) {
+            response.status(statusCode).send(documentString);
+          } else {
+            response.send(documentString);
+          }
+        } else if (statusCode) {
+          response.sendStatus(statusCode);
+        }
+
+        responded = true;
+      };
+
+      const send408Status = () => {
+        response.sendStatus(408);
+        responded = true;
+      };
+
+      renderState();
     } catch (error) {
       console.error(error.stack);
       response.sendStatus(500);
