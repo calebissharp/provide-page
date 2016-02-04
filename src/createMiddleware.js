@@ -34,7 +34,7 @@ export default function createMiddleware ({
       let clientState = null;
       let redirectStatus = 0;
       let responded = false;
-      const responseTimeout = maxResponseTime
+      let responseTimeout = maxResponseTime
         ? setTimeout(send408Status, maxResponseTime)
         : null;
       const providers = {};
@@ -118,7 +118,7 @@ export default function createMiddleware ({
           clearTimeout(responseTimeout);
           responseTimeout = null;
         }
-        
+
         if (responded) {
           return;
         }
