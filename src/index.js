@@ -19,54 +19,54 @@ export const SET_CSS_FILES = 'SET_CSS_FILES';
 export const SET_JS_FILES = 'SET_JS_FILES';
 export const SUBMIT_REQUEST = 'SUBMIT_REQUEST';
 
-const _rerender = false;
+const _noRender = true;
 const splitPath = path => path.replace(/^\//, '').split('/');
 
 const actions = {
   pushWindowPath(windowPath = '') {
     const windowPathSplit = splitPath(windowPath);
 
-    return { type: PUSH_WINDOW_PATH, windowPath, windowPathSplit, _rerender };
+    return { type: PUSH_WINDOW_PATH, windowPath, windowPathSplit, _noRender };
   },
 
   replaceWindowPath(windowPath = '') {
     const windowPathSplit = splitPath(windowPath);
 
     return {
-      type: REPLACE_WINDOW_PATH, windowPath, windowPathSplit, _rerender
+      type: REPLACE_WINDOW_PATH, windowPath, windowPathSplit, _noRender
     };
   },
 
   setHeaders(headers) {
-    return { type: SET_HEADERS, headers, _rerender };
+    return { type: SET_HEADERS, headers, _noRender };
   },
 
   setStatusCode(statusCode) {
-    return { type: SET_STATUS_CODE, statusCode, _rerender };
+    return { type: SET_STATUS_CODE, statusCode, _noRender };
   },
 
   setDocumentTitle(documentTitle = '') {
-    return { type: SET_DOCUMENT_TITLE, documentTitle, _rerender };
+    return { type: SET_DOCUMENT_TITLE, documentTitle, _noRender };
   },
 
   setMetaDescription(metaDescription = '') {
-    return { type: SET_META_DESCRIPTION, metaDescription, _rerender };
+    return { type: SET_META_DESCRIPTION, metaDescription, _noRender };
   },
 
   setMetaRobots(metaRobots = '') {
-    return { type: SET_META_ROBOTS, metaRobots, _rerender };
+    return { type: SET_META_ROBOTS, metaRobots, _noRender };
   },
 
   setIconFile(iconFile = '') {
-    return { type: SET_ICON_FILE, iconFile, _rerender };
+    return { type: SET_ICON_FILE, iconFile, _noRender };
   },
 
   setCssFiles(cssFiles = []) {
-    return { type: SET_CSS_FILES, cssFiles, _rerender };
+    return { type: SET_CSS_FILES, cssFiles, _noRender };
   },
 
   setJsFiles(jsFiles = []) {
-    return { type: SET_JS_FILES, jsFiles, _rerender };
+    return { type: SET_JS_FILES, jsFiles, _noRender };
   },
 
   submitRequest(requestBody = {}, requestMethod = 'POST', acceptJson = true) {

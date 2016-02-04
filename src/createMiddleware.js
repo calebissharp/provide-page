@@ -34,7 +34,9 @@ export default function createMiddleware ({
       let clientState = null;
       let redirectStatus = 0;
       let responded = false;
-      const responseTimeout = setTimeout(send408Status, maxResponseTime);
+      const responseTimeout = maxResponseTime
+        ? setTimeout(send408Status, maxResponseTime)
+        : null;
       const providers = {};
 
       for (let name in defaultProps.providers) {
@@ -43,7 +45,7 @@ export default function createMiddleware ({
 
       unshiftMiddleware(providers, ({ dispatch, getState }) => {
         return next => action => {
-          if (!rerender && action._rerender !== false) {
+          if (!rerender && !action._noRender) {
             rerender = true;
           }
 
@@ -112,6 +114,11 @@ export default function createMiddleware ({
       };
 
       const respond = () => {
+        if (responseTimeout) {
+          clearTimeout(responseTimeout);
+          responseTimeout = null;
+        }
+        
         if (responded) {
           return;
         }
@@ -149,6 +156,7 @@ export default function createMiddleware ({
       };
 
       const send408Status = () => {
+        responseTimeout = null;
         response.sendStatus(408);
         responded = true;
       };
