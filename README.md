@@ -113,7 +113,7 @@ The `options` object passed to `createMiddleware` should take the following shap
 
   - `renderToString (Object props)` - This function should typically use `react-dom/server`'s `renderToString` method under the hood to render your app to a string.  See [`bloggur/src/renderAppToString.js`](https://github.com/loggur/bloggur/blob/master/src/renderAppToString.js) for a full example.
 
-  - `renderDocumentToString (String html, Object providedState, Object clientState)` - Optional function that returns the string representation of the entire document.  The `providedState` and `clientState` objects come form the `getProvidedState` and `getClientState` functions below.  See [`defaultRenderDocumentToString.js`](https://github.com/loggur/provide-page/blob/master/defaultRenderDocumentToString.js) as an example.
+  - `renderDocumentToString (String html, Object providedState, Object clientState)` - Optional function that returns the string representation of the entire document.  The `providedState` and `clientState` objects come form the `getProvidedState` and `getClientState` functions below.  See [`defaultRenderDocumentToString.js`](https://github.com/loggur/provide-page/blob/master/src/defaultRenderDocumentToString.js) as an example.
 
   - `getProvidedState` - Optional object or function that should return the `providedState` prop passed to both `renderToString` and `renderDocumentToString`.  Defaults to all of your providers' stores' states combined into a single object.  If it's an object, it will use [`redux-replicate/src/selectKeys.js`](https://github.com/loggur/redux-replicate/blob/master/src/selectKeys.js).  If it's a function, your providers' stores' states combined into a single object will be passed to it.  See [`bloggur/src/middleware.js`](https://github.com/loggur/bloggur/blob/master/src/middleware.js) for a full example where we concatenate the selected theme's files with the `cssFiles` and `jsFiles` reducers so that they're included as `link` and `script` tags when the document string is rendered.
 
@@ -128,15 +128,15 @@ The `options` object passed to `createMiddleware` should take the following shap
 
 See the following modules within [`bloggur`](https://github.com/loggur/bloggur):
 
-  - [`providers/entries.js`](https://github.com/loggur/bloggur/blob/master/providers/entries.js) - A `combinedProvider` that depends on the current `windowPath`.
+  - [`providers/entries.js`](https://github.com/loggur/bloggur/blob/master/src/providers/entries.js) - A `combinedProvider` that depends on the current `windowPath`.
 
-  - [`server.development.js`](https://github.com/loggur/bloggur/blob/master/server.development.js) - Passing hot reloadable middleware to `express`.
+  - [`server.development.js`](https://github.com/loggur/bloggur/blob/master/src/server.development.js) - Passing hot reloadable middleware to `express`.
 
-  - [`server.production.js`](https://github.com/loggur/bloggur/blob/master/server.production.js) - Passing production-ready, bundled middleware to `express`.
+  - [`server.production.js`](https://github.com/loggur/bloggur/blob/master/src/server.production.js) - Passing production-ready, bundled middleware to `express`.
 
-  - [`middleware.js`](https://github.com/loggur/bloggur/blob/master/middleware.js) - Using `createMiddleware` to create middleware specific to the app.
+  - [`middleware.js`](https://github.com/loggur/bloggur/blob/master/src/middleware.js) - Using `createMiddleware` to create middleware specific to the app.
 
-  - [`components/EntryContents.js`](https://github.com/loggur/bloggur/blob/master/components/EntryContents.js) - A component that renders different components based on `reducers` from the `entries` provider and sets the `documentTitle` and `statusCode` accordingly.
+  - [`components/EntryContents.js`](https://github.com/loggur/bloggur/blob/master/src/components/EntryContents.js) - A component that renders different components based on `reducers` from the `entries` provider and sets the `documentTitle` and `statusCode` accordingly.
 
   - [`components/EntryCreator.js`](https://github.com/loggur/bloggur/blob/master/src/components/EntryCreator.js) - A component that triggers an action to create an entry on both the client and the server using the `Form` component.
 
