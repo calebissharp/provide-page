@@ -17,6 +17,7 @@ export default class Form extends Component {
     target: PropTypes.string,
     formId: PropTypes.string,
     formData: PropTypes.object,
+    submitForm: PropTypes.func.isRequired,
     children: PropTypes.any,
     ...eventsPropTypes
   };
@@ -33,47 +34,38 @@ export default class Form extends Component {
     }
   }
 
-  render() {
-    const { formId, onSubmit } = this.props;
-    const formProps = {
-      ...this.props,
-      onSubmit: event => {
-        const { elements } = this.refs.form;
-        const formData = {};
+  onSubmit = event => {
+    const { submitForm, onSubmit } = this.props;
+    const { elements } = this.refs.form;
+    const formData = {};
 
-        for (let element of elements) {
-          if (element.name) {
-            if (!element.value && element.innerText) {
-              formData[element.name] = element.innerText;
-            } else {
-              formData[element.name] = element.value;
-            }
-          }
-        }
-
-        if (event.stopPropagation) {
-          const xhr = new XMLHttpRequest();
-          const { pathname, search } = window.location;
-          const contentType = 'application/json;charset=UTF-8';
-          const accept = 'application/json';
-
-          xhr.open('POST', pathname + search, true);
-          xhr.setRequestHeader('Content-Type', contentType);
-          xhr.setRequestHeader('Accept', accept);
-          /* TODO: merge response into stores
-          xhr.onload = () => {
-            console.log(xhr.response);
-          };*/
-          xhr.send(JSON.stringify(formData));
-
-          event.stopPropagation();
-          event.preventDefault();
-        }
-
-        if (onSubmit) {
-          onSubmit(event, formData);
+    for (let element of elements) {
+      if (element.name) {
+        if (!element.value && element.innerText) {
+          formData[element.name] = element.innerText;
+        } else {
+          formData[element.name] = element.value;
         }
       }
+    }
+
+    if (event.stopPropagation) {
+      event.stopPropagation();
+      event.preventDefault();
+
+      submitForm(formData);
+    }
+
+    if (onSubmit) {
+      onSubmit(event, formData);
+    }
+  };
+
+  render() {
+    const { formId } = this.props;
+    const formProps = {
+      ...this.props,
+      onSubmit: this.onSubmit
     };
 
     return (

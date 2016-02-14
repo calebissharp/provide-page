@@ -1,3 +1,4 @@
+import thunk from 'redux-thunk';
 import { canUseDOM } from 'exenv';
 
 export Form from './components/Form';
@@ -18,6 +19,7 @@ export const SET_ICON_FILE = 'SET_ICON_FILE';
 export const SET_CSS_FILES = 'SET_CSS_FILES';
 export const SET_JS_FILES = 'SET_JS_FILES';
 export const SUBMIT_REQUEST = 'SUBMIT_REQUEST';
+export const SUBMITTED_FORM = 'SUBMITTED_FORM';
 
 const _noRender = true;
 const splitPath = path => path.replace(/^\//, '').split('/');
@@ -71,6 +73,26 @@ const actions = {
 
   submitRequest(requestBody = {}, requestMethod = 'POST', acceptJson = true) {
     return { type: SUBMIT_REQUEST, requestBody, requestMethod, acceptJson };
+  },
+
+  submitForm(formData) {
+    const xhr = new XMLHttpRequest();
+    const { pathname, search } = window.location;
+    const contentType = 'application/json;charset=UTF-8';
+    const accept = 'application/json';
+
+    return dispatch => {
+      xhr.open('POST', pathname + search, true);
+      xhr.setRequestHeader('Content-Type', contentType);
+      xhr.setRequestHeader('Accept', accept);
+      xhr.onload = () => {
+        const { response } = xhr;
+
+        dispatch({ type: SUBMITTED_FORM, formData, response });
+        // TODO: merge response into stores
+      };
+      xhr.send(JSON.stringify(formData));
+    };
   }
 };
 
@@ -261,4 +283,6 @@ const enhancer = next => (reducer, initialState) => {
   return store;
 };
 
-export default { actions, reducers, merge, enhancer };
+const middleware = thunk;
+
+export default { actions, reducers, merge, middleware, enhancer };
