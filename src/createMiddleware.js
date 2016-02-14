@@ -15,9 +15,11 @@ export default function createMiddleware ({
     let {
       originalUrl: windowPath,
       method: requestMethod,
-      body: requestBody
+      body: requestBody,
+      headers: requestHeaders
     } = request;
-    let acceptJson = request.headers.accept.indexOf('json') > -1;
+    let accept = requestHeaders && requestHeaders.accept;
+    let acceptJson = accept && accept.indexOf('json') > -1;
 
     if (typeof requestBody === 'undefined') {
       console.warn('Server needs to use `body-parser` or something like it!');
