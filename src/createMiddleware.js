@@ -27,13 +27,19 @@ export default function createMiddleware ({
 
     try {
       let stores = null;
-      let thunks = null;
+      let semaphore = null;
+      const clear = () => {
+        if (--semaphore === 0) {
+          respondOrRerender();
+        }
+      };
+      let initialized = false;
       let rerender = null;
       let renders = 0;
-      let html = null;
       let mergedStates = null;
       let providedState = null;
       let clientState = null;
+      let html = null;
       let redirectStatus = 0;
       let responded = false;
       let responseTimeout = maxResponseTime
@@ -56,47 +62,53 @@ export default function createMiddleware ({
           }
 
           const newDispatch = action => {
-            thunks--;
             dispatch(action);
-            respondOrRerender();
+            clear();
           };
 
-          thunks++;
+          semaphore++;
           return action(newDispatch, getState);
         };
       });
 
       const renderState = () => {
+        if (stores) {
+          mergedStates = mergeStoresStates()(stores);
+        }
         stores = {};
-        thunks = 0;
-        rerender = false;
-        renders++;
+        semaphore = 1;
+
+        if (initialized) {
+          rerender = false;
+          renders++;
+        } else {
+          rerender = true;
+        }
+
         html = renderToString({
           ...defaultProps,
           providers,
           providedState: {
-            ...(defaultProps.providedState || {}),
+            ...(mergedStates || defaultProps.providedState || {}),
             windowPath,
-            requestMethod,
-            requestBody,
+            requestMethod: initialized ? requestMethod : 'GET',
+            requestBody: initialized ? requestBody : {},
             acceptJson
           },
           providerReady: [
             ...(defaultProps.providerReady || []),
             ({ name, store }) => {
               stores[name] = store;
+
+              if (store.onReady) {
+                semaphore++;
+                store.onReady(clear);
+              }
             }
           ]
         });
-        mergedStates = mergeStoresStates()(stores);
-        providedState = typeof getProvidedState === 'object'
-          ? selectKeys(getProvidedState, mergedStates)
-          : getProvidedState(mergedStates);
-        clientState = typeof getClientState === 'object'
-          ? selectKeys(getClientState, providedState)
-          : getClientState(providedState);
 
-        respondOrRerender();
+        clear();
       };
 
       const respondOrRerender = () => {
@@ -108,9 +120,14 @@ export default function createMiddleware ({
 
         if (renders === maxRenders || !rerender) {
           respond();
-        } else if (thunks === 0) {
-          requestMethod = 'GET';
-          requestBody = {};
+        } else if (semaphore === 0) {
+          if (initialized) {
+            requestMethod = 'GET';
+            requestBody = {};
+          } else {
+            initialized = true;
+          }
+
           setTimeout(renderState, 1);
         }
       };
@@ -124,6 +141,14 @@ export default function createMiddleware ({
         if (responded) {
           return;
         }
+
+        mergedStates = mergeStoresStates()(stores);
+        providedState = typeof getProvidedState === 'object'
+          ? selectKeys(getProvidedState, mergedStates)
+          : getProvidedState(mergedStates);
+        clientState = typeof getClientState === 'object'
+          ? selectKeys(getClientState, providedState)
+          : getClientState(providedState);
 
         const { headers, statusCode } = providedState;
         let documentString = null;
