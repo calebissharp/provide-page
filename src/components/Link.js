@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
+import provide from 'react-redux-provide';
 
-export default class Link extends Component {
+class Link extends Component {
   static propTypes = {
     href: PropTypes.string,
     onClick: PropTypes.func,
@@ -29,3 +30,5 @@ export default class Link extends Component {
     );
   }
 }
+
+export default provide(Link);

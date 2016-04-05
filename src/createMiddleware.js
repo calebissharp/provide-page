@@ -152,7 +152,7 @@ export default function createMiddleware ({
         let states = {};
         let clientStates = states;
 
-        for (let key of providerInstances) {
+        for (let key in providerInstances) {
           states[key] = providerInstances[key].store.getState();
         }
 
