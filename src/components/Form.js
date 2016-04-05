@@ -1,25 +1,13 @@
 import React, { Component, PropTypes } from 'react';
-import provide from 'react-redux-provide';
-import eventsPropTypes from '../eventsPropTypes';
 
-@provide
 export default class Form extends Component {
   static propTypes = {
-    className: PropTypes.string,
-    acceptCharset: PropTypes.string,
-    action: PropTypes.string,
-    autocomplete: PropTypes.string,
-    enctype: PropTypes.string,
-    id: PropTypes.string,
     method: PropTypes.string,
-    name: PropTypes.string,
-    novalidate: PropTypes.string,
-    target: PropTypes.string,
     formId: PropTypes.string,
     formData: PropTypes.object,
     submitForm: PropTypes.func.isRequired,
-    children: PropTypes.any,
-    ...eventsPropTypes
+    onSubmit: PropTypes.func,
+    children: PropTypes.any
   };
 
   static defaultProps = {

@@ -1,13 +1,12 @@
-import { unshiftMiddleware } from 'react-redux-provide';
-import { selectKeys, mergeStoresStates } from 'redux-replicate';
+import { unshiftMiddleware, pushOnReady } from 'react-redux-provide';
 import defaultRenderDocumentToString from './defaultRenderDocumentToString';
 
 export default function createMiddleware ({
   defaultProps,
   renderToString,
   renderDocumentToString = defaultRenderDocumentToString,
-  getProvidedState = mergedStates => mergedStates,
-  getClientState = providedState => providedState,
+  getStates,
+  getClientStates,
   maxRenders = 2,
   maxResponseTime = 2000
 }) {
@@ -16,6 +15,7 @@ export default function createMiddleware ({
       originalUrl: windowPath,
       method: requestMethod,
       body: requestBody,
+      session: requestSession,
       headers: requestHeaders
     } = request;
     let accept = requestHeaders && requestHeaders.accept;
@@ -26,32 +26,34 @@ export default function createMiddleware ({
     }
 
     try {
-      let stores = null;
-      let semaphore = null;
-      const clear = () => {
-        if (--semaphore === 0) {
-          respondOrRerender();
-        }
-      };
+      const { providers: defaultProviders } = defaultProps;
+      let providers = {};
+      let providerInstances = {};
       let initialized = false;
       let rerender = null;
       let renders = 0;
-      let mergedStates = null;
-      let providedState = null;
-      let clientState = null;
+
       let html = null;
       let redirectStatus = 0;
       let responded = false;
       let responseTimeout = maxResponseTime
         ? setTimeout(send408Status, maxResponseTime)
         : null;
-      const providers = {};
 
-      for (let name in defaultProps.providers) {
-        providers[name] = { ...defaultProps.providers[name] };
+      let semaphore = null;
+      function clear() {
+        if (--semaphore === 0) {
+          respondOrRerender();
+        }
+      };
+
+      for (let key in defaultProviders) {
+        providers[key] = { ...defaultProviders[key] };
       }
 
       unshiftMiddleware(providers, ({ dispatch, getState }) => {
+        semaphore++;      // store initializing... wait for `onReady`
+
         return next => action => {
           if (!rerender && !action._noRender) {
             rerender = true;
@@ -61,23 +63,49 @@ export default function createMiddleware ({
             return next(action);
           }
 
-          const newDispatch = action => {
-            dispatch(action);
-            clear();
-          };
+          semaphore++;    // async action dispatching... wait for `dispatch`
 
-          semaphore++;
-          return action(newDispatch, getState);
+          return action(
+            action => {
+              dispatch(action);
+              clear();    // async action disaptched
+            },
+            getState
+          );
         };
       });
 
-      const renderState = () => {
-        if (stores) {
-          mergedStates = mergeStoresStates()(stores);
-        }
-        stores = {};
+      pushOnReady(providers, providerInstance => {
+        providerInstances[providerInstance.key] = providerInstance;
+        clear();          // store initialized
+      });
+
+      renderState();
+
+      function renderState() {
+        providers = {
+          ...providers,
+          page: {
+            ...providers.page,
+            state: {
+              ...providers.page.state,
+              windowPath,
+              requestMethod: initialized ? requestMethod : 'GET',
+              requestBody: initialized ? requestBody : {},
+              requestSession,
+              acceptJson
+            }
+          }
+        };
+
         semaphore = 1;
 
+        html = renderToString({
+          ...defaultProps,
+          providers,
+          providerInstances
+        });
+        
         if (initialized) {
           rerender = false;
           renders++;
@@ -85,34 +113,13 @@ export default function createMiddleware ({
           rerender = true;
         }
 
-        html = renderToString({
-          ...defaultProps,
-          providers,
-          providedState: {
-            ...(mergedStates || defaultProps.providedState || {}),
-            windowPath,
-            requestMethod: initialized ? requestMethod : 'GET',
-            requestBody: initialized ? requestBody : {},
-            acceptJson
-          },
-          providerReady: [
-            ...(defaultProps.providerReady || []),
-            ({ name, store }) => {
-              stores[name] = store;
-
-              if (store.onReady) {
-                semaphore++;
-                store.onReady(clear);
-              }
-            }
-          ]
-        });
-
         clear();
-      };
+      }
 
-      const respondOrRerender = () => {
-        const { windowPath: nextWindowPath } = stores.page.getState();
+      function respondOrRerender() {
+        const { page } = providerInstances;
+        const { windowPath: nextWindowPath } = page.store.getState();
+
         if (nextWindowPath !== windowPath) {
           windowPath = nextWindowPath;
           redirectStatus = 303;
@@ -128,11 +135,11 @@ export default function createMiddleware ({
             initialized = true;
           }
 
-          setTimeout(renderState, 1);
+          renderState();
         }
-      };
+      }
 
-      const respond = () => {
+      function respond() {
         if (responseTimeout) {
           clearTimeout(responseTimeout);
           responseTimeout = null;
@@ -142,15 +149,22 @@ export default function createMiddleware ({
           return;
         }
 
-        mergedStates = mergeStoresStates()(stores);
-        providedState = typeof getProvidedState === 'object'
-          ? selectKeys(getProvidedState, mergedStates)
-          : getProvidedState(mergedStates);
-        clientState = typeof getClientState === 'object'
-          ? selectKeys(getClientState, providedState)
-          : getClientState(providedState);
+        let states = {};
+        let clientStates = states;
 
-        const { headers, statusCode } = providedState;
+        for (let key of providerInstances) {
+          states[key] = providerInstances[key].store.getState();
+        }
+
+        if (getStates) {
+          states = getStates(states);
+        }
+
+        if (getClientStates) {
+          clientStates = getClientStates(states);
+        }
+
+        const { headers, statusCode } = states.page;
         let documentString = null;
 
         if (headers) {
@@ -159,15 +173,15 @@ export default function createMiddleware ({
 
         if (acceptJson) {
           if (statusCode) {
-            response.status(statusCode).send(clientState);
+            response.status(statusCode).send(clientStates);
           } else {
-            response.send(clientState);
+            response.send(clientStates);
           }
         } else if (redirectStatus) {
           response.redirect(redirectStatus, windowPath);
         } else if (html) {
           documentString = renderDocumentToString(
-            html, providedState, clientState
+            html, states, clientStates
           );
 
           if (statusCode) {
@@ -180,15 +194,13 @@ export default function createMiddleware ({
         }
 
         responded = true;
-      };
+      }
 
-      const send408Status = () => {
+      function send408Status() {
         responseTimeout = null;
         response.sendStatus(408);
         responded = true;
       };
-
-      renderState();
     } catch (error) {
       console.error(error.stack);
       response.sendStatus(500);

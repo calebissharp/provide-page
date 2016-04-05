@@ -1,21 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import provide from 'react-redux-provide';
-import eventsPropTypes from '../eventsPropTypes';
 
-@provide
 export default class Link extends Component {
   static propTypes = {
-    className: PropTypes.string,
     href: PropTypes.string,
-    hrefLang: PropTypes.string,
-    media: PropTypes.string,
-    type: PropTypes.string,
-    id: PropTypes.string,
-    rel: PropTypes.string,
-    target: PropTypes.string,
-    children: PropTypes.any,
+    onClick: PropTypes.func,
     pushWindowPath: PropTypes.func.isRequired,
-    ...eventsPropTypes
+    children: PropTypes.any
   };
 
   render() {

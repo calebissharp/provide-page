@@ -6,7 +6,6 @@ export Link from './components/Link';
 
 export createMiddleware from './createMiddleware';
 export defaultRenderDocumentToString from './defaultRenderDocumentToString';
-export eventsPropTypes from './eventsPropTypes';
 
 export const PUSH_WINDOW_PATH = 'PUSH_WINDOW_PATH';
 export const REPLACE_WINDOW_PATH = 'REPLACE_WINDOW_PATH';
@@ -71,8 +70,19 @@ const actions = {
     return { type: SET_JS_FILES, jsFiles, _noRender };
   },
 
-  submitRequest(requestBody = {}, requestMethod = 'POST', acceptJson = true) {
-    return { type: SUBMIT_REQUEST, requestBody, requestMethod, acceptJson };
+  submitRequest(
+    requestBody = {},
+    requestSession = {},
+    requestMethod = 'POST',
+    acceptJson = true
+  ) {
+    return {
+      type: SUBMIT_REQUEST,
+      requestBody,
+      requestSession,
+      requestMethod,
+      acceptJson
+    };
   },
 
   submitForm(formData) {
@@ -227,6 +237,16 @@ const reducers = {
     }
   },
 
+  requestSession(state = null, action) {
+    switch (action.type) {
+      case SUBMIT_REQUEST:
+        return action.requestSession;
+
+      default:
+        return state;
+    }
+  },
+
   requestMethod(state = null, action) {
     switch (action.type) {
       case SUBMIT_REQUEST:
@@ -248,19 +268,19 @@ const reducers = {
   }
 };
 
-const merge = (stateProps, dispatchProps, parentProps) => {
-  const { requestBody } = stateProps;
-
-  return {
-    ...parentProps,
-    formData: requestBody && requestBody._formId === parentProps.formId
-      ? requestBody
-      : null
-  };
+const merge = {
+  formData: {
+    keys: ['requestBody'],
+    get({ requestBody }, { formId }) {
+      return requestBody && requestBody._formId === formId
+        ? requestBody
+        : null;
+    }
+  }
 };
 
-const enhancer = next => (reducer, initialState) => {
-  const store = next(reducer, initialState);
+const enhancer = next => (reducer, initialState, enhancer) => {
+  const store = next(reducer, initialState, enhancer);
 
   if (canUseDOM) {
     store.dispatch(actions.replaceWindowPath(window.location.pathname));

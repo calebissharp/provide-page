@@ -4,33 +4,38 @@ import React, { PropTypes } from 'react';
 import { Simulate } from 'react-addons-test-utils';
 import { renderTest } from 'react-redux-provide-test-utils';
 import { Test } from './components/index';
-import providers from './providers/index';
+import { page, list } from './providers/index';
 import {
   Form, Link, createMiddleware, defaultRenderDocumentToString
 } from '../src/index';
 
-const props = {
-  providers,
-  providedState: {
-    list: [
-      {
-        href: '/test-one',
-        children: 'Test One'
-      },
-      {
-        href: '/test-two',
-        children: 'Test Two'
-      },
-      {
-        href: '/test-three',
-        children: 'Test Three'
+const defaultProps = {
+  providers: {
+    page,
+    list: {
+      ...list,
+      state: {
+        list: [
+          {
+            href: '/test-one',
+            children: 'Test One'
+          },
+          {
+            href: '/test-two',
+            children: 'Test Two'
+          },
+          {
+            href: '/test-three',
+            children: 'Test Three'
+          }
+        ]
       }
-    ]
+    }
   }
 };
 
 const host = 'http://localhost:8080';
-const test = renderTest(Test, { ...props });
+const test = renderTest(Test, { ...defaultProps });
 
 // need manually trigger popstate event in simulated env
 function triggerPopstate() {
@@ -155,7 +160,7 @@ describe('provide-page', () => {
         html.indexOf('<!DOCTYPE html>') === 0
         && html.indexOf('<title>Page</title>') > -1
         && html.indexOf('<div id="root"><b>oo</b></div>') > -1
-        && html.indexOf('window.clientState = {}') > -1
+        && html.indexOf('window.clientStates = {}') > -1
         && html.indexOf('</html>') > -1
       ).toBe(true);
     });

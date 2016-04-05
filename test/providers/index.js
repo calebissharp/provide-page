@@ -1,7 +1,7 @@
 import list from './list';
 import page from './page';
 
-export default {
+export {
   list,
   page
 };

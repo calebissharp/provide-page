@@ -1,4 +1,4 @@
-const defaultRenderDocumentToString = (html, providedState, clientState) => {
+const defaultRenderDocumentToString = (html, states, clientStates) => {
   const {
     documentTitle = `Page`,
     metaDescription = `Built with provide-page.`,
@@ -6,7 +6,7 @@ const defaultRenderDocumentToString = (html, providedState, clientState) => {
     iconFile = `/static/favicon.ico`,
     cssFiles = [],
     jsFiles = []
-  } = providedState;
+  } = states.page || {};
 
   return (
     `<!DOCTYPE html>`
@@ -26,7 +26,7 @@ const defaultRenderDocumentToString = (html, providedState, clientState) => {
     + `<body>`
     + `<div id="root">${html}</div>`
     + `<script>`
-    + `window.clientState = ${JSON.stringify(clientState)};`
+    + `window.clientStates = ${JSON.stringify(clientStates)};`
     + `</script>`
     + jsFiles.map(jsFile => (
       `<script src="${jsFile}"></script>`
