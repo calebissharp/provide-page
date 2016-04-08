@@ -25,7 +25,7 @@ class Form extends Component {
 
   onSubmit = event => {
     const { submitForm, onSubmit } = this.props;
-    const { elements } = this.refs.form;
+    const elements = Array.prototype.slice.call(this.refs.form.elements);
     const formData = {};
 
     for (let element of elements) {

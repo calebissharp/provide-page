@@ -150,7 +150,7 @@ export default function createMiddleware ({
         }
 
         let states = {};
-        let clientStates = states;
+        let clientStates;
 
         for (let key in providerInstances) {
           states[key] = providerInstances[key].store.getState();
@@ -162,6 +162,8 @@ export default function createMiddleware ({
 
         if (getClientStates) {
           clientStates = getClientStates(states);
+        } else {
+          clientStates = states;
         }
 
         const { headers, statusCode } = states.page;

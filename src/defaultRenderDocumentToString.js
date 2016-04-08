@@ -1,4 +1,4 @@
-const defaultRenderDocumentToString = (html, states, clientStates) => {
+function defaultRenderDocumentToString(html, states, clientStates) {
   const {
     documentTitle = `Page`,
     metaDescription = `Built with provide-page.`,
@@ -34,6 +34,6 @@ const defaultRenderDocumentToString = (html, states, clientStates) => {
     + `</body>`
     + `</html>`
   );
-};
+}
 
 export default defaultRenderDocumentToString;
