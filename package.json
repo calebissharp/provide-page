@@ -1,6 +1,6 @@
 {
   "name": "provide-page",
-  "version": "1.0.0-rc.2",
+  "version": "1.0.0-rc.3",
   "description": "Provides routing, automatic server-side rendering, and automatic server-side actions to React components.  Use this with `react-redux-provide` as a simpler alternative to `react-router`.",
   "main": "./lib/index.js",
   "scripts": {
