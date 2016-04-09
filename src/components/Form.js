@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import provide from 'react-redux-provide';
 
-class Form extends Component {
+export default class Form extends Component {
   static propTypes = {
     method: PropTypes.string,
     formId: PropTypes.string,
@@ -66,5 +65,3 @@ class Form extends Component {
     );
   }
 }
-
-export default provide(Form);

@@ -1,4 +1,5 @@
-import { unshiftMiddleware, pushOnReady } from 'react-redux-provide';
+import { unshiftMiddleware } from 'react-redux-provide';
+import { pushOnInstantiated, pushOnReady } from 'react-redux-provide';
 import defaultRenderDocumentToString from './defaultRenderDocumentToString';
 
 export default function createMiddleware ({
@@ -51,9 +52,14 @@ export default function createMiddleware ({
         providers[key] = { ...defaultProviders[key] };
       }
 
-      unshiftMiddleware(providers, ({ dispatch, getState }) => {
-        semaphore++;      // store initializing... wait for `onReady`
+      providers.page.state = {
+        ...providers.page.state,
+        windowPath,
+        requestSession,
+        acceptJson
+      };
 
+      unshiftMiddleware(providers, ({ dispatch, getState }) => {
         return next => action => {
           if (!rerender && !action._noRender) {
             rerender = true;
@@ -63,41 +69,28 @@ export default function createMiddleware ({
             return next(action);
           }
 
-          semaphore++;    // async action dispatching... wait for `dispatch`
+          semaphore++;    // action dispatching...
 
           return action(
             action => {
               dispatch(action);
-              clear();    // async action disaptched
+              clear();    // action dispatched
             },
             getState
           );
         };
       });
 
-      pushOnReady(providers, providerInstance => {
+      pushOnInstantiated(providers, providerInstance => {
         providerInstances[providerInstance.key] = providerInstance;
-        clear();          // store initialized
+        semaphore++;                  // store initializing...
       });
+
+      pushOnReady(providers, clear);  // store initialized
 
       renderState();
 
       function renderState() {
-        providers = {
-          ...providers,
-          page: {
-            ...providers.page,
-            state: {
-              ...providers.page.state,
-              windowPath,
-              requestMethod: initialized ? requestMethod : 'GET',
-              requestBody: initialized ? requestBody : {},
-              requestSession,
-              acceptJson
-            }
-          }
-        };
-
         semaphore = 1;
 
         html = renderToString({
@@ -105,7 +98,7 @@ export default function createMiddleware ({
           providers,
           providerInstances
         });
-        
+
         if (initialized) {
           rerender = false;
           renders++;
@@ -133,6 +126,11 @@ export default function createMiddleware ({
             requestBody = {};
           } else {
             initialized = true;
+            delete providerInstances.page;
+            Object.assign(providers.page.state, {
+              requestMethod,
+              requestBody
+            });
           }
 
           renderState();
