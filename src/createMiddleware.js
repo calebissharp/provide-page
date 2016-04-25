@@ -1,19 +1,20 @@
 import { unshiftMiddleware } from 'react-redux-provide';
 import { pushOnInstantiated, pushOnReady } from 'react-redux-provide';
 import defaultRenderDocumentToString from './defaultRenderDocumentToString';
+import provideRouter from 'provide-router';
+import { createMemoryHistory } from 'react-router';
 
 export default function createMiddleware ({
   defaultProps,
   renderToString,
   renderDocumentToString = defaultRenderDocumentToString,
   getStates,
-  getClientStates,
   maxRenders = 2,
   maxResponseTime = 2000
 }) {
   return (request, response, next) => {
     let {
-      originalUrl: windowPath,
+      originalUrl: requestUrl,
       method: requestMethod,
       body: requestBody,
       session: requestSession,
@@ -54,10 +55,20 @@ export default function createMiddleware ({
 
       providers.page.state = {
         ...providers.page.state,
-        windowPath,
         requestSession,
         acceptJson
       };
+
+      if (!providers.router) {
+        providers.router = provideRouter(createMemoryHistory(requestUrl));
+      }
+
+      if (!providers.page.clientStateKeys) {
+        providers.page.clientStateKeys = [];
+      }
+      if (!providers.router.clientStateKeys) {
+        providers.router.clientStateKeys = [];
+      }
 
       unshiftMiddleware(providers, ({ dispatch, getState }) => {
         return next => action => {
@@ -110,11 +121,12 @@ export default function createMiddleware ({
       }
 
       function respondOrRerender() {
-        const { page } = providerInstances;
-        const { windowPath: nextWindowPath } = page.store.getState();
+        const { router } = providerInstances;
+        const { routing } = router.store.getState();
+        const { locationBeforeTransitions: location } = routing;
 
-        if (nextWindowPath !== windowPath) {
-          windowPath = nextWindowPath;
+        if (location.pathname !== requestUrl) {
+          requestUrl = location.pathname;
           redirectStatus = 303;
         }
 
@@ -149,19 +161,35 @@ export default function createMiddleware ({
 
         let states = {};
         let clientStates;
+        const clientStatesKeys = {};
 
         for (let key in providerInstances) {
-          states[key] = providerInstances[key].store.getState();
+          let providerInstance = providerInstances[key];
+
+          states[key] = providerInstance.store.getState();
+
+          if (providerInstance.clientStateKeys) {
+            clientStatesKeys[key] = providerInstance.clientStateKeys;
+          }
         }
 
         if (getStates) {
           states = getStates(states);
         }
 
-        if (getClientStates) {
-          clientStates = getClientStates(states);
-        } else {
-          clientStates = states;
+        clientStates = { ...states };
+
+        for (let key in clientStatesKeys) {
+          let clientState = clientStates[key];
+          let clientStateKeys = clientStatesKeys[key];
+
+          if (clientState) {
+            clientStates[key] = {};
+
+            for (let clientStateKey of clientStateKeys) {
+              clientStates[key][clientStateKey] = clientState[clientStateKey];
+            }
+          }
         }
 
         const { headers, statusCode } = states.page;
@@ -178,11 +206,9 @@ export default function createMiddleware ({
             response.send(clientStates);
           }
         } else if (redirectStatus) {
-          response.redirect(redirectStatus, windowPath);
+          response.redirect(redirectStatus, requestUrl);
         } else if (html) {
-          documentString = renderDocumentToString(
-            html, states, clientStates
-          );
+          documentString = renderDocumentToString(html, states, clientStates);
 
           if (statusCode) {
             response.status(statusCode).send(documentString);

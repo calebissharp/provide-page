@@ -3,7 +3,7 @@
 [![build status](https://img.shields.io/travis/loggur/provide-page/master.svg?style=flat-square)](https://travis-ci.org/loggur/provide-page) [![npm version](https://img.shields.io/npm/v/provide-page.svg?style=flat-square)](https://www.npmjs.com/package/provide-page)
 [![npm downloads](https://img.shields.io/npm/dm/provide-page.svg?style=flat-square)](https://www.npmjs.com/package/provide-page)
 
-Provides routing, automatic server-side rendering, and automatic server-side actions to React components.  Use this with [`react-redux-provide`](https://github.com/loggur/react-redux-provide) as a simpler alternative to `react-router`.
+Provides automatic server-side rendering and actions (regardless of whether or not client has JavaScript enabled) to React components.  Use in conjunction with [`provide-router`](https://github.com/loggur/provide-router).
 
 
 ## Table of contents
@@ -13,9 +13,7 @@ Provides routing, automatic server-side rendering, and automatic server-side act
 3.  [Reducers](#reducers)
 4.  [Components](#components)
 5.  [Middleware](#middleware)
-6.  [Notes](#notes)
-7.  [Example](#example)
-8.  [Migration from `react-router`](#migration-from-react-router)
+6.  [Example](#example)
 
 
 ## Installation
@@ -27,17 +25,7 @@ npm install provide-page --save
 
 ## Actions
 
-You can use the following `actions` via `propTypes` to manage the state of the document both client-side and server-side.
-
-### pushWindowPath (String windowPath)
-
-Uses `window.history.pushState` under the hood.  If this is called server-side, clients with JS disabled will be redirected to the new path.
-
-### replaceWindowPath (String windowPath)
-
-Uses `window.history.replaceState` under the hood.  If this is called server-side, clients with JS disabled will be redirected to the new path.
-
-> You should typically only call the remaining `actions` below within `componentWillMount` and `componentWillReceiveProps`.  See [`test/components/Test.js`](https://github.com/loggur/provide-page/blob/master/test/components/Test.js) for an example.
+You can use the following `actions` via `propTypes` to manage the state of the document both client-side and server-side.  You should typically only call these `actions` within `componentWillMount` and `componentWillReceiveProps`.  See [`test/components/Test.js`](https://github.com/loggur/provide-page/blob/master/test/components/Test.js) for an example.
 
 ### setHeaders (Object headers)
 
@@ -73,20 +61,12 @@ Sets the JS filenames to be included with the document as `script` elements appe
 
 ### submitRequest (Object requestBody, String requestMethod, Boolean acceptJson)
 
-This following action is mainly used in conjunction with the `Form` component (see below), but you may trigger it manually if for some reason you need to do that.
+This action is mainly used automatically in conjunction with the `Form` component (see below), but you may trigger it manually if for some reason you need to do that.
 
 
 ## Reducers
 
 Your components may also be provided the following reduced `propTypes`.
-
-### windowPath
-
-Essentially `window.location.pathname`.  On the server this defaults to `express`'s `request.originalUrl` when `createMiddleware` is used (see below).
-
-### splitWindowPath
-
-Basically `windowPath.split('/')`, shifted since the first item is always empty.  So for example, when your `windowPath` is `/foo/bar`, this will be `['foo', 'bar']`.  This exists as a convenience to reduce boilerplate when rendering your routes.
 
 ### headers
 
@@ -139,10 +119,6 @@ Derived from `requestBody` and matching `requestBody._formId` to the component's
 
 ## Components
 
-### Link
-
-A simple wrapper around `<a { ...props } />`, which intercepts the click event to prevent a full page reload when JavaScript is enabled and triggers the `pushWindowPath` `action` so the app can be updated accordingly; and of course if JS is disabled, since all your rendering logic depends on your page provider's store's state (using `request.originalUrl` on the server), it all renders exactly the same as it would if JS was enabled client-side.  Simply treat this as you would any other `<a/>` element.
-
 ### Form
 
 A simple wrapper around `<form { ...props } />`.  Combined with `createMiddleware` (see below), it intercepts the `onSubmit` event and allows all of your `actions` to be automatically triggered on the server, whether or not JS is enabled.  If JS is enabled, it will trigger the action on the server via `XMLHttpRequest`.  All you need is a `formId` prop combined with an `onSubmit` prop that accepts `formData` as a second argument.  The `formId` prop should exist within both the `Form` instance and the component instance rendering the form.  See [`bloggur`'s `EntryCreator` component](https://github.com/loggur/bloggur/blob/master/src/components/EntryCreator.js) for a full example.
@@ -154,7 +130,7 @@ A simple wrapper around `<form { ...props } />`.  Combined with `createMiddlewar
 
 Returns a function that can be used as `express` middleware and will do the following for you, server-side:
   
-  - Automatically render the state of the app depending on some `defaultProps` (`{ providers }`), the `request` (`{ originalUrl: windowPath, method: requestMethod, body: requestBody }`), and optional `formData` (see the `Form` component above).
+  - Automatically render the state of the app depending on some `defaultProps` (`{ providers }`), the `request` (`{ method: requestMethod, body: requestBody }`), and optional `formData` (see the `Form` component above).
 
   - Respond with a full document string describing the current page - i.e., headers, status code, title, meta, favicon, js files, and css files - all controlled by your React components.
 
@@ -162,7 +138,7 @@ Returns a function that can be used as `express` middleware and will do the foll
 
   - When used with the `Form` component (above), it will automatically trigger `actions` on the server for clients with JS disabled, or if JS is enabled, the `actions` will be triggered server-side via `XMLHttpRequest` and the updated state of the server's stores will be returned.
 
-  - Automatically redirect clients with JS disabled to a new URL when the `pushWindowPath` or `replaceWindowPath` actions are called.
+  - Automatically redirect clients with JS disabled to a new URL when it changes.
 
   - Automatically optionally send a 408 (timeout) status when a request takes too long.
 
@@ -178,15 +154,13 @@ This function should typically use `react-dom/server`'s `renderToString` method 
 
 ### renderDocumentToString (String html, Object states, Object clientStates)
 
-Optional function that returns the string representation of the entire document.  The `states` and `clientStates` objects come form the `getStates` and `getClientStates` functions below.  See [`defaultRenderDocumentToString.js`](https://github.com/loggur/provide-page/blob/master/src/defaultRenderDocumentToString.js) as an example.
+Optional function that returns the string representation of the entire document.  The `states` and `clientStates` objects come form the `getStates` and `getClientStates` functions below.  See [`defaultRenderDocumentToString.js`](https://github.com/loggur/provide-page/blob/master/src/defaultRenderDocumentToString.js) for an example.
 
 ### getStates
 
 Optional function that should return an object containing provider keys and their states, ultimately passed to both `renderToString` and `renderDocumentToString`.  Your current providers' stores' states will be passed to this function.  See [`bloggur/src/middleware.js`](https://github.com/loggur/bloggur/blob/master/src/middleware.js) for a full example where we concatenate the selected theme's files with the `cssFiles` and `jsFiles` reducers so that they're included as `link` and `script` tags when the document string is rendered.
 
-### getClientStates
-
-Optional function that should return the object to be replicated to the client.  The result of `getStates` is passed to this function.
+**Note:** The middleware will look for a special optional `clientStateKeys` array on each provider which is used for determining which reducer keys (i.e., stores' states) to send to the client upon each request.  The `page` and `router` providers will default to no keys, while every other provider will default to all keys.  See [`bloggur/src/renderAppToString.js`](https://github.com/loggur/bloggur/blob/master/src/renderAppToString.js) for an example.
 
 ### maxRenders
 
@@ -197,20 +171,9 @@ Defaults to 2.  After the first render, the `requestMethod` and `requestBody` re
 Default to 2000 (milliseconds).  Sends a 408 status code if this timeout is reached.  Setting this to 0 will disable it.
 
 
-## Notes
-
-1.  Upon initializing the store, `replaceWindowPath` is automatically called which can be used to properly initialize the state of any other providers who make use of this provider's `REPLACE_WINDOW_PATH` action type.
-
-2.  When navigating through history (i.e., when the `popstate` event is triggered on the `window`), if a `windowPath` is present within the `window.history.state`, the `REPLACE_WINDOW_PATH` action type will be dispatched on top of the `window.history.state` (stored action) to indicate that the `window.location.pathname` has been changed; or if a `documentTitle` is present for some reason, the `SET_DOCUMENT_TITLE` action type will be dispatched instead.
-
-
 ## Example
 
 See the following modules within [`bloggur`](https://github.com/loggur/bloggur):
-
-### [providers/entries.js](https://github.com/loggur/bloggur/blob/master/src/providers/entries.js)
-
-A `combinedProvider` that depends on the current `windowPath`.
 
 ### [server.development.js](https://github.com/loggur/bloggur/blob/master/src/server.development.js)
 
@@ -231,12 +194,3 @@ A component that renders different components based on `reducers` from the `entr
 ### [components/EntryCreator.js](https://github.com/loggur/bloggur/blob/master/src/components/EntryCreator.js)
 
 A component that triggers an action to create an entry on both the client and the server using the `Form` component.
-
-
-## Migration from `react-router`
-
-`react-router` and others like it are all fantastic libraries, but with the `providers` paradigm, there is no reason to use them.  All you have to do is use `provide-page` like you would any other provider and keep your routing logic within your components' `render` methods.  You'll find that things actually get simpler while you'll also have more control and flexibility at the same time.  There's no need to try to put everything within your initial call to `render` when mounting the app, as that can quickly get out of hand for large, complex applications.  All you need is `render(<App providers={providers} etc />)`.
-
-The equivalent of `router.transitionTo` is to provide the `pushWindowPath` and/or `replaceWindowPath` actions to your components and use them wherever necessary.
-
-As for code-splitting, it should be implemented the same way themes are split.  See [`provide-theme`](https://github.com/loggur/provide-theme) for an example of how that's done.  **A code-splitting tutorial using `provide-page` is coming soon!**

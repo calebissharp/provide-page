@@ -2,13 +2,10 @@ import thunk from 'redux-thunk';
 import { canUseDOM } from 'exenv';
 
 export Form from './components/Form';
-export Link from './components/Link';
 
 export createMiddleware from './createMiddleware';
 export defaultRenderDocumentToString from './defaultRenderDocumentToString';
 
-export const PUSH_WINDOW_PATH = 'PUSH_WINDOW_PATH';
-export const REPLACE_WINDOW_PATH = 'REPLACE_WINDOW_PATH';
 export const SET_HEADERS = 'SET_HEADERS';
 export const SET_STATUS_CODE = 'SET_STATUS_CODE';
 export const SET_DOCUMENT_TITLE = 'SET_DOCUMENT_TITLE';
@@ -21,23 +18,8 @@ export const SUBMIT_REQUEST = 'SUBMIT_REQUEST';
 export const SUBMITTED_FORM = 'SUBMITTED_FORM';
 
 const _noRender = true;
-const splitPath = path => path.replace(/^\//, '').split('/');
 
 const actions = {
-  pushWindowPath(windowPath = '') {
-    const windowPathSplit = splitPath(windowPath);
-
-    return { type: PUSH_WINDOW_PATH, windowPath, windowPathSplit, _noRender };
-  },
-
-  replaceWindowPath(windowPath = '') {
-    const windowPathSplit = splitPath(windowPath);
-
-    return {
-      type: REPLACE_WINDOW_PATH, windowPath, windowPathSplit, _noRender
-    };
-  },
-
   setHeaders(headers) {
     return { type: SET_HEADERS, headers, _noRender };
   },
@@ -107,43 +89,6 @@ const actions = {
 };
 
 const reducers = {
-  windowPath(state = canUseDOM && window.location.pathname, action) {
-    switch (action.type) {
-      case PUSH_WINDOW_PATH:
-        if (canUseDOM) {
-          window.history.pushState(
-            action, document.title, action.windowPath
-          );
-        }
-        return action.windowPath;
-
-      case REPLACE_WINDOW_PATH:
-        if (canUseDOM) {
-          window.history.replaceState(
-            action, document.title, action.windowPath
-          );
-        }
-        return action.windowPath;
-
-      default:
-        return state;
-    }
-  },
-
-  splitWindowPath(
-    state = canUseDOM && splitPath(window.location.pathname),
-    action
-  ) {
-    switch (action.type) {
-      case PUSH_WINDOW_PATH:
-      case REPLACE_WINDOW_PATH:
-        return action.windowPathSplit;
-
-      default:
-        return state;
-    }
-  },
-
   headers(state = null, action) {
     switch (action.type) {
       case SET_HEADERS:
@@ -279,30 +224,6 @@ const merge = {
   }
 };
 
-const enhancer = next => (reducer, initialState, enhancer) => {
-  const store = next(reducer, initialState, enhancer);
-
-  if (canUseDOM) {
-    store.dispatch(actions.replaceWindowPath(window.location.pathname));
-
-    window.addEventListener('popstate', (event) => {
-      const action = window.history.state;
-
-      if (action) {
-        if (action.windowPath !== undefined) {
-          store.dispatch({ ...action, type: REPLACE_WINDOW_PATH });
-        } else if (action.documentTitle !== undefined) {
-          store.dispatch({ ...action, type: SET_DOCUMENT_TITLE });
-        }
-      }
-    });
-  } else if (initialState.windowPath || initialState.documentTitle) {
-    store.dispatch(actions.replaceWindowPath(initialState.windowPath));
-  }
-
-  return store;
-};
-
 const middleware = thunk;
 
-export default { actions, reducers, merge, middleware, enhancer };
+export default { actions, reducers, merge, middleware };
