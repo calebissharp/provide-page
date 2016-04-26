@@ -64,7 +64,7 @@ export default function createMiddleware ({
       }
 
       if (!providers.page.clientStateKeys) {
-        providers.page.clientStateKeys = [];
+        providers.page.clientStateKeys = ['requestSession'];
       }
       if (!providers.router.clientStateKeys) {
         providers.router.clientStateKeys = [];
