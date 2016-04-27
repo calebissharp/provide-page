@@ -15,6 +15,7 @@ export const SET_ICON_FILE = 'SET_ICON_FILE';
 export const SET_CSS_FILES = 'SET_CSS_FILES';
 export const SET_JS_FILES = 'SET_JS_FILES';
 export const SUBMIT_REQUEST = 'SUBMIT_REQUEST';
+export const SUBMIT_FORM = 'SUBMIT_FORM';
 export const SUBMITTED_FORM = 'SUBMITTED_FORM';
 
 const _noRender = true;
@@ -74,6 +75,8 @@ const actions = {
     const accept = 'application/json';
 
     return dispatch => {
+      dispatch({ type: SUBMIT_FORM, formData });
+
       xhr.open('POST', pathname + search, true);
       xhr.setRequestHeader('Content-Type', contentType);
       xhr.setRequestHeader('Accept', accept);
@@ -174,6 +177,9 @@ const reducers = {
 
   requestBody(state = null, action) {
     switch (action.type) {
+      case SUBMIT_FORM:
+        return action.formData;
+
       case SUBMIT_REQUEST:
         return action.requestBody;
 
