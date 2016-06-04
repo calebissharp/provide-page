@@ -18,7 +18,7 @@ export default class Form extends Component {
     const { onSubmit, formData } = this.props;
 
     if (formData) {
-      onSubmit(null, formData);
+      formData._formHandled = onSubmit(null, formData) !== false;
     }
   }
 

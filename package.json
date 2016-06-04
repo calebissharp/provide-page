@@ -69,6 +69,6 @@
     "react": "^0.14.0 || ^15.0.0-0",
     "react-redux-provide": "^6.0.0-0",
     "react-router": "^2.3.0",
-    "redux-thunk": "^1.0.3"
+    "redux-thunk": "^2.1.0"
   }
 }

@@ -1,154 +1,121 @@
-import { unshiftMiddleware } from 'react-redux-provide';
-import { pushOnInstantiated, pushOnReady } from 'react-redux-provide';
+import { pushWait, pushClear, unshiftMiddleware } from 'react-redux-provide';
 import defaultRenderDocumentToString from './defaultRenderDocumentToString';
-import provideRouter from 'provide-router';
-import { createMemoryHistory } from 'react-router';
+import getProviders from './getProviders';
+import extractStates from './extractStates';
 
-export default function createMiddleware ({
+export default function createMiddleware({
   defaultProps,
   renderToString,
   renderDocumentToString = defaultRenderDocumentToString,
   getStates,
-  maxRenders = 2,
+  maxRenders = 5,
   maxResponseTime = 2000
 }) {
   return (request, response, next) => {
-    let {
-      originalUrl: requestUrl,
-      method: requestMethod,
-      body: requestBody,
-      session: requestSession,
-      headers: requestHeaders
-    } = request;
-    let accept = requestHeaders && requestHeaders.accept;
-    let acceptJson = accept && accept.indexOf('json') > -1;
+    const bodyType = typeof request.body;
 
-    if (typeof requestBody === 'undefined') {
+    if (bodyType === 'undefined') {
       console.warn('Server needs to use `body-parser` or something like it!');
     }
 
     try {
-      const { providers: defaultProviders } = defaultProps;
-      let providers = {};
-      let providerInstances = {};
-      let initialized = false;
-      let rerender = null;
-      let renders = 0;
+      const providers = getProviders(defaultProps.providers, request);
+      const providerInstances = { ...defaultProps.providerInstances };
+      const providerActiveQueries = { ...defaultProps.providerActiveQueries };
+      const providerQueryResults = { ...defaultProps.providerQueryResults };
 
       let html = null;
-      let redirectStatus = 0;
+      function renderState() {
+        if (responded) {
+          return;
+        }
+
+        waitCount = 1;
+
+        console.log('--- rendering', request.url, `- count: ${renderCount}`);
+        console.log('wait 1');
+        html = renderToString({
+          ...defaultProps,
+          providers,
+          providerInstances,
+          providerActiveQueries,
+          providerQueryResults
+        });
+
+        clear(false);
+      }
+
+      let waitCount = 0;
+      function wait() {
+        waitCount++;
+        console.log('wait', waitCount);
+      }
+      function clear(doRerender) {
+        if (doRerender) {
+          rerender = true;
+        }
+
+        console.log('clear', doRerender, waitCount);
+        if (--waitCount === 0) {
+          respondOrRerender();
+        }
+      }
+
+      let renderCount = 0;
+      let rerender = false;
+      let handledRequest = false;
+      function respondOrRerender() {
+        if (!rerender && !handledRequest) {
+          handledRequest = true;
+          handleRequest();
+        }
+
+        renderCount++;
+
+        if (rerender && renderCount < maxRenders) {
+          rerender = false;
+          renderState();
+        } else {
+          respond();
+        }
+      }
+      function handleRequest() {
+        const { page } = providerInstances;
+        const requestState = {
+          requestMethod: request.method,
+          requestBody: request.body
+        };
+
+        if (!page) {
+          providers.page.state = {
+            ...providers.page.state,
+            ...requestState
+          };
+        } else if (shouldSubmitRequest()) {
+          console.log('submitting request...');
+          page.actionCreators.submitRequest(requestState);
+        }
+      }
+      function shouldSubmitRequest() {
+        if (Array.isArray(request.body)) {
+          return true;
+        }
+
+        if (bodyType === 'object') {
+          return Object.keys(request.body).length > 0;
+        }
+
+        if (bodyType === 'string') {
+          return request.body.length > 0;
+        }
+
+        return Boolean(request.body);
+      }
+
       let responded = false;
       let responseTimeout = maxResponseTime
         ? setTimeout(send408Status, maxResponseTime)
         : null;
-
-      let semaphore = null;
-      function clear() {
-        if (--semaphore === 0) {
-          respondOrRerender();
-        }
-      };
-
-      for (let key in defaultProviders) {
-        providers[key] = { ...defaultProviders[key] };
-      }
-
-      providers.page.state = {
-        ...providers.page.state,
-        requestSession,
-        acceptJson
-      };
-
-      if (!providers.router) {
-        providers.router = provideRouter(createMemoryHistory(requestUrl));
-      }
-
-      if (!providers.page.clientStateKeys) {
-        providers.page.clientStateKeys = ['requestSession'];
-      }
-      if (!providers.router.clientStateKeys) {
-        providers.router.clientStateKeys = [];
-      }
-
-      unshiftMiddleware(providers, ({ dispatch, getState }) => {
-        return next => action => {
-          if (!rerender && !action._noRender) {
-            rerender = true;
-          }
-
-          if (typeof action !== 'function') {
-            return next(action);
-          }
-
-          semaphore++;    // action dispatching...
-
-          return action(
-            action => {
-              dispatch(action);
-              clear();    // action dispatched
-            },
-            getState
-          );
-        };
-      });
-
-      pushOnInstantiated(providers, providerInstance => {
-        providerInstances[providerInstance.key] = providerInstance;
-        semaphore++;                  // store initializing...
-      });
-
-      pushOnReady(providers, clear);  // store initialized
-
-      renderState();
-
-      function renderState() {
-        semaphore = 1;
-
-        html = renderToString({
-          ...defaultProps,
-          providers,
-          providerInstances
-        });
-
-        if (initialized) {
-          rerender = false;
-          renders++;
-        } else {
-          rerender = true;
-        }
-
-        clear();
-      }
-
-      function respondOrRerender() {
-        const { router } = providerInstances;
-        const { routing } = router.store.getState();
-        const { locationBeforeTransitions: location } = routing;
-
-        if (location.pathname !== requestUrl) {
-          requestUrl = location.pathname;
-          redirectStatus = 303;
-        }
-
-        if (renders === maxRenders || !rerender) {
-          respond();
-        } else if (semaphore === 0) {
-          if (initialized) {
-            requestMethod = 'GET';
-            requestBody = {};
-          } else {
-            initialized = true;
-            delete providerInstances.page;
-            Object.assign(providers.page.state, {
-              requestMethod,
-              requestBody
-            });
-          }
-
-          renderState();
-        }
-      }
-
       function respond() {
         if (responseTimeout) {
           clearTimeout(responseTimeout);
@@ -159,40 +126,10 @@ export default function createMiddleware ({
           return;
         }
 
-        let states = {};
-        let clientStates;
-        const clientStatesKeys = {};
-
-        for (let key in providerInstances) {
-          let providerInstance = providerInstances[key];
-
-          states[key] = providerInstance.store.getState();
-
-          if (providerInstance.clientStateKeys) {
-            clientStatesKeys[key] = providerInstance.clientStateKeys;
-          }
-        }
-
-        if (getStates) {
-          states = getStates(states);
-        }
-
-        clientStates = { ...states };
-
-        for (let key in clientStatesKeys) {
-          let clientState = clientStates[key];
-          let clientStateKeys = clientStatesKeys[key];
-
-          if (clientState) {
-            clientStates[key] = {};
-
-            for (let clientStateKey of clientStateKeys) {
-              clientStates[key][clientStateKey] = clientState[clientStateKey];
-            }
-          }
-        }
-
-        const { headers, statusCode } = states.page;
+        const { states, clientStates } = extractStates(
+          providerInstances, getStates
+        );
+        const { headers, acceptJson, statusCode } = states.page || {};
         let documentString = null;
 
         if (headers) {
@@ -205,9 +142,7 @@ export default function createMiddleware ({
           } else {
             response.send(clientStates);
           }
-        } else if (redirectStatus) {
-          response.redirect(redirectStatus, requestUrl);
-        } else if (html) {
+        } else if (!redirect() && html) {
           documentString = renderDocumentToString(html, states, clientStates);
 
           if (statusCode) {
@@ -220,13 +155,46 @@ export default function createMiddleware ({
         }
 
         responded = true;
+        console.log('!!! responded to', request.url);
+        console.log('');
+        console.log('');
+        console.log('');
+        console.log('');
+      }
+
+      function redirect() {
+        const { router } = providerInstances;
+        const { routing } = router.store.getState();
+        const { locationBeforeTransitions: location } = routing;
+
+        if (location.pathname !== request.originalUrl) {
+          response.redirect(303, location.pathname);
+          return true;
+        }
+
+        return false;
       }
 
       function send408Status() {
         responseTimeout = null;
         response.sendStatus(408);
         responded = true;
-      };
+      }
+
+      pushWait(providers, wait);
+      pushClear(providers, clear);
+
+      unshiftMiddleware(providers, ({ dispatch, getState }) => {
+        return next => action => {
+          if (typeof action !== 'function' && !action._noRender) {
+            rerender = true;
+          }
+
+          return next(action);
+        };
+      });
+
+      renderState();
     } catch (error) {
       console.error(error.stack);
       response.sendStatus(500);

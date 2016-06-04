@@ -59,7 +59,7 @@ Sets the CSS filenames to be included with the document as `link` elements withi
 
 Sets the JS filenames to be included with the document as `script` elements appended to the `body` element.
 
-### submitRequest (Object requestBody, String requestMethod, Boolean acceptJson)
+### submitRequest ({ Object requestBody, String requestMethod, Boolean acceptJson })
 
 This action is mainly used automatically in conjunction with the `Form` component (see below), but you may trigger it manually if for some reason you need to do that.
 

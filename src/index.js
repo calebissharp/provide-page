@@ -17,6 +17,8 @@ export const SET_JS_FILES = 'SET_JS_FILES';
 export const SUBMIT_REQUEST = 'SUBMIT_REQUEST';
 export const SUBMIT_FORM = 'SUBMIT_FORM';
 export const SUBMITTED_FORM = 'SUBMITTED_FORM';
+export const UPDATE_SESSION = 'UPDATE_SESSION';
+export const DESTROY_SESSION = 'DESTROY_SESSION';
 
 const _noRender = true;
 
@@ -53,17 +55,17 @@ const actions = {
     return { type: SET_JS_FILES, jsFiles, _noRender };
   },
 
-  submitRequest(
-    requestBody = {},
-    requestSession = {},
+  submitRequest({
+    requestSession,
     requestMethod = 'POST',
-    acceptJson = true
-  ) {
+    requestBody = {},
+    acceptJson
+  }) {
     return {
       type: SUBMIT_REQUEST,
-      requestBody,
       requestSession,
       requestMethod,
+      requestBody,
       acceptJson
     };
   },
@@ -83,11 +85,20 @@ const actions = {
       xhr.onload = () => {
         const { response } = xhr;
 
+        formData._formHandled = true;
         dispatch({ type: SUBMITTED_FORM, formData, response });
         // TODO: merge response into stores
       };
       xhr.send(JSON.stringify(formData));
     };
+  },
+
+  updateSession(requestSession) {
+    return { type: UPDATE_SESSION, requestSession };
+  },
+
+  destroySession() {
+    return { type: DESTROY_SESSION };
   }
 };
 
@@ -175,23 +186,20 @@ const reducers = {
     }
   },
 
-  requestBody(state = null, action) {
-    switch (action.type) {
-      case SUBMIT_FORM:
-        return action.formData;
-
-      case SUBMIT_REQUEST:
-        return action.requestBody;
-
-      default:
-        return state;
-    }
-  },
-
-  requestSession(state = null, action) {
+  requestSession(state = {}, action) {
     switch (action.type) {
       case SUBMIT_REQUEST:
-        return action.requestSession;
+        return action.requestSession || state;
+
+      case UPDATE_SESSION:
+        return { ...state, ...action.requestSession };
+
+      case DESTROY_SESSION:
+        if (state.destroy) {
+          state.destroy();
+        }
+
+        return {};
 
       default:
         return state;
@@ -208,10 +216,25 @@ const reducers = {
     }
   },
 
+  requestBody(state = null, action) {
+    switch (action.type) {
+      case SUBMIT_FORM:
+        return action.formData;
+
+      case SUBMIT_REQUEST:
+        return action.requestBody;
+
+      default:
+        return state;
+    }
+  },
+
   acceptJson(state = null, action) {
     switch (action.type) {
       case SUBMIT_REQUEST:
-        return action.acceptJson;
+        return typeof action.acceptJson === 'undefined'
+          ? state
+          : action.acceptJson;
 
       default:
         return state;
@@ -223,13 +246,21 @@ const merge = {
   formData: {
     keys: ['requestBody'],
     get({ requestBody }, { formId }) {
-      return requestBody && requestBody._formId === formId
-        ? requestBody
-        : null;
+      if (
+        !requestBody
+        || requestBody._formHandled
+        || requestBody._formId !== formId
+      ) {
+        return null;
+      }
+
+      return requestBody;
     }
   }
 };
 
 const middleware = thunk;
 
-export default { actions, reducers, merge, middleware };
+const clientStateKeys = ['requestSession'];
+
+export default { actions, reducers, merge, middleware, clientStateKeys };
