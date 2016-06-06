@@ -8,7 +8,7 @@ export default function createMiddleware({
   renderToString,
   renderDocumentToString = defaultRenderDocumentToString,
   getStates,
-  maxRenders = 5,
+  maxRenders = 8,
   maxResponseTime = 2000
 }) {
   return (request, response, next) => {
@@ -21,8 +21,8 @@ export default function createMiddleware({
     try {
       const providers = getProviders(defaultProps.providers, request);
       const providerInstances = { ...defaultProps.providerInstances };
-      const providerActiveQueries = { ...defaultProps.providerActiveQueries };
-      const providerQueryResults = { ...defaultProps.providerQueryResults };
+      const activeQueries = { ...defaultProps.activeQueries };
+      const queryResults = { ...defaultProps.queryResults };
 
       let html = null;
       function renderState() {
@@ -38,8 +38,8 @@ export default function createMiddleware({
           ...defaultProps,
           providers,
           providerInstances,
-          providerActiveQueries,
-          providerQueryResults
+          activeQueries,
+          queryResults
         });
 
         clear(false);

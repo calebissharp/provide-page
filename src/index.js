@@ -93,8 +93,8 @@ const actions = {
     };
   },
 
-  updateSession(requestSession) {
-    return { type: UPDATE_SESSION, requestSession };
+  updateSession(updates) {
+    return { type: UPDATE_SESSION, updates };
   },
 
   destroySession() {
@@ -187,19 +187,41 @@ const reducers = {
   },
 
   requestSession(state = {}, action) {
+    if (!state.__actualSession && typeof state.destroy !== 'undefined') {
+      state = { ...state, __actualSession: state };
+    }
+
     switch (action.type) {
       case SUBMIT_REQUEST:
-        return action.requestSession || state;
+        const { requestSession } = action;
+
+        return requestSession
+          ? { ...requestSession, __actualSession: requestSession }
+          : state;
 
       case UPDATE_SESSION:
-        return { ...state, ...action.requestSession };
+        const nextState = { ...state };
+        const { updates = {} } = action;
 
-      case DESTROY_SESSION:
-        if (state.destroy) {
-          state.destroy();
+        delete updates.__actualSession; // just in case
+
+        for (let key in updates) {
+          nextState[key] = updates[key];
+          nextState.__actualSession[key] = updates[key];
         }
 
-        return {};
+        if (nextState.__actualSession.save) {
+          nextState.__actualSession.save();
+        }
+
+        return nextState;
+
+      case DESTROY_SESSION:
+        if (state.__actualSession) {
+          state.__actualSession.destroy();
+        }
+
+        return { __actualSession: state.__actualSession };
 
       default:
         return state;
@@ -246,15 +268,9 @@ const merge = {
   formData: {
     keys: ['requestBody'],
     get({ requestBody }, { formId }) {
-      if (
-        !requestBody
-        || requestBody._formHandled
-        || requestBody._formId !== formId
-      ) {
-        return null;
-      }
-
-      return requestBody;
+      return requestBody && requestBody._formId === formId
+        ? requestBody
+        : null;
     }
   }
 };

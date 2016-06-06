@@ -17,7 +17,7 @@ export default class Form extends Component {
   componentWillMount() {
     const { onSubmit, formData } = this.props;
 
-    if (formData) {
+    if (formData && !formData._formHandled) {
       formData._formHandled = onSubmit(null, formData) !== false;
     }
   }
