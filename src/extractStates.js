@@ -3,13 +3,13 @@ export default function extractStates(providerInstances, getStates) {
   let clientStates;
   const clientStatesKeys = {};
 
-  for (let key in providerInstances) {
-    let providerInstance = providerInstances[key];
+  for (let providerKey in providerInstances) {
+    let providerInstance = providerInstances[providerKey];
 
-    states[key] = providerInstance.store.getState();
+    states[providerKey] = providerInstance.store.getState();
 
     if (providerInstance.clientStateKeys) {
-      clientStatesKeys[key] = providerInstance.clientStateKeys;
+      clientStatesKeys[providerKey] = providerInstance.clientStateKeys;
     }
   }
 
@@ -19,15 +19,15 @@ export default function extractStates(providerInstances, getStates) {
 
   clientStates = { ...states };
 
-  for (let key in clientStatesKeys) {
-    let clientState = clientStates[key];
-    let clientStateKeys = clientStatesKeys[key];
+  for (let providerKey in clientStatesKeys) {
+    let clientState = clientStates[providerKey];
+    let clientStateKeys = clientStatesKeys[providerKey];
 
     if (clientState) {
-      clientStates[key] = {};
+      clientStates[providerKey] = {};
 
-      for (let clientStateKey of clientStateKeys) {
-        clientStates[key][clientStateKey] = clientState[clientStateKey];
+      for (let stateKey of clientStateKeys) {
+        clientStates[providerKey][stateKey] = clientState[stateKey];
       }
     }
   }

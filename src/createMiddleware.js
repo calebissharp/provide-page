@@ -1,4 +1,5 @@
-import { pushWait, pushClear, unshiftMiddleware } from 'react-redux-provide';
+import { pushWait, pushClear } from 'react-redux-provide';
+import { pushReplication, unshiftMiddleware } from 'react-redux-provide';
 import defaultRenderDocumentToString from './defaultRenderDocumentToString';
 import getProviders from './getProviders';
 import extractStates from './extractStates';
@@ -64,6 +65,10 @@ export default function createMiddleware({
       let renderCount = 0;
       let rerender = false;
       let handledRequest = false;
+      const shouldSubmitRequest = Array.isArray(request.body)
+        || bodyType === 'object' && Object.keys(request.body).length > 0
+        || bodyType === 'string' && request.body.length > 0
+        || Boolean(request.body);
       function respondOrRerender() {
         if (!rerender && !handledRequest) {
           handledRequest = true;
@@ -91,25 +96,29 @@ export default function createMiddleware({
             ...providers.page.state,
             ...requestState
           };
-        } else if (shouldSubmitRequest()) {
+        } else if (shouldSubmitRequest) {
           console.log('submitting request...');
           page.actionCreators.submitRequest(requestState);
         }
       }
-      function shouldSubmitRequest() {
-        if (Array.isArray(request.body)) {
-          return true;
-        }
 
-        if (bodyType === 'object') {
-          return Object.keys(request.body).length > 0;
-        }
+      const { acceptJson } = providers.page.state;
+      let actions = null;
 
-        if (bodyType === 'string') {
-          return request.body.length > 0;
-        }
-
-        return Boolean(request.body);
+      if (acceptJson && shouldSubmitRequest) {
+        Object.keys(providers).forEach(key => {
+          pushReplication({ [key]: providers[key] }, {
+            replicator: {
+              postReduction(providerKey, state, nextState, action) {
+                if (actions) {
+                  actions.push({ providerKey, action });
+                } else if (handledRequest) {
+                  actions = [];
+                }
+              }
+            }
+          });
+        });
       }
 
       let responded = false;
@@ -127,9 +136,11 @@ export default function createMiddleware({
         }
 
         const { states, clientStates } = extractStates(
-          providerInstances, getStates
+          providerInstances,
+          getStates
         );
-        const { headers, acceptJson, statusCode } = states.page || {};
+
+        const { headers, statusCode } = states.page || {};
         let documentString = null;
 
         if (headers) {
@@ -137,10 +148,12 @@ export default function createMiddleware({
         }
 
         if (acceptJson) {
+          const jsonResponse = { states: clientStates, actions };
+
           if (statusCode) {
-            response.status(statusCode).send(clientStates);
+            response.status(statusCode).send(jsonResponse);
           } else {
-            response.send(clientStates);
+            response.send(jsonResponse);
           }
         } else if (!redirect() && html) {
           documentString = renderDocumentToString(html, states, clientStates);

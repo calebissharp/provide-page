@@ -22,7 +22,7 @@ export default function getProviders(defaultProviders, request) {
     requestSession: request.session,
     acceptJson: request.headers
       && request.headers.accept
-      && request.headers.accept.indexOf('json') > -1
+      && request.headers.accept.indexOf('application/json') > -1
   };
 
   return providers;

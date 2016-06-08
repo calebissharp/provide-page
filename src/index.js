@@ -73,21 +73,27 @@ const actions = {
   submitForm(formData) {
     const xhr = new XMLHttpRequest();
     const { pathname, search } = window.location;
-    const contentType = 'application/json;charset=UTF-8';
-    const accept = 'application/json';
+    const headers = {
+      'content-type': 'application/json;charset=UTF-8',
+      'accept': 'application/json'
+    };
 
-    return dispatch => {
+    return (dispatch, getState, { setStates }) => {
       dispatch({ type: SUBMIT_FORM, formData });
 
       xhr.open('POST', pathname + search, true);
-      xhr.setRequestHeader('Content-Type', contentType);
-      xhr.setRequestHeader('Accept', accept);
+
+      for (let header in headers) {
+        xhr.setRequestHeader(header, headers[header]);
+      }
+
       xhr.onload = () => {
-        const { response } = xhr;
+        const response = JSON.parse(xhr.response);
+        const { states, actions } = response;
 
         formData._formHandled = true;
+        setStates(states);
         dispatch({ type: SUBMITTED_FORM, formData, response });
-        // TODO: merge response into stores
       };
       xhr.send(JSON.stringify(formData));
     };

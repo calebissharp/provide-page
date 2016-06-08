@@ -110,7 +110,49 @@ Derived from `request.method` when used with `createMiddleware` (see below).
 
 ### acceptJson
 
-Derived from `request.headers.accept` (`true` if `indexOf('json') > -1`) when used with `createMiddleware` (see below).
+Derived from `request.headers.accept` (`true` if `indexOf('application/json') > -1`) when used with `createMiddleware` (see below).  If `true`, the server will respond with the stores `states` after rendering the current URL on its end.  And if handling `formData` (usually via a POST request made within the `submitForm` action triggered by the `Form` component), the response will include any `actions` dispatched after the form was handled.
+
+So the shape of the response will be:
+
+```json
+{
+  "states": {
+    "someProviderKey": {
+      "someId=0": {
+        "someReducer": "someState",
+        "etc": "etc"
+      },
+      "someId=1": {
+        "someReducer": "someState",
+        "etc": "etc"
+      },
+      "etc": {
+        "etc": "etc"
+      }
+    }
+  },
+  "actions": [
+    {
+      "providerKey": "someId=0",
+      "action": {
+        "type": "SOME_ACTION"
+      }
+    },
+    {
+      "providerKey": "someId=1",
+      "action": {
+        "type": "ANOTHER_ACTION"
+      }
+    },
+    {
+      "providerKey": "etc",
+      "action": {
+        "type": "ETC"
+      }
+    }
+  ]
+}
+```
 
 ### formData
 
