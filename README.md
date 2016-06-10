@@ -3,7 +3,7 @@
 [![build status](https://img.shields.io/travis/loggur/provide-page/master.svg?style=flat-square)](https://travis-ci.org/loggur/provide-page) [![npm version](https://img.shields.io/npm/v/provide-page.svg?style=flat-square)](https://www.npmjs.com/package/provide-page)
 [![npm downloads](https://img.shields.io/npm/dm/provide-page.svg?style=flat-square)](https://www.npmjs.com/package/provide-page)
 
-Provides automatic server-side rendering and actions (regardless of whether or not client has JavaScript enabled) to React components.  Use in conjunction with [`provide-router`](https://github.com/loggur/provide-router).
+Provides automatic server-side rendering and actions (regardless of whether or not client has JavaScript enabled) to React components.  Used in conjunction with [`provide-router`](https://github.com/loggur/provide-router).
 
 
 ## Table of contents
@@ -63,6 +63,18 @@ Sets the JS filenames to be included with the document as `script` elements appe
 
 This action is mainly used automatically in conjunction with the `Form` component (see below), but you may trigger it manually if for some reason you need to do that.
 
+### submitForm (Object formData)
+
+This action is mainly used automatically in conjunction with the `Form` component (see below), but you may trigger it manually if for some reason you need to do that.
+
+### updateSession (Object updates)
+
+Assigns the updates to `requestSession`.
+
+### destroySession ()
+
+Destroys the `requestSession`.
+
 
 ## Reducers
 
@@ -100,13 +112,17 @@ The current CSS files for the document.
 
 The current JS files for the document.
 
-### requestBody
+### requestSession
 
-Derived from `request.body` when used with `createMiddleware` (see below).
+Derived from `request.session` when used with `createMiddleware` (see below).
 
 ### requestMethod
 
 Derived from `request.method` when used with `createMiddleware` (see below).
+
+### requestBody
+
+Derived from `request.body` when used with `createMiddleware` (see below).
 
 ### acceptJson
 
@@ -163,15 +179,15 @@ Derived from `requestBody` and matching `requestBody._formId` to the component's
 
 ### Form
 
-A simple wrapper around `<form { ...props } />`.  Combined with `createMiddleware` (see below), it intercepts the `onSubmit` event and allows all of your `actions` to be automatically triggered on the server, whether or not JS is enabled.  If JS is enabled, it will trigger the action on the server via `XMLHttpRequest`.  All you need is a `formId` prop combined with an `onSubmit` prop that accepts `formData` as a second argument.  The `formId` prop should exist within both the `Form` instance and the component instance rendering the form.  See [`bloggur`'s `EntryCreator` component](https://github.com/loggur/bloggur/blob/master/src/components/EntryCreator.js) for a full example.
+A simple wrapper around `<form { ...props } />`.  Combined with `createMiddleware` (see below), it intercepts the `onSubmit` event and allows all of your `actions` to be automatically triggered on the server, whether or not JS is enabled.  If JS is enabled, it will trigger the action on the server via `XMLHttpRequest`.  All you need is a `formId` prop combined with an `onSubmit` prop that accepts `formData` as a second argument.  The `formId` prop should exist within both the `Form` instance and the component instance rendering the form.  See [Lumbur's `UserLogIn` component](https://github.com/loggur/lumbur/blob/master/src/components/UserLogIn.js) for a full example.
 
 
 ## Middleware
 
 ### createMiddleware (Object options)
 
-Returns a function that can be used as `express` middleware and will do the following for you, server-side:
-  
+Returns a function that can be used as `express` (or other) middleware and will do the following for you, server-side:
+
   - Automatically render the state of the app depending on some `defaultProps` (`{ providers }`), the `request` (`{ method: requestMethod, body: requestBody }`), and optional `formData` (see the `Form` component above).
 
   - Respond with a full document string describing the current page - i.e., headers, status code, title, meta, favicon, js files, and css files - all controlled by your React components.
@@ -188,11 +204,11 @@ The `options` object passed to `createMiddleware` should take the following shap
 
 ### defaultProps
 
-Extended to contain info about the request and then passed to your `renderToString` function.  See [`bloggur/src/defaultProps.js`](https://github.com/loggur/bloggur/blob/master/src/defaultProps.js) for a full example.
+Extended to contain info about the request and then passed to your `renderToString` function.  See [`lumbur/src/defaultProps.js`](https://github.com/loggur/lumbur/blob/master/src/defaultProps.js) for a full example.
 
 ### renderToString (Object props)
 
-This function should typically use `react-dom/server`'s `renderToString` method under the hood to render your app to a string.  See [`bloggur/src/renderAppToString.js`](https://github.com/loggur/bloggur/blob/master/src/renderAppToString.js) for a full example.
+This function should typically use `react-dom/server`'s `renderToString` method under the hood to render your app to a string.  See [`lumbur/src/renderAppToString.js`](https://github.com/loggur/lumbur/blob/master/src/renderAppToString.js) for a full example.
 
 ### renderDocumentToString (String html, Object states, Object clientStates)
 
@@ -200,13 +216,13 @@ Optional function that returns the string representation of the entire document.
 
 ### getStates
 
-Optional function that should return an object containing provider keys and their states, ultimately passed to both `renderToString` and `renderDocumentToString`.  Your current providers' stores' states will be passed to this function.  See [`bloggur/src/middleware.js`](https://github.com/loggur/bloggur/blob/master/src/middleware.js) for a full example where we concatenate the selected theme's files with the `cssFiles` and `jsFiles` reducers so that they're included as `link` and `script` tags when the document string is rendered.
+Optional function that should return an object containing provider keys and their states, ultimately passed to both `renderToString` and `renderDocumentToString`.  Your current providers' stores' states will be passed to this function.  See [`lumbur/src/middleware.js`](https://github.com/loggur/lumbur/blob/master/src/middleware.js) for a full example where we concatenate the selected theme's files with the `cssFiles` and `jsFiles` reducers so that they're included as `link` and `script` tags when the document string is rendered.
 
-**Note:** The middleware will look for a special optional `clientStateKeys` array on each provider which is used for determining which reducer keys (i.e., stores' states) to send to the client upon each request.  The `page` provider defaults to only the `requestSession` key.  The `router` provider defaults to no keys.  Every other provider defaults to all keys.  See [`bloggur/src/renderAppToString.js`](https://github.com/loggur/bloggur/blob/master/src/renderAppToString.js) for an example.
+**Note:** The middleware will look for a special optional `clientStateKeys` array on each provider which is used for determining which reducer keys (i.e., stores' states) to send to the client upon each request.  The `page` provider defaults to only the `requestSession` key.  The `router` provider defaults to no keys.  Every other provider defaults to all keys.  See [`lumbur/src/renderAppToString.js`](https://github.com/loggur/lumbur/blob/master/src/renderAppToString.js) for an example.
 
 ### maxRenders
 
-Defaults to 2.  After the first render, the `requestMethod` and `requestBody` reducers are set to `GET` and an empty object, respectively.  This is to ensure that actions don't get triggered twice as a result of logic depending on data submitted via some `Form` and so that the app may be rendered correctly and returned within the same request.  **Note:** If you find yourself needing to render more than twice, you may want to reconsider your design.
+Defaults to 8.  The first render initializes all of the necessary providers, and a second render may occur if the providers' replicators have changed the initial state.  After everything is fully initialized, if a `request.body` exists, it will be treated as `formData` and the `submitRequest` action is dispatched, which typically subsequently triggers other actions and will continue rerendering until either stores' states have stopped changing or `maxRenders` is reached.
 
 ### maxResponseTime
 
@@ -215,24 +231,16 @@ Default to 2000 (milliseconds).  Sends a 408 status code if this timeout is reac
 
 ## Example
 
-See the following modules within [`bloggur`](https://github.com/loggur/bloggur):
+See the following modules within [Lumbur](https://github.com/loggur/lumbur):
 
-### [server.development.js](https://github.com/loggur/bloggur/blob/master/src/server.development.js)
+### [server.development.js](https://github.com/loggur/lumbur/blob/master/server.development.js)
 
 Passing hot reloadable middleware to `express`.
 
-### [server.production.js](https://github.com/loggur/bloggur/blob/master/src/server.production.js)
+### [server.production.js](https://github.com/loggur/lumbur/blob/master/server.production.js)
 
 Passing production-ready, bundled middleware to `express`.
 
-### [middleware.js](https://github.com/loggur/bloggur/blob/master/src/middleware.js)
+### [middleware.js](https://github.com/loggur/lumbur/blob/master/src/middleware.js)
 
 Using `createMiddleware` to create middleware specific to the app.
-
-### [components/EntryContents.js](https://github.com/loggur/bloggur/blob/master/src/components/EntryContents.js)
-
-A component that renders different components based on `reducers` from the `entries` provider and sets the `documentTitle` and `statusCode` accordingly.
-
-### [components/EntryCreator.js](https://github.com/loggur/bloggur/blob/master/src/components/EntryCreator.js)
-
-A component that triggers an action to create an entry on both the client and the server using the `Form` component.
