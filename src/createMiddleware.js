@@ -31,10 +31,8 @@ export default function createMiddleware({
           return;
         }
 
-        waitCount = 1;
+        wait();
 
-        console.log('--- rendering', request.url, `- count: ${renderCount}`);
-        console.log('wait 1');
         html = renderToString({
           ...defaultProps,
           providers,
@@ -49,14 +47,12 @@ export default function createMiddleware({
       let waitCount = 0;
       function wait() {
         waitCount++;
-        console.log('wait', waitCount);
       }
       function clear(doRerender) {
         if (doRerender) {
           rerender = true;
         }
 
-        console.log('clear', doRerender, waitCount);
         if (--waitCount === 0) {
           respondOrRerender();
         }
@@ -65,10 +61,18 @@ export default function createMiddleware({
       let renderCount = 0;
       let rerender = false;
       let handledRequest = false;
-      const shouldSubmitRequest = Array.isArray(request.body)
-        || bodyType === 'object' && Object.keys(request.body).length > 0
-        || bodyType === 'string' && request.body.length > 0
-        || Boolean(request.body);
+      let shouldSubmitRequest = false;
+
+      if (Array.isArray(request.body)) {
+        shouldSubmitRequest = true;
+      } else if (bodyType === 'object') {
+        shouldSubmitRequest = Object.keys(request.body).length > 0;
+      } else if (bodyType === 'string') {
+        shouldSubmitRequest = request.body.length > 0;
+      } else {
+        shouldSubmitRequest = Boolean(request.body);
+      }
+
       function respondOrRerender() {
         if (!rerender && !handledRequest) {
           handledRequest = true;
@@ -80,7 +84,7 @@ export default function createMiddleware({
         if (rerender && renderCount < maxRenders) {
           rerender = false;
           renderState();
-        } else {
+        } else if (waitCount === 0) {
           respond();
         }
       }
@@ -97,7 +101,6 @@ export default function createMiddleware({
             ...requestState
           };
         } else if (shouldSubmitRequest) {
-          console.log('submitting request...');
           page.actionCreators.submitRequest(requestState);
         }
       }
@@ -168,11 +171,6 @@ export default function createMiddleware({
         }
 
         responded = true;
-        console.log('!!! responded to', request.url);
-        console.log('');
-        console.log('');
-        console.log('');
-        console.log('');
       }
 
       function redirect() {
