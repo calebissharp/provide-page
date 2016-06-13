@@ -1,6 +1,7 @@
 import thunk from 'redux-thunk';
 import { canUseDOM } from 'exenv';
 
+export Link from './components/Link';
 export Form from './components/Form';
 
 export createMiddleware from './createMiddleware';
