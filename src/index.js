@@ -224,7 +224,7 @@ const reducers = {
         return nextState;
 
       case DESTROY_SESSION:
-        if (state.__actualSession) {
+        if (state.__actualSession && state.__actualSession.destroy) {
           state.__actualSession.destroy();
         }
 
