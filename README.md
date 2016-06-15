@@ -210,9 +210,9 @@ Extended to contain info about the request and then passed to your `renderToStri
 
 This function should typically use `react-dom/server`'s `renderToString` method under the hood to render your app to a string.  See [`lumbur/src/renderAppToString.js`](https://github.com/loggur/lumbur/blob/master/src/renderAppToString.js) for a full example.
 
-### renderDocumentToString (String html, Object states, Object clientStates)
+### renderDocumentToString (String html, Object states, Object clientStates, Optional Object queryResults)
 
-Optional function that returns the string representation of the entire document.  The `states` and `clientStates` objects come form the `getStates` and `getClientStates` functions below.  See [`defaultRenderDocumentToString.js`](https://github.com/loggur/provide-page/blob/master/src/defaultRenderDocumentToString.js) for an example.
+Optional function that returns the string representation of the entire document.  The `states` and `clientStates` objects come form the `getStates` and `getClientStates` functions below.  The `queryResults` can be used to provide the client with a cached set of query results for the initial render.  See [`defaultRenderDocumentToString.js`](https://github.com/loggur/provide-page/blob/master/src/defaultRenderDocumentToString.js) for an example.
 
 ### getStates
 

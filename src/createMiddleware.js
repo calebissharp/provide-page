@@ -159,7 +159,9 @@ export default function createMiddleware({
             response.send(jsonResponse);
           }
         } else if (!redirect() && html) {
-          documentString = renderDocumentToString(html, states, clientStates);
+          documentString = renderDocumentToString(
+            html, states, clientStates, queryResults
+          );
 
           if (statusCode) {
             response.status(statusCode).send(documentString);
