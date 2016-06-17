@@ -21,39 +21,39 @@ export const SUBMITTED_FORM = 'SUBMITTED_FORM';
 export const UPDATE_SESSION = 'UPDATE_SESSION';
 export const DESTROY_SESSION = 'DESTROY_SESSION';
 
-const _noRender = true;
+const _noEffect = true;
 
 const actions = {
   setHeaders(headers) {
-    return { type: SET_HEADERS, headers, _noRender };
+    return { type: SET_HEADERS, headers, _noEffect };
   },
 
   setStatusCode(statusCode) {
-    return { type: SET_STATUS_CODE, statusCode, _noRender };
+    return { type: SET_STATUS_CODE, statusCode, _noEffect };
   },
 
   setDocumentTitle(documentTitle = '') {
-    return { type: SET_DOCUMENT_TITLE, documentTitle, _noRender };
+    return { type: SET_DOCUMENT_TITLE, documentTitle, _noEffect };
   },
 
   setMetaDescription(metaDescription = '') {
-    return { type: SET_META_DESCRIPTION, metaDescription, _noRender };
+    return { type: SET_META_DESCRIPTION, metaDescription, _noEffect };
   },
 
   setMetaRobots(metaRobots = '') {
-    return { type: SET_META_ROBOTS, metaRobots, _noRender };
+    return { type: SET_META_ROBOTS, metaRobots, _noEffect };
   },
 
   setIconFile(iconFile = '') {
-    return { type: SET_ICON_FILE, iconFile, _noRender };
+    return { type: SET_ICON_FILE, iconFile, _noEffect };
   },
 
   setCssFiles(cssFiles = []) {
-    return { type: SET_CSS_FILES, cssFiles, _noRender };
+    return { type: SET_CSS_FILES, cssFiles, _noEffect };
   },
 
   setJsFiles(jsFiles = []) {
-    return { type: SET_JS_FILES, jsFiles, _noRender };
+    return { type: SET_JS_FILES, jsFiles, _noEffect };
   },
 
   submitRequest({
@@ -71,7 +71,7 @@ const actions = {
     };
   },
 
-  submitForm(formData) {
+  submitForm(formData, serverSide = false) {
     const xhr = new XMLHttpRequest();
     const { pathname, search } = window.location;
     const headers = {
@@ -79,7 +79,7 @@ const actions = {
       'accept': 'application/json'
     };
 
-    return (dispatch, getState, { setStates }) => {
+    return (dispatch, getState, { setStates, dispatchAll }) => {
       dispatch({ type: SUBMIT_FORM, formData });
 
       xhr.open('POST', pathname + search, true);
@@ -93,7 +93,13 @@ const actions = {
         const { states, actions } = response;
 
         formData._formHandled = true;
+
         setStates(states);
+
+        if (serverSide) {
+          dispatchAll(actions);
+        }
+
         dispatch({ type: SUBMITTED_FORM, formData, response });
       };
       xhr.send(JSON.stringify(formData));

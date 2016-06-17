@@ -1,8 +1,8 @@
 import { pushWait, pushClear } from 'react-redux-provide';
 import { pushReplication, unshiftMiddleware } from 'react-redux-provide';
 import defaultRenderDocumentToString from './defaultRenderDocumentToString';
+import { extractServerStates, extractClientStates } from './extractStates';
 import getProviders from './getProviders';
-import extractStates from './extractStates';
 
 export default function createMiddleware({
   defaultProps,
@@ -62,6 +62,7 @@ export default function createMiddleware({
       let rerender = false;
       let handledRequest = false;
       let shouldSubmitRequest = false;
+      let preActionStates;
 
       if (Array.isArray(request.body)) {
         shouldSubmitRequest = true;
@@ -95,6 +96,10 @@ export default function createMiddleware({
           requestBody: request.body
         };
 
+        if (acceptJson && shouldSubmitRequest) {
+          preActionStates = extractServerStates(providerInstances, getStates);
+        }
+
         if (!page) {
           providers.page.state = {
             ...providers.page.state,
@@ -114,7 +119,13 @@ export default function createMiddleware({
             replicator: {
               postReduction(providerKey, state, nextState, action) {
                 if (actions) {
-                  actions.push({ providerKey, action });
+                  if (preActionStates && !preActionStates[providerKey]) {
+                    preActionStates[providerKey] = state;
+                  }
+
+                  if (!action._noEffect) {
+                    actions.push({ providerKey, action });
+                  }
                 } else if (handledRequest) {
                   actions = [];
                 }
@@ -138,11 +149,9 @@ export default function createMiddleware({
           return;
         }
 
-        const { states, clientStates } = extractStates(
-          providerInstances,
-          getStates
-        );
-
+        const states = preActionStates
+          || extractServerStates(providerInstances, getStates);
+        const clientStates = extractClientStates(providerInstances, states);
         const { headers, statusCode } = states.page || {};
         let documentString = null;
 
@@ -199,7 +208,7 @@ export default function createMiddleware({
 
       unshiftMiddleware(providers, ({ dispatch, getState }) => {
         return next => action => {
-          if (typeof action !== 'function' && !action._noRender) {
+          if (typeof action !== 'function' && !action._noEffect) {
             rerender = true;
           }
 
