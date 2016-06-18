@@ -155,14 +155,14 @@ export default function createMiddleware({
         const { headers, statusCode } = states.page || {};
         let documentString = null;
 
-        if (headers) {
+        if (headers && !response.headersSent) {
           response.set(headers);
         }
 
         if (acceptJson) {
           const jsonResponse = { states: clientStates, actions };
 
-          if (statusCode) {
+          if (statusCode && !response.headersSent) {
             response.status(statusCode).send(jsonResponse);
           } else {
             response.send(jsonResponse);
@@ -172,12 +172,12 @@ export default function createMiddleware({
             html, states, clientStates, queryResults
           );
 
-          if (statusCode) {
+          if (statusCode && !response.headersSent) {
             response.status(statusCode).send(documentString);
           } else {
             response.send(documentString);
           }
-        } else if (statusCode) {
+        } else if (statusCode && !response.headersSent) {
           response.sendStatus(statusCode);
         }
 
@@ -190,7 +190,9 @@ export default function createMiddleware({
         const { locationBeforeTransitions: location } = routing;
 
         if (location.pathname !== request.originalUrl) {
-          response.redirect(303, location.pathname);
+          if (!response.headersSent) {
+            response.redirect(303, location.pathname);
+          }
           return true;
         }
 
@@ -199,7 +201,9 @@ export default function createMiddleware({
 
       function send408Status() {
         responseTimeout = null;
-        response.sendStatus(408);
+        if (!response.headersSent) {
+          response.sendStatus(408);
+        }
         responded = true;
       }
 
@@ -219,7 +223,10 @@ export default function createMiddleware({
       renderState();
     } catch (error) {
       console.error(error.stack);
-      response.sendStatus(500);
+
+      if (!response.headersSent) {
+        response.sendStatus(500);
+      }
     }
   };
 }
