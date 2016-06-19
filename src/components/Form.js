@@ -24,7 +24,7 @@ export default class Form extends Component {
   }
 
   onSubmit = event => {
-    const { submitForm, onSubmit, serverSide } = this.props;
+    const { submitForm, serverSide, onSubmit } = this.props;
     const elements = Array.prototype.slice.call(this.refs.form.elements);
     const formData = {};
 
@@ -38,14 +38,20 @@ export default class Form extends Component {
       }
     }
 
-    if (event.stopPropagation) {
+    if (event && event.stopPropagation) {
       event.stopPropagation();
       event.preventDefault();
 
-      submitForm(formData, serverSide);
-    }
+      if (serverSide) {
+        submitForm(formData, onSubmit);
+      } else {
+        submitForm(formData);
 
-    if (onSubmit) {
+        if (onSubmit) {
+          onSubmit(event, formData);
+        }
+      }
+    } else if (onSubmit) {
       onSubmit(event, formData);
     }
   };

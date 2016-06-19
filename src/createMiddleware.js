@@ -11,7 +11,7 @@ export default function createMiddleware({
   renderToString,
   renderDocumentToString = defaultRenderDocumentToString,
   getStates,
-  maxRenders = 8,
+  maxRenders = 20,
   maxResponseTime = 2000
 }) {
   return (request, response, next) => {
@@ -168,21 +168,13 @@ export default function createMiddleware({
         }
 
         if (acceptJson) {
-          const jsonResponse = {
-            states: clientStates,
-            actions,
-            results: queryResults
-          };
-
           if (statusCode && !response.headersSent) {
-            response.status(statusCode).send(jsonResponse);
+            response.status(statusCode).send(clientStates);
           } else {
-            response.send(jsonResponse);
+            response.send(clientStates);
           }
         } else if (!redirect() && html) {
-          documentString = renderDocumentToString(
-            html, states, clientStates, queryResults
-          );
+          documentString = renderDocumentToString(html, states, clientStates);
 
           if (statusCode && !response.headersSent) {
             response.status(statusCode).send(documentString);

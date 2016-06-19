@@ -16,15 +16,30 @@ export const SET_ICON_FILE = 'SET_ICON_FILE';
 export const SET_CSS_FILES = 'SET_CSS_FILES';
 export const SET_JS_FILES = 'SET_JS_FILES';
 export const SYNC_WITH_ROUTER = 'SYNC_WITH_ROUTER';
+export const GET_PAGE_STATES = 'GET_PAGE_STATES';
 export const GOT_PAGE_STATES = 'GOT_PAGE_STATES';
 export const SUBMIT_REQUEST = 'SUBMIT_REQUEST';
 export const SUBMIT_FORM = 'SUBMIT_FORM';
 export const SUBMITTED_FORM = 'SUBMITTED_FORM';
+export const PENDING_PAGE = 'PENDING_PAGE';
+export const PENDING_FORM = 'PENDING_FORM';
 export const UPDATE_SESSION = 'UPDATE_SESSION';
 export const DESTROY_SESSION = 'DESTROY_SESSION';
 
-function getUrl({ pathname, search }) {
-  return pathname + search;
+function getUrl(location) {
+  return location ? location.pathname + location.search : null;
+}
+
+function clearPending(dispatch, getState) {
+  const state = getState();
+
+  if (state.pendingForms.length) {
+    const { formData, onSubmit } = state.pendingForms.shift();
+
+    dispatch(actions.submitForm(formData, onSubmit));
+  } else if (state.pendingPage) {
+    dispatch(actions.getPageStates(state.routerLocation));
+  }
 }
 
 const _noEffect = true;
@@ -69,7 +84,12 @@ const actions = {
       });
 
       routerHistory.listen(nextRouterLocation => {
-        if (getState().routerLocation !== nextRouterLocation) {
+        const state = getState();
+
+        if (
+          !state.ignoreRouterLocation
+          && getUrl(state.routerLocation) !== getUrl(nextRouterLocation)
+        ) {
           dispatch(actions.getPageStates(nextRouterLocation));
         }
       });
@@ -83,8 +103,15 @@ const actions = {
       'accept': 'application/json'
     };
 
-    return (dispatch, getState, { setResults, setStates }) => {
-      dispatch({ type: SYNC_WITH_ROUTER, routerLocation, _noEffect });
+    return (dispatch, getState, { setStates }) => {
+      const state = getState();
+
+      if (state.waitingForResponse) {
+        dispatch({ type: PENDING_PAGE, routerLocation, _noEffect });
+        return;
+      }
+
+      dispatch({ type: GET_PAGE_STATES, routerLocation, _noEffect });
 
       xhr.open('GET', getUrl(routerLocation), true);
 
@@ -93,13 +120,13 @@ const actions = {
       }
 
       xhr.onload = () => {
-        const response = JSON.parse(xhr.response);
-        const { results, states } = response;
+        const states = JSON.parse(xhr.response);
 
-        setResults(results);
         setStates(states);
-        dispatch({ type: GOT_PAGE_STATES, response });
+        dispatch({ type: GOT_PAGE_STATES, states });
+        clearPending(dispatch, getState);
       };
+
       xhr.send();
     };
   },
@@ -119,39 +146,48 @@ const actions = {
     };
   },
 
-  submitForm(formData, serverSide = false) {
+  submitForm(formData, onSubmit) {
     const xhr = new XMLHttpRequest();
     const headers = {
       'content-type': 'application/json;charset=UTF-8',
       'accept': 'application/json'
     };
 
-    return (dispatch, getState, { setResults, setStates, dispatchAll }) => {
-      const { routerLocation } = getState();
+    if (onSubmit) {
+      headers['x-server-side'] = true;
+    }
 
-      dispatch({ type: SUBMIT_FORM, formData });
+    return (dispatch, getState, { setStates }) => {
+      const state = getState();
 
-      xhr.open('POST', getUrl(routerLocation), true);
+      if (state.waitingForResponse) {
+        dispatch({ type: PENDING_FORM, formData, onSubmit, _noEffect });
+        return;
+      }
+
+      dispatch({ type: SUBMIT_FORM, formData, onSubmit });
+
+      xhr.open('POST', getUrl(state.routerLocation), true);
 
       for (let header in headers) {
         xhr.setRequestHeader(header, headers[header]);
       }
 
       xhr.onload = () => {
-        const response = JSON.parse(xhr.response);
-        const { actions, results, states } = response;
+        const states = JSON.parse(xhr.response);
 
-        formData._formHandled = true;
+        formData._formHandled = !onSubmit;
 
-        setResults(results);
         setStates(states);
 
-        if (serverSide) {
-          dispatchAll(actions);
+        if (onSubmit) {
+          onSubmit(null, formData);
         }
 
-        dispatch({ type: SUBMITTED_FORM, formData, response });
+        dispatch({ type: SUBMITTED_FORM, formData, onSubmit, states });
+        clearPending(dispatch, getState);
       };
+
       xhr.send(JSON.stringify(formData));
     };
   },
@@ -329,7 +365,7 @@ const reducers = {
   routerHistory(state = null, action) {
     switch (action.type) {
       case SYNC_WITH_ROUTER:
-        return action.routerHistory || state;
+        return action.routerHistory;
 
       default:
         return state;
@@ -339,11 +375,49 @@ const reducers = {
   routerLocation(state = null, action) {
     switch (action.type) {
       case SYNC_WITH_ROUTER:
+      case GET_PAGE_STATES:
         return action.routerLocation;
 
       default:
         return state;
     }
+  },
+
+  waitingForResponse(state = false, action) {
+    switch (action.type) {
+      case GET_PAGE_STATES:
+      case SUBMIT_FORM:
+        return true;
+
+      case GOT_PAGE_STATES:
+      case SUBMITTED_FORM:
+        return false;
+
+      default:
+        return state;
+    }
+  },
+
+  pendingPage(state = false, action) {
+    switch (action.type) {
+      case PENDING_PAGE:
+        return true;
+
+      case GET_PAGE_STATES:
+      case SUBMIT_FORM:
+        return false;
+
+      default:
+        return state;
+    }
+  },
+
+  pendingForms(state = [], { type, formData, onSubmit }) {
+    if (type === PENDING_FORM) {
+      state.push({ formData, onSubmit });
+    }
+
+    return state;
   }
 };
 

@@ -1,8 +1,12 @@
-export default function extractStates(providerInstances, getStates) {
-  const states = extractServerStates(providerInstances, getStates);
-  const clientStates = extractClientStates(providerInstances, states);
+export default function extractStates(
+  providerInstances, getStates, states = {}
+) {
+  states = extractServerStates(providerInstances, getStates, states);
 
-  return { states, clientStates };
+  return {
+    states,
+    clientStates: extractClientStates(providerInstances, states)
+  };
 }
 
 export function extractServerStates(

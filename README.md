@@ -63,9 +63,9 @@ Sets the JS filenames to be included with the document as `script` elements appe
 
 This action is mainly used automatically in conjunction with the `Form` component (see below), but you may trigger it manually if for some reason you need to do that.
 
-### submitForm (Object formData, Boolean serverSide)
+### submitForm (Object formData, Optional Function onSubmit)
 
-This action is mainly used automatically in conjunction with the `Form` component (see below), but you may trigger it manually if for some reason you need to do that.  If `serverSide` is true, the client will dispatch all of the actions the server returns.  This is useful for actions that only the server can peform.
+This action is mainly used automatically in conjunction with the `Form` component (see below), but you may trigger it manually if for some reason you need to do that.  The `onSubmit` function will be called after the client receives the server's response.  This is useful for actions that can't be properly performed before receiving the necessary states from the server - e.g., resource creation.  The `Form` component will include the `onSubmit` function by default if the `Form`'s `serverSide` prop is `true`.
 
 ### updateSession (Object updates)
 
@@ -126,49 +126,7 @@ Derived from `request.body` when used with `createMiddleware` (see below).
 
 ### acceptJson
 
-Derived from `request.headers.accept` (`true` if `indexOf('application/json') > -1`) when used with `createMiddleware` (see below).  If `true`, the server will respond with the stores `states` after rendering the current URL on its end.  And if handling `formData` (usually via a POST request made within the `submitForm` action triggered by the `Form` component), the response will include any `actions` dispatched after the form was handled.
-
-So the shape of the response will be:
-
-```json
-{
-  "states": {
-    "someProviderKey": {
-      "someId=0": {
-        "someReducer": "someState",
-        "etc": "etc"
-      },
-      "someId=1": {
-        "someReducer": "someState",
-        "etc": "etc"
-      },
-      "etc": {
-        "etc": "etc"
-      }
-    }
-  },
-  "actions": [
-    {
-      "providerKey": "someId=0",
-      "action": {
-        "type": "SOME_ACTION"
-      }
-    },
-    {
-      "providerKey": "someId=1",
-      "action": {
-        "type": "ANOTHER_ACTION"
-      }
-    },
-    {
-      "providerKey": "etc",
-      "action": {
-        "type": "ETC"
-      }
-    }
-  ]
-}
-```
+Derived from `request.headers.accept` (`true` if `indexOf('application/json') > -1`) when used with `createMiddleware` (see below).  If `true`, the server will respond with the stores states after rendering the current URL on its end.
 
 ### formData
 
@@ -179,7 +137,7 @@ Derived from `requestBody` and matching `requestBody._formId` to the component's
 
 ### Form
 
-A simple wrapper around `<form { ...props } />`.  Combined with `createMiddleware` (see below), it intercepts the `onSubmit` event and allows all of your `actions` to be automatically triggered on the server, whether or not JS is enabled.  If JS is enabled, it will trigger the action on the server via `XMLHttpRequest`.  All you need is a `formId` prop combined with an `onSubmit` prop that accepts `formData` as a second argument.  Include a `serverSide` prop if the form submission results in actions that can only be performed by the server.  The `formId` prop should exist within both the `Form` instance and the component instance rendering the form.  See [Lumbur's `UserLogIn` component](https://github.com/loggur/lumbur/blob/master/src/components/UserLogIn.js) for a full example.
+A simple wrapper around `<form { ...props } />`.  Combined with `createMiddleware` (see below), it intercepts the `onSubmit` event and allows all of the resulting actions to occur on the server, whether or not JS is enabled.  If JS is enabled, it will trigger the action on the server via `XMLHttpRequest`.  All you need is a `formId` prop combined with an `onSubmit` prop that accepts `formData` as a second argument.  Include a `serverSide` prop if the client needs states from the server before it can continue.  The `formId` prop should exist within both the `Form` instance and the component instance rendering the form.  See [Lumbur's `UserLogIn` component](https://github.com/loggur/lumbur/blob/master/src/components/UserLogIn.js) for a full example.
 
 
 ## Middleware
@@ -194,7 +152,7 @@ Returns a function that can be used as `express` (or other) middleware and will 
 
   - Automatically wait for asynchronous `actions` before rendering.
 
-  - When used with the `Form` component (above), it will automatically trigger `actions` on the server for clients with JS disabled, or if JS is enabled, the `actions` will be triggered server-side via `XMLHttpRequest` and the updated state of the server's stores will be returned.
+  - When used with the `Form` component (above), it will automatically trigger `actions` on the server regardless of whether or not JS is enabled.
 
   - Automatically redirect clients with JS disabled to a new URL when it changes.
 
@@ -210,9 +168,9 @@ Extended to contain info about the request and then passed to your `renderToStri
 
 This function should typically use `react-dom/server`'s `renderToString` method under the hood to render your app to a string.  See [`lumbur/src/renderAppToString.js`](https://github.com/loggur/lumbur/blob/master/src/renderAppToString.js) for a full example.
 
-### renderDocumentToString (String html, Object states, Object clientStates, Optional Object queryResults)
+### renderDocumentToString (String html, Object states, Object clientStates)
 
-Optional function that returns the string representation of the entire document.  The `states` and `clientStates` objects come form the `getStates` and `getClientStates` functions below.  The `queryResults` can be used to provide the client with a cached set of query results for the initial render.  See [`defaultRenderDocumentToString.js`](https://github.com/loggur/provide-page/blob/master/src/defaultRenderDocumentToString.js) for an example.
+Optional function that returns the string representation of the entire document.  The `states` and `clientStates` objects come form the `getStates` and `getClientStates` functions below.  See [`defaultRenderDocumentToString.js`](https://github.com/loggur/provide-page/blob/master/src/defaultRenderDocumentToString.js) for an example.
 
 ### getStates
 
@@ -222,7 +180,7 @@ Optional function that should return an object containing provider keys and thei
 
 ### maxRenders
 
-Defaults to 8.  The first render initializes all of the necessary providers, and a second render may occur if the providers' replicators have changed the initial state.  After everything is fully initialized, if a `request.body` exists, it will be treated as `formData` and the `submitRequest` action is dispatched, which typically subsequently triggers other actions and will continue rerendering until either stores' states have stopped changing or `maxRenders` is reached.
+Defaults to 20.  The first render initializes all of the necessary providers, and a second render may occur if the providers' replicators have changed the initial state.  After everything is fully initialized, if a `request.body` exists, it will be treated as `formData` and the `submitRequest` action is dispatched, which typically subsequently triggers other actions and will continue rerendering until either stores' states have stopped changing or `maxRenders` is reached.
 
 ### maxResponseTime
 

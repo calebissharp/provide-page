@@ -1,6 +1,4 @@
-function defaultRenderDocumentToString(
-    html, states, clientStates, queryResults
-) {
+function defaultRenderDocumentToString(html, states, clientStates) {
   const {
     documentTitle = `Page`,
     metaDescription = `Built with provide-page.`,
@@ -29,7 +27,6 @@ function defaultRenderDocumentToString(
     + `<div id="root">${html}</div>`
     + `<script>`
     + `window.clientStates = ${JSON.stringify(clientStates)};`
-    + `window.queryResults = ${JSON.stringify(queryResults)};`
     + `</script>`
     + jsFiles.map(jsFile => (
       `<script src="${jsFile}"></script>`
