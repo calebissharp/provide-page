@@ -4,6 +4,8 @@ import defaultRenderDocumentToString from './defaultRenderDocumentToString';
 import { extractServerStates, extractClientStates } from './extractStates';
 import getProviders from './getProviders';
 
+const inDevelopment = process.env.NODE_ENV === 'development';
+
 export default function createMiddleware({
   defaultProps,
   renderToString,
@@ -32,6 +34,10 @@ export default function createMiddleware({
         }
 
         wait();
+
+        if (inDevelopment) {
+          console.log(`--- rendering (${renderCount}) ${request.url}`);
+        }
 
         html = renderToString({
           ...defaultProps,
@@ -96,7 +102,7 @@ export default function createMiddleware({
           requestBody: request.body
         };
 
-        if (acceptJson && shouldSubmitRequest) {
+        if (serverSide && shouldSubmitRequest) {
           preActionStates = extractServerStates(providerInstances, getStates);
         }
 
@@ -111,9 +117,10 @@ export default function createMiddleware({
       }
 
       const { acceptJson } = providers.page.state;
+      const serverSide = acceptJson && request.headers['x-server-side'];
       let actions = null;
 
-      if (acceptJson && shouldSubmitRequest) {
+      if (serverSide && shouldSubmitRequest) {
         Object.keys(providers).forEach(key => {
           pushReplication({ [key]: providers[key] }, {
             replicator: {
@@ -149,8 +156,9 @@ export default function createMiddleware({
           return;
         }
 
-        const states = preActionStates
-          || extractServerStates(providerInstances, getStates);
+        const states = extractServerStates(
+          providerInstances, getStates, preActionStates
+        );
         const clientStates = extractClientStates(providerInstances, states);
         const { headers, statusCode } = states.page || {};
         let documentString = null;
@@ -160,7 +168,11 @@ export default function createMiddleware({
         }
 
         if (acceptJson) {
-          const jsonResponse = { states: clientStates, actions };
+          const jsonResponse = {
+            states: clientStates,
+            actions,
+            results: queryResults
+          };
 
           if (statusCode && !response.headersSent) {
             response.status(statusCode).send(jsonResponse);
@@ -182,6 +194,10 @@ export default function createMiddleware({
         }
 
         responded = true;
+
+        if (inDevelopment) {
+          console.log(`--- sent response for ${request.url}`);
+        }
       }
 
       function redirect() {

@@ -5,13 +5,15 @@ export default function extractStates(providerInstances, getStates) {
   return { states, clientStates };
 }
 
-export function extractServerStates(providerInstances, getStates) {
-  const states = {};
-
+export function extractServerStates(
+  providerInstances, getStates, states = {}
+) {
   for (let providerKey in providerInstances) {
     let providerInstance = providerInstances[providerKey];
 
-    states[providerKey] = providerInstance.store.getState();
+    if (!states[providerKey] || !providerInstance.store.key) {
+      states[providerKey] = providerInstance.store.getState();
+    }
   }
 
   return getStates ? getStates(states) : states;
@@ -25,7 +27,9 @@ export function extractClientStates(providerInstances, states) {
     let clientStateKeys = providerInstance && providerInstance.clientStateKeys;
     let state = states[providerKey];
 
-    if (clientStateKeys && state) {
+    if (typeof clientStateKeys === 'undefined') {
+      clientStates[providerKey] = state;
+    } else if (clientStateKeys && clientStateKeys.length && state) {
       clientStates[providerKey] = {};
 
       for (let stateKey of clientStateKeys) {

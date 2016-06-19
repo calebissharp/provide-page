@@ -15,11 +15,17 @@ export const SET_META_ROBOTS = 'SET_META_ROBOTS';
 export const SET_ICON_FILE = 'SET_ICON_FILE';
 export const SET_CSS_FILES = 'SET_CSS_FILES';
 export const SET_JS_FILES = 'SET_JS_FILES';
+export const SYNC_WITH_ROUTER = 'SYNC_WITH_ROUTER';
+export const GOT_PAGE_STATES = 'GOT_PAGE_STATES';
 export const SUBMIT_REQUEST = 'SUBMIT_REQUEST';
 export const SUBMIT_FORM = 'SUBMIT_FORM';
 export const SUBMITTED_FORM = 'SUBMITTED_FORM';
 export const UPDATE_SESSION = 'UPDATE_SESSION';
 export const DESTROY_SESSION = 'DESTROY_SESSION';
+
+function getUrl({ pathname, search }) {
+  return pathname + search;
+}
 
 const _noEffect = true;
 
@@ -56,6 +62,48 @@ const actions = {
     return { type: SET_JS_FILES, jsFiles, _noEffect };
   },
 
+  syncWithRouter(routerHistory, routerLocation) {
+    return (dispatch, getState) => {
+      dispatch({
+        type: SYNC_WITH_ROUTER, routerHistory, routerLocation, _noEffect
+      });
+
+      routerHistory.listen(nextRouterLocation => {
+        if (getState().routerLocation !== nextRouterLocation) {
+          dispatch(actions.getPageStates(nextRouterLocation));
+        }
+      });
+    };
+  },
+
+  getPageStates(routerLocation) {
+    const xhr = new XMLHttpRequest();
+    const headers = {
+      'content-type': 'application/json;charset=UTF-8',
+      'accept': 'application/json'
+    };
+
+    return (dispatch, getState, { setResults, setStates }) => {
+      dispatch({ type: SYNC_WITH_ROUTER, routerLocation, _noEffect });
+
+      xhr.open('GET', getUrl(routerLocation), true);
+
+      for (let header in headers) {
+        xhr.setRequestHeader(header, headers[header]);
+      }
+
+      xhr.onload = () => {
+        const response = JSON.parse(xhr.response);
+        const { results, states } = response;
+
+        setResults(results);
+        setStates(states);
+        dispatch({ type: GOT_PAGE_STATES, response });
+      };
+      xhr.send();
+    };
+  },
+
   submitRequest({
     requestSession,
     requestMethod = 'POST',
@@ -73,16 +121,17 @@ const actions = {
 
   submitForm(formData, serverSide = false) {
     const xhr = new XMLHttpRequest();
-    const { pathname, search } = window.location;
     const headers = {
       'content-type': 'application/json;charset=UTF-8',
       'accept': 'application/json'
     };
 
-    return (dispatch, getState, { setStates, dispatchAll }) => {
+    return (dispatch, getState, { setResults, setStates, dispatchAll }) => {
+      const { routerLocation } = getState();
+
       dispatch({ type: SUBMIT_FORM, formData });
 
-      xhr.open('POST', pathname + search, true);
+      xhr.open('POST', getUrl(routerLocation), true);
 
       for (let header in headers) {
         xhr.setRequestHeader(header, headers[header]);
@@ -90,10 +139,11 @@ const actions = {
 
       xhr.onload = () => {
         const response = JSON.parse(xhr.response);
-        const { states, actions } = response;
+        const { actions, results, states } = response;
 
         formData._formHandled = true;
 
+        setResults(results);
         setStates(states);
 
         if (serverSide) {
@@ -274,6 +324,26 @@ const reducers = {
       default:
         return state;
     }
+  },
+
+  routerHistory(state = null, action) {
+    switch (action.type) {
+      case SYNC_WITH_ROUTER:
+        return action.routerHistory || state;
+
+      default:
+        return state;
+    }
+  },
+
+  routerLocation(state = null, action) {
+    switch (action.type) {
+      case SYNC_WITH_ROUTER:
+        return action.routerLocation;
+
+      default:
+        return state;
+    }
   }
 };
 
@@ -292,4 +362,20 @@ const middleware = thunk;
 
 const clientStateKeys = ['requestSession'];
 
-export default { actions, reducers, merge, middleware, clientStateKeys };
+const subscribeTo = {
+  router({ store: routerStore }, { store: pageStore }) {
+    // there's probably a better way to do this but whatever
+    const { routerHistory } = pageStore.getState();
+
+    if (typeof window !== 'undefined' && !routerHistory) {
+      const { history, routing } = routerStore.getState();
+      const location = routing.locationBeforeTransitions;
+
+      pageStore.dispatch(actions.syncWithRouter(history, location));
+    }
+  }
+};
+
+export default {
+  actions, reducers, merge, middleware, clientStateKeys, subscribeTo
+};
