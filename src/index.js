@@ -87,7 +87,7 @@ const actions = {
         const state = getState();
 
         if (
-          !state.ignoreRouterLocation
+          !state.pendingPage && !state.pendingForms.length
           && getUrl(state.routerLocation) !== getUrl(nextRouterLocation)
         ) {
           dispatch(actions.getPageStates(nextRouterLocation));
