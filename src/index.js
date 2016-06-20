@@ -443,9 +443,11 @@ const subscribeTo = {
 
     if (typeof window !== 'undefined' && !routerHistory) {
       const { history, routing } = routerStore.getState();
-      const location = routing.locationBeforeTransitions;
+      const location = routing && routing.locationBeforeTransitions;
 
-      pageStore.dispatch(actions.syncWithRouter(history, location));
+      if (history && location) {
+        pageStore.dispatch(actions.syncWithRouter(history, location));
+      }
     }
   }
 };
