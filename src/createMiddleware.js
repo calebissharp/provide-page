@@ -26,6 +26,7 @@ export default function createMiddleware({
       const providerInstances = { ...defaultProps.providerInstances };
       const activeQueries = { ...defaultProps.activeQueries };
       const queryResults = { ...defaultProps.queryResults };
+      const partialStates = { ...defaultProps.partialStates };
 
       let html = null;
       function renderState() {
@@ -44,7 +45,8 @@ export default function createMiddleware({
           providers,
           providerInstances,
           activeQueries,
-          queryResults
+          queryResults,
+          partialStates
         });
 
         clear(false);
@@ -159,7 +161,11 @@ export default function createMiddleware({
         const states = extractServerStates(
           providerInstances, getStates, preActionStates
         );
-        const clientStates = extractClientStates(providerInstances, states);
+        const clientStates = extractClientStates(providerInstances, {
+          ...partialStates,
+          ...states
+        });
+
         const { headers, statusCode } = states.page || {};
         let documentString = null;
 
