@@ -38,7 +38,10 @@ function clearPending(dispatch, getState) {
 
     dispatch(actions.submitForm(formData, onSubmit));
   } else if (state.pendingPage) {
-    dispatch(actions.getPageStates(state.routerLocation));
+    dispatch(actions.getPageStates(typeof window === 'undefined'
+      ? state.routerLocation
+      : window.location
+    ));
   }
 }
 
@@ -84,12 +87,7 @@ const actions = {
       });
 
       routerHistory.listen(nextRouterLocation => {
-        const state = getState();
-
-        if (
-          !state.pendingPage && !state.pendingForms.length
-          && getUrl(state.routerLocation) !== getUrl(nextRouterLocation)
-        ) {
+        if (!routerHistory.ignoreNextLocation) {
           dispatch(actions.getPageStates(nextRouterLocation));
         }
       });
@@ -104,9 +102,9 @@ const actions = {
     };
 
     return (dispatch, getState, { setStates }) => {
-      const state = getState();
+      const { waitingForResponse, routerHistory } = getState();
 
-      if (state.waitingForResponse) {
+      if (waitingForResponse) {
         dispatch({ type: PENDING_PAGE, routerLocation, _noEffect });
         return;
       }
@@ -124,6 +122,16 @@ const actions = {
 
         setStates(states);
         dispatch({ type: GOT_PAGE_STATES, states });
+
+        const { pendingForms, pendingPage, routerLocation } = getState();
+
+        if (!pendingForms.length && !pendingPage) {
+          // hack to ensure everything is up to date :(
+          routerHistory.ignoreNextLocation = true;
+          routerHistory.replace(routerLocation);
+          routerHistory.ignoreNextLocation = false;
+        }
+
         clearPending(dispatch, getState);
       };
 
@@ -176,7 +184,7 @@ const actions = {
       xhr.onload = () => {
         const states = JSON.parse(xhr.response);
 
-        formData._formHandled = !onSubmit;
+        formData._formHandled = true;
 
         setStates(states);
 
