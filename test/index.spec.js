@@ -44,7 +44,7 @@ describe('provide-page', () => {
   });
 
   it('should setDocumentTitle', () => {
-    test.wrappedInstance.props.setDocumentTitle('Test!!!');
+    test.wrappedInstance.props.setDocumentTitle('Test!!!', true);
 
     expect(test.wrappedInstance.props.documentTitle).toBe('Test!!!');
     expect(document.title).toBe('Test!!!');
