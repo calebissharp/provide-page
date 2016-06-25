@@ -47,37 +47,57 @@ function clearPending(dispatch, getState) {
 
 const _noEffect = true;
 
+const immediateThunk = (immediate, value) => (
+  immediate ? value : dispatch => setTimeout(() => dispatch(value))
+);
+
 const actions = {
-  setHeaders(headers) {
-    return { type: SET_HEADERS, headers, _noEffect };
+  setHeaders(headers, immediate) {
+    return immediateThunk(
+      immediate, { type: SET_HEADERS, headers, _noEffect }
+    );
   },
 
-  setStatusCode(statusCode) {
-    return { type: SET_STATUS_CODE, statusCode, _noEffect };
+  setStatusCode(statusCode, immediate) {
+    return immediateThunk(
+      immediate, { type: SET_STATUS_CODE, statusCode, _noEffect }
+    );
   },
 
-  setDocumentTitle(documentTitle = '') {
-    return { type: SET_DOCUMENT_TITLE, documentTitle, _noEffect };
+  setDocumentTitle(documentTitle = '', immediate) {
+    return immediateThunk(
+      immediate, { type: SET_DOCUMENT_TITLE, documentTitle, _noEffect }
+    );
   },
 
-  setMetaDescription(metaDescription = '') {
-    return { type: SET_META_DESCRIPTION, metaDescription, _noEffect };
+  setMetaDescription(metaDescription = '', immediate) {
+    return immediateThunk(
+      immediate, { type: SET_META_DESCRIPTION, metaDescription, _noEffect }
+    );
   },
 
-  setMetaRobots(metaRobots = '') {
-    return { type: SET_META_ROBOTS, metaRobots, _noEffect };
+  setMetaRobots(metaRobots = '', immediate) {
+    return immediateThunk(
+      immediate, { type: SET_META_ROBOTS, metaRobots, _noEffect }
+    );
   },
 
-  setIconFile(iconFile = '') {
-    return { type: SET_ICON_FILE, iconFile, _noEffect };
+  setIconFile(iconFile = '', immediate) {
+    return immediateThunk(
+      immediate, { type: SET_ICON_FILE, iconFile, _noEffect }
+    );
   },
 
-  setCssFiles(cssFiles = []) {
-    return { type: SET_CSS_FILES, cssFiles, _noEffect };
+  setCssFiles(cssFiles = [], immediate) {
+    return immediateThunk(
+      immediate, { type: SET_CSS_FILES, cssFiles, _noEffect }
+    );
   },
 
-  setJsFiles(jsFiles = []) {
-    return { type: SET_JS_FILES, jsFiles, _noEffect };
+  setJsFiles(jsFiles = [], immediate) {
+    return immediateThunk(
+      immediate, { type: SET_JS_FILES, jsFiles, _noEffect }
+    );
   },
 
   syncWithRouter(routerHistory, routerLocation) {
@@ -200,12 +220,16 @@ const actions = {
     };
   },
 
-  updateSession(updates) {
-    return { type: UPDATE_SESSION, updates };
+  updateSession(updates, immediate) {
+    return immediateThunk(
+      immediate, { type: UPDATE_SESSION, updates }
+    );
   },
 
-  destroySession() {
-    return { type: DESTROY_SESSION };
+  destroySession(immediate) {
+    return immediateThunk(
+      immediate, { type: DESTROY_SESSION }
+    );
   }
 };
 
