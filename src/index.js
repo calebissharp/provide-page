@@ -131,9 +131,7 @@ const actions = {
       });
 
       routerHistory.listen(nextRouterLocation => {
-        if (!routerHistory.ignoreNextLocation) {
-          dispatch(actions.getPageStates(nextRouterLocation));
-        }
+        dispatch(actions.getPageStates(nextRouterLocation));
       });
     };
   },
@@ -166,16 +164,6 @@ const actions = {
 
         setStates(states);
         dispatch({ type: GOT_PAGE_STATES, states });
-
-        const { pendingForms, pendingPage, routerLocation } = getState();
-
-        if (!pendingForms.length && !pendingPage) {
-          // hack to ensure everything is up to date :(
-          routerHistory.ignoreNextLocation = true;
-          routerHistory.replace(routerLocation);
-          routerHistory.ignoreNextLocation = false;
-        }
-
         clearPending(dispatch, getState);
       };
 
