@@ -47,56 +47,80 @@ function clearPending(dispatch, getState) {
 
 const _noEffect = true;
 
-const immediateThunk = (immediate, value) => (
-  immediate ? value : dispatch => setTimeout(() => dispatch(value))
-);
+const batchAction = (action, immediate) => {
+  if (immediate) {
+    return action;
+  }
+
+  return (dispatch, getState) => {
+    const { type } = action;
+    const { pageBatchedActions } = getState();
+    const timeout = setTimeout(() => {
+      while (pageBatchedActions[type].count) {
+        pageBatchedActions[type].count--;
+        dispatch({ type: 'NOOP', _noEffect });
+      }
+
+      delete pageBatchedActions[type];
+      dispatch(action);
+    });
+
+    if (pageBatchedActions[type]) {
+      clearTimeout(pageBatchedActions[type].timeout);
+      pageBatchedActions[type].timeout = timeout;
+      pageBatchedActions[type].count++;
+    } else {
+      pageBatchedActions[type] = { timeout, count: 0 };
+    }
+  };
+};
 
 const actions = {
   setHeaders(headers, immediate) {
-    return immediateThunk(
-      immediate, { type: SET_HEADERS, headers, _noEffect }
+    return batchAction(
+      { type: SET_HEADERS, headers, _noEffect }, immediate
     );
   },
 
   setStatusCode(statusCode, immediate) {
-    return immediateThunk(
-      immediate, { type: SET_STATUS_CODE, statusCode, _noEffect }
+    return batchAction(
+      { type: SET_STATUS_CODE, statusCode, _noEffect }, immediate
     );
   },
 
   setDocumentTitle(documentTitle = '', immediate) {
-    return immediateThunk(
-      immediate, { type: SET_DOCUMENT_TITLE, documentTitle, _noEffect }
+    return batchAction(
+      { type: SET_DOCUMENT_TITLE, documentTitle, _noEffect }, immediate
     );
   },
 
   setMetaDescription(metaDescription = '', immediate) {
-    return immediateThunk(
-      immediate, { type: SET_META_DESCRIPTION, metaDescription, _noEffect }
+    return batchAction(
+      { type: SET_META_DESCRIPTION, metaDescription, _noEffect }, immediate
     );
   },
 
   setMetaRobots(metaRobots = '', immediate) {
-    return immediateThunk(
-      immediate, { type: SET_META_ROBOTS, metaRobots, _noEffect }
+    return batchAction(
+      { type: SET_META_ROBOTS, metaRobots, _noEffect }, immediate
     );
   },
 
   setIconFile(iconFile = '', immediate) {
-    return immediateThunk(
-      immediate, { type: SET_ICON_FILE, iconFile, _noEffect }
+    return batchAction(
+      { type: SET_ICON_FILE, iconFile, _noEffect }, immediate
     );
   },
 
   setCssFiles(cssFiles = [], immediate) {
-    return immediateThunk(
-      immediate, { type: SET_CSS_FILES, cssFiles, _noEffect }
+    return batchAction(
+      { type: SET_CSS_FILES, cssFiles, _noEffect }, immediate
     );
   },
 
   setJsFiles(jsFiles = [], immediate) {
-    return immediateThunk(
-      immediate, { type: SET_JS_FILES, jsFiles, _noEffect }
+    return batchAction(
+      { type: SET_JS_FILES, jsFiles, _noEffect }, immediate
     );
   },
 
@@ -221,14 +245,14 @@ const actions = {
   },
 
   updateSession(updates, immediate) {
-    return immediateThunk(
-      immediate, { type: UPDATE_SESSION, updates }
+    return batchAction(
+      { type: UPDATE_SESSION, updates }, immediate
     );
   },
 
   destroySession(immediate) {
-    return immediateThunk(
-      immediate, { type: DESTROY_SESSION }
+    return batchAction(
+      { type: DESTROY_SESSION }, immediate
     );
   }
 };
@@ -450,7 +474,9 @@ const reducers = {
     }
 
     return state;
-  }
+  },
+
+  pageBatchedActions: (state = {}) => state
 };
 
 const merge = {
