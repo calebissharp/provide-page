@@ -57,14 +57,21 @@ export default class Form extends Component {
   };
 
   render() {
-    const { formId } = this.props;
-    const formProps = {
-      ...this.props,
-      onSubmit: this.onSubmit
-    };
+    const {
+      formId,
+      formData,
+      serverSide,
+      submitForm,
+      onSubmit,
+      children,
+      ...formProps
+    } = this.props;
+
+    formProps.onSubmit = this.onSubmit;
+    formProps.ref = 'form';
 
     return (
-      <form { ...formProps } ref="form">
+      <form { ...formProps }>
         {formProps.children}
 
         <input type="hidden" name="_formId" value={formId} />
