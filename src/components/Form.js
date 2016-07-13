@@ -63,7 +63,6 @@ export default class Form extends Component {
       serverSide,
       submitForm,
       onSubmit,
-      children,
       ...formProps
     } = this.props;
 
