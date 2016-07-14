@@ -15,6 +15,7 @@ export const SET_META_ROBOTS = 'SET_META_ROBOTS';
 export const SET_ICON_FILE = 'SET_ICON_FILE';
 export const SET_CSS_FILES = 'SET_CSS_FILES';
 export const SET_JS_FILES = 'SET_JS_FILES';
+export const SET_REQUEST_ERROR = 'SET_REQUEST_ERROR';
 export const SYNC_WITH_ROUTER = 'SYNC_WITH_ROUTER';
 export const GET_PAGE_STATES = 'GET_PAGE_STATES';
 export const GOT_PAGE_STATES = 'GOT_PAGE_STATES';
@@ -121,6 +122,12 @@ const actions = {
   setJsFiles(jsFiles = [], immediate) {
     return batchAction(
       { type: SET_JS_FILES, jsFiles, _noEffect }, immediate
+    );
+  },
+
+  setRequestError(requestError, immediate) {
+    return batchAction(
+      { type: SET_REQUEST_ERROR, requestError }, immediate
     );
   },
 
@@ -329,6 +336,16 @@ const reducers = {
     }
   },
 
+  requestError(state = '', action) {
+    switch (action.type) {
+      case SET_REQUEST_ERROR:
+        return action.requestError;
+
+      default:
+        return state;
+    }
+  },
+
   requestSession(state = {}, action) {
     if (!state.__actualSession && typeof state.destroy !== 'undefined') {
       state = { ...state, __actualSession: state };
@@ -480,7 +497,7 @@ const merge = {
 
 const middleware = thunk;
 
-const clientStateKeys = ['requestSession'];
+const clientStateKeys = ['requestSession', 'requestError'];
 
 const subscribeTo = {
   router({ store: routerStore }, { store: pageStore }) {

@@ -59,6 +59,10 @@ Sets the CSS filenames to be included with the document as `link` elements withi
 
 Sets the JS filenames to be included with the document as `script` elements appended to the `body` element.
 
+### setRequestError (String requestError)
+
+Sets the error for the current request.  This will be sent to the client.
+
 ### submitRequest ({ Object requestBody, String requestMethod, Boolean acceptJson })
 
 This action is mainly used automatically in conjunction with the `Form` component (see below), but you may trigger it manually if for some reason you need to do that.
@@ -124,6 +128,10 @@ Derived from `request.method` when used with `createMiddleware` (see below).
 
 Derived from `request.body` when used with `createMiddleware` (see below).
 
+### requestError
+
+A message you can set to be sent to the client.
+
 ### acceptJson
 
 Derived from `request.headers.accept` (`true` if `indexOf('application/json') > -1`) when used with `createMiddleware` (see below).  If `true`, the server will respond with the stores states after rendering the current URL on its end.
@@ -176,7 +184,7 @@ Optional function that returns the string representation of the entire document.
 
 Optional function that should return an object containing provider keys and their states, ultimately passed to both `renderToString` and `renderDocumentToString`.  Your current providers' stores' states will be passed to this function.  See [`lumbur/src/middleware.js`](https://github.com/loggur/lumbur/blob/master/src/middleware.js) for a full example where we concatenate the selected theme's files with the `cssFiles` and `jsFiles` reducers so that they're included as `link` and `script` tags when the document string is rendered.
 
-**Note:** The middleware will look for a special optional `clientStateKeys` array on each provider which is used for determining which reducer keys (i.e., stores' states) to send to the client upon each request.  The `page` provider defaults to only the `requestSession` key.  The `router` provider defaults to no keys.  Every other provider defaults to all keys.  See [`lumbur/src/renderAppToString.js`](https://github.com/loggur/lumbur/blob/master/src/renderAppToString.js) for an example.
+**Note:** The middleware will look for a special optional `clientStateKeys` array on each provider which is used for determining which reducer keys (i.e., stores' states) to send to the client upon each request.  The `page` provider defaults to only the `requestSession` and `requestError` keys.  The `router` provider defaults to no keys.  Every other provider defaults to all keys.  See [`lumbur/src/renderAppToString.js`](https://github.com/loggur/lumbur/blob/master/src/renderAppToString.js) for an example.
 
 ### maxRenders
 
