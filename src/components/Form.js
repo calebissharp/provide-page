@@ -32,6 +32,8 @@ export default class Form extends Component {
       if (element.name) {
         if (!element.value && element.innerText) {
           formData[element.name] = element.innerText;
+        } else if (element.type === 'checkbox' || element.type === 'radio') {
+          formData[element.name] = element.checked ? element.value : '';
         } else {
           formData[element.name] = element.value;
         }
