@@ -1,6 +1,6 @@
 {
   "name": "provide-page",
-  "version": "1.0.0-rc.34",
+  "version": "1.0.0-rc.35",
   "description": "Provides automatic server-side rendering and actions (regardless of whether or not client has JavaScript enabled) to React components.  Use in conjunction with `provide-router`.",
   "main": "./lib/index.js",
   "scripts": {
