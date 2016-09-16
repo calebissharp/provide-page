@@ -381,6 +381,9 @@ const reducers = {
         const { updates = {} } = action;
 
         delete updates.__actualSession; // just in case
+        if (!nextState.__actualSession) {
+          nextState.__actualSession = {};
+        }
 
         for (let key in updates) {
           nextState[key] = updates[key];
@@ -396,9 +399,10 @@ const reducers = {
       case DESTROY_SESSION:
         if (state.__actualSession && state.__actualSession.destroy) {
           state.__actualSession.destroy();
+          return { __actualSession: state.__actualSession };
         }
 
-        return { __actualSession: state.__actualSession };
+        return { __actualSession: {} };
 
       default:
         return state;
