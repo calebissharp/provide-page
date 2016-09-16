@@ -140,12 +140,122 @@ Derived from `request.headers.accept` (`true` if `indexOf('application/json') > 
 
 Derived from `requestBody` and matching `requestBody._formId` to the component's `props.formId` when used with `createMiddleware` and the `Form` component (see below).
 
+### ssrDisabled
+
+Defaults to `false`.  Setting to `true` will prevent automatic retrieval of states from the server upon each route change.  Also used internally within the `Form` component to dictate how each form is handled.  Useful when you want to create components with forms that will work with both server-side rendering and client-only (or serverless) rendering.  Intended to be configured as an initial state when mounting the app.
+
+  To globally disable handling of forms for automatic server-side rendering:
+  ```js
+  // src/providers/page.js
+
+  import page from 'provide-page';
+
+  // set the page provider's initial state like so;
+  // it will use this state when handling `Form` submissions
+  const ssrDisabled = true;
+
+  page.state = { ssrDisabled };
+
+  export default page;
+  ```
+
+  You can also target specific forms by their `formId` prop:
+  ```js
+  // src/providers/page.js
+
+  import page from 'provide-page';
+
+  // target specific forms
+  const ssrDisabled = {
+    someFormId: true,
+    anotherFormId: true
+  };
+
+  page.state = { ssrDisabled };
+
+  export default page;
+  ```
+
+  Or you can set `ssrDisabled` to an arbitrary configurable object used internally within your app to explicitly pass the `ssrDisabled` prop to your Forms, if for example you have some providers with both SSR replication and others that talk to a 3rd party API:
+  ```js
+  // src/providers/page.js
+
+  import page from 'provide-page';
+
+  // target specific forms
+  const ssrDisabled = {
+    someThirdPartyProvider: true,
+    anotherThirdPartyProvider: true
+  };
+
+  page.state = { ssrDisabled };
+
+  export default page;
+
+
+  // src/components/SomeComponent.js
+
+  import React, { PropTypes } from 'React';
+  import { Form } from 'provide-page';
+
+  const SomeComponent = ({ formId, ssrDisabled }) => (
+    <Form
+      formId={formId}
+      ssrDisabled={Boolean(ssrDisabled.someThirdPartyProvider)}
+      onSubmit={(event, formData) => console.log(formData)}
+    >
+      <input type="text" name="someInput" />
+      <input type="submit" value="Submit" />
+    </Form>
+  );
+
+  SomeComponent.propTypes = {
+    formId: PropTypes.string.isRequired,
+    ssrDisabled: PropTypes.object.isRequired
+  };
+
+  SomeComponent.defaultProps = {
+    formId: 'SomeComponent'
+  };
+
+  export default SomeComponent;
+  ```
+
+  Or you can explicitly pass the `ssrDisabled` prop to the `Form` (not usually recommended as it might prevent configuration/reusability):
+  ```js
+  // src/components/SomeComponent.js
+
+  import React, { PropTypes } from 'React';
+  import { Form } from 'provide-page';
+
+  const SomeComponent = ({ formId }) => (
+    <Form
+      formId={formId}
+      ssrDisabled={true}
+      onSubmit={(event, formData) => console.log(formData)}
+    >
+      <input type="text" name="someInput" />
+      <input type="submit" value="Submit" />
+    </Form>
+  );
+
+  SomeComponent.propTypes = {
+    formId: PropTypes.string.isRequired
+  };
+
+  SomeComponent.defaultProps = {
+    formId: 'SomeComponent'
+  };
+
+  export default SomeComponent;
+  ```
+
 
 ## Components
 
 ### Form
 
-A simple wrapper around `<form { ...props } />`.  Combined with `createMiddleware` (see below), it intercepts the `onSubmit` event and allows all of the resulting actions to occur on the server, whether or not JS is enabled.  If JS is enabled, it will trigger the action on the server via `XMLHttpRequest`.  All you need is a `formId` prop combined with an `onSubmit` prop that accepts `formData` as a second argument.  Include a `serverSide` prop if the client needs states from the server before it can continue.  The `formId` prop should exist within both the `Form` instance and the component instance rendering the form.  See [Lumbur's `UserLogIn` component](https://github.com/loggur/lumbur/blob/master/src/components/UserLogIn.js) for a full example.
+A simple wrapper around `<form { ...props } />`.  Combined with `createMiddleware` (see below), it intercepts the `onSubmit` event and allows all of the resulting actions to occur on the server, whether or not JS is enabled.  If JS is enabled and the `ssrDisabled` prop is falsy, it will trigger the action on the server via `XMLHttpRequest`.  All you need is a `formId` prop combined with an `onSubmit` prop that accepts `formData` as a second argument.  Include a `serverSide` prop if the client needs states from the server before it can continue.  The `formId` prop should exist within both the `Form` instance and the component instance rendering the form.  See [Lumbur's `UserLogIn` component](https://github.com/loggur/lumbur/blob/master/src/components/UserLogIn.js) for a full example.
 
 
 ## Middleware

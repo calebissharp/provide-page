@@ -6,6 +6,7 @@ export default class Form extends Component {
     formId: PropTypes.string,
     formData: PropTypes.object,
     serverSide: PropTypes.bool,
+    ssrDisabled: PropTypes.any,
     submitForm: PropTypes.func.isRequired,
     onSubmit: PropTypes.func,
     children: PropTypes.any
@@ -24,7 +25,9 @@ export default class Form extends Component {
   }
 
   onSubmit = event => {
-    const { submitForm, serverSide, onSubmit } = this.props;
+    const {
+      formId, submitForm, serverSide, ssrDisabled, onSubmit
+    } = this.props;
     const elements = Array.prototype.slice.call(this.refs.form.elements);
     const formData = {};
 
@@ -48,7 +51,11 @@ export default class Form extends Component {
       event.stopPropagation();
       event.preventDefault();
 
-      if (serverSide) {
+      if (ssrDisabled === true || ssrDisabled && ssrDisabled[formId]) {
+        if (onSubmit) {
+          onSubmit(event, formData);
+        }
+      } else if (serverSide) {
         submitForm(formData, onSubmit);
       } else {
         submitForm(formData);
@@ -67,6 +74,7 @@ export default class Form extends Component {
       formId,
       formData,
       serverSide,
+      ssrDisabled,
       submitForm,
       onSubmit,
       ...formProps

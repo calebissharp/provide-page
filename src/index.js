@@ -26,6 +26,7 @@ export const PENDING_PAGE = 'PENDING_PAGE';
 export const PENDING_FORM = 'PENDING_FORM';
 export const UPDATE_SESSION = 'UPDATE_SESSION';
 export const DESTROY_SESSION = 'DESTROY_SESSION';
+export const NOOP = 'NOOP';
 
 function getUrl(location) {
   return location ? location.pathname + location.search : null;
@@ -59,7 +60,7 @@ const batchAction = (action, immediate) => {
     const timeout = setTimeout(() => {
       while (pageBatchedActions[type].count) {
         pageBatchedActions[type].count--;
-        dispatch({ type: 'NOOP', _noEffect });
+        dispatch({ type: NOOP, _noEffect });
       }
 
       delete pageBatchedActions[type];
@@ -144,24 +145,24 @@ const actions = {
   },
 
   getPageStates(routerLocation) {
-    if (typeof XMLHttpRequest === 'undefined') {
-      // temp fix for tests using jsdom
-      return { type: 'NOOP' };
-    }
-
-    const xhr = new XMLHttpRequest();
-    const headers = {
-      'content-type': 'application/json;charset=UTF-8',
-      'accept': 'application/json'
-    };
-
     return (dispatch, getState, { setStates }) => {
-      const { waitingForResponse, routerHistory } = getState();
+      const { ssrDisabled, waitingForResponse, routerHistory } = getState();
+
+      if (ssrDisabled === true || typeof XMLHttpRequest === 'undefined') {
+        dispatch({ type: NOOP, _noEffect });
+        return;
+      }
 
       if (waitingForResponse) {
         dispatch({ type: PENDING_PAGE, routerLocation, _noEffect });
         return;
       }
+
+      const xhr = new XMLHttpRequest();
+      const headers = {
+        'content-type': 'application/json;charset=UTF-8',
+        'accept': 'application/json'
+      };
 
       dispatch({ type: GET_PAGE_STATES, routerLocation, _noEffect });
 
@@ -199,38 +200,38 @@ const actions = {
   },
 
   submitForm(formData, onSubmit) {
-    if (typeof XMLHttpRequest === 'undefined') {
-      // temp fix for tests using jsdom
-      formData._formHandled = true;
+    return (dispatch, getState, { setStates }) => {
+      const { ssrDisabled, waitingForResponse, routerLocation } = getState();
 
-      if (onSubmit) {
-        onSubmit(null, formData);
+      if (ssrDisabled === true || typeof XMLHttpRequest === 'undefined') {
+        formData._formHandled = true;
+
+        if (onSubmit) {
+          onSubmit(null, formData);
+        }
+
+        dispatch({ type: NOOP, _noEffect });
+        return;
       }
 
-      return { type: 'NOOP' };
-    }
-
-    const xhr = new XMLHttpRequest();
-    const headers = {
-      'content-type': 'application/json;charset=UTF-8',
-      'accept': 'application/json'
-    };
-
-    if (onSubmit) {
-      headers['x-server-side'] = true;
-    }
-
-    return (dispatch, getState, { setStates }) => {
-      const state = getState();
-
-      if (state.waitingForResponse) {
+      if (waitingForResponse) {
         dispatch({ type: PENDING_FORM, formData, onSubmit, _noEffect });
         return;
       }
 
+      const xhr = new XMLHttpRequest();
+      const headers = {
+        'content-type': 'application/json;charset=UTF-8',
+        'accept': 'application/json'
+      };
+
+      if (onSubmit) {
+        headers['x-server-side'] = true;
+      }
+
       dispatch({ type: SUBMIT_FORM, formData, onSubmit });
 
-      xhr.open('POST', getUrl(state.routerLocation), true);
+      xhr.open('POST', getUrl(routerLocation), true);
 
       for (let header in headers) {
         xhr.setRequestHeader(header, headers[header]);
@@ -497,7 +498,9 @@ const reducers = {
     return state;
   },
 
-  pageBatchedActions: (state = {}) => state
+  pageBatchedActions: (state = {}) => state,
+
+  ssrDisabled: (state = false) => state,
 };
 
 const merge = {
