@@ -126,7 +126,9 @@ export default function createMiddleware({
         Object.keys(providers).forEach(key => {
           pushReplication({ [key]: providers[key] }, {
             replicator: {
-              postReduction(providerKey, state, nextState, action) {
+              postReduction({ store, state, nextState, action }) {
+                const { key: providerKey } = store;
+
                 if (actions) {
                   if (preActionStates && !preActionStates[providerKey]) {
                     preActionStates[providerKey] = state;
