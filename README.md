@@ -140,6 +140,8 @@ Derived from `request.headers.accept` (`true` if `indexOf('application/json') > 
 
 Derived from `requestBody` and matching `requestBody._formId` to the component's `props.formId` when used with `createMiddleware` and the `Form` component (see below).
 
+If a form element has a `data-json` attribute, it will be parsed using `JSON.parse` and become the element's value within `formData`.  This is useful for certain data structures which can't be easily represented as a single element's value.
+
 ### ssrDisabled
 
 Defaults to `false`.  Setting to `true` will prevent automatic retrieval of states from the server upon each route change.  Also used internally within the `Form` component to dictate how each form is handled.  Useful when you want to create components with forms that will work with both server-side rendering and client-only (or serverless) rendering.  Intended to be configured as an initial state when mounting the app.

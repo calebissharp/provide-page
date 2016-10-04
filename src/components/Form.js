@@ -33,7 +33,14 @@ export default class Form extends Component {
 
     for (let element of elements) {
       if (element.name) {
-        if (!element.value && element.innerText) {
+        if (element.getAttribute('data-json')) {
+          try {
+            formData[element.name] = JSON.parse(
+              element.getAttribute('data-json')
+            );
+          } catch(error) {
+          }
+        } else if (!element.value && element.innerText) {
           formData[element.name] = element.innerText;
         } else if (element.type === 'checkbox') {
           formData[element.name] = element.checked ? element.value : '';
