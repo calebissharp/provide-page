@@ -204,8 +204,9 @@ export default function createMiddleware({
         const { router } = providerInstances;
         const { routing } = router.store.getState();
         const { locationBeforeTransitions: location } = routing;
+        const url = location.pathname + location.search;
 
-        if (location.pathname !== request.originalUrl) {
+        if (url !== request.originalUrl) {
           if (!response.headersSent) {
             response.redirect(303, location.pathname);
           }
