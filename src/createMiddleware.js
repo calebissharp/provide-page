@@ -28,6 +28,12 @@ export default function createMiddleware({
       const queryResults = { ...defaultProps.queryResults };
       const partialStates = { ...defaultProps.partialStates };
 
+      providers.page.state = {
+        ...providers.page.state,
+        requestMethod: request.method,
+        requestHeaders: request.headers
+      };
+
       let html = null;
       function renderState() {
         if (responded) {
@@ -101,7 +107,8 @@ export default function createMiddleware({
         const { page } = providerInstances;
         const requestState = {
           requestMethod: request.method,
-          requestBody: request.body
+          requestBody: request.body,
+          requestHeaders: request.headers
         };
 
         if (serverSide && shouldSubmitRequest) {

@@ -185,16 +185,18 @@ const actions = {
   },
 
   submitRequest({
-    requestSession,
     requestMethod = 'POST',
     requestBody = {},
+    requestHeaders = {},
+    requestSession,
     acceptJson
   }) {
     return {
       type: SUBMIT_REQUEST,
-      requestSession,
       requestMethod,
       requestBody,
+      requestHeaders,
+      requestSession,
       acceptJson
     };
   },
@@ -426,6 +428,17 @@ const reducers = {
 
       case SUBMIT_REQUEST:
         return action.requestBody;
+
+      default:
+        return state;
+    }
+  },
+
+  requestHeaders(state = {}, action) {
+    switch (action.type) {
+      case SUBMIT_FORM:
+      case SUBMIT_REQUEST:
+        return action.requestHeaders || {};
 
       default:
         return state;

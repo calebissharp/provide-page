@@ -63,7 +63,7 @@ Sets the JS filenames to be included with the document as `script` elements appe
 
 Sets the error for the current request.  This will be sent to the client.
 
-### submitRequest ({ Object requestBody, String requestMethod, Boolean acceptJson })
+### submitRequest ({ String requestMethod, Object requestBody, Object requestHeaders, Object requestSession, Boolean acceptJson })
 
 This action is mainly used automatically in conjunction with the `Form` component (see below), but you may trigger it manually if for some reason you need to do that.
 
@@ -127,6 +127,10 @@ Derived from `request.method` when used with `createMiddleware` (see below).
 ### requestBody
 
 Derived from `request.body` when used with `createMiddleware` (see below).
+
+### requestHeaders
+
+Derived from `request.headers` when used with `createMiddleware` (see below).
 
 ### requestError
 
@@ -266,7 +270,7 @@ A simple wrapper around `<form { ...props } />`.  Combined with `createMiddlewar
 
 Returns a function that can be used as `express` (or other) middleware and will do the following for you, server-side:
 
-  - Automatically render the state of the app depending on some `defaultProps` (`{ providers }`), the `request` (`{ method: requestMethod, body: requestBody }`), and optional `formData` (see the `Form` component above).
+  - Automatically render the state of the app depending on some `defaultProps` (`{ providers }`), the `request` (`{ method: requestMethod, body: requestBody, headers: requestHeaders }`), and optional `formData` (see the `Form` component above).
 
   - Respond with a full document string describing the current page - i.e., headers, status code, title, meta, favicon, js files, and css files - all controlled by your React components.
 
