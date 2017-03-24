@@ -1,6 +1,6 @@
 # provide-page
 
-[![build status](https://img.shields.io/travis/loggur/provide-page/master.svg?style=flat-square)](https://travis-ci.org/loggur/provide-page) [![npm version](https://img.shields.io/npm/v/provide-page.svg?style=flat-square)](https://www.npmjs.com/package/provide-page)
+[![npm version](https://img.shields.io/npm/v/provide-page.svg?style=flat-square)](https://www.npmjs.com/package/provide-page)
 [![npm downloads](https://img.shields.io/npm/dm/provide-page.svg?style=flat-square)](https://www.npmjs.com/package/provide-page)
 
 Provides automatic server-side rendering and actions (regardless of whether or not client has JavaScript enabled) to React components.  Used in conjunction with [`provide-router`](https://github.com/loggur/provide-router).
