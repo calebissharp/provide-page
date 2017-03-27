@@ -11,6 +11,7 @@ export default function createMiddleware({
   renderToString,
   renderDocumentToString = defaultRenderDocumentToString,
   getStates,
+  initStates,
   maxRenders = 20,
   maxResponseTime = 2000
 }) {
@@ -33,6 +34,10 @@ export default function createMiddleware({
         requestMethod: request.method,
         requestHeaders: request.headers
       };
+
+      if (initStates) {
+        initStates(providers, providerInstances);
+      }
 
       let html = null;
       function renderState() {
