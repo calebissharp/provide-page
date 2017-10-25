@@ -1,4 +1,3 @@
-import providePage from './index';
 import provideRouter from 'provide-router';
 import { createMemoryHistory } from 'react-router';
 
@@ -13,17 +12,19 @@ export default function getProviders(defaultProviders, request) {
     providers.router = provideRouter(createMemoryHistory(request.originalUrl));
   }
 
-  if (!providers.page) {
-    providers.page = providePage;
+  if (providers.page) {
+    providers.page.state = {
+      ...providers.page.state,
+      requestSession: request.session,
+      acceptJson: request.headers
+        && request.headers.accept
+        && request.headers.accept.indexOf('application/json') > -1
+    };
+  } else {
+    console.error(
+      'The `page` provider is missing from the `providers` object!'
+    );
   }
-
-  providers.page.state = {
-    ...providers.page.state,
-    requestSession: request.session,
-    acceptJson: request.headers
-      && request.headers.accept
-      && request.headers.accept.indexOf('application/json') > -1
-  };
 
   return providers;
 }
