@@ -201,7 +201,8 @@ Defaults to `false`.  Setting to `true` will prevent automatic retrieval of stat
 
   // src/components/SomeComponent.js
 
-  import React, { PropTypes } from 'React';
+  import React from 'react';
+  import PropTypes from 'prop-types';
   import { Form } from 'provide-page';
 
   const SomeComponent = ({ formId, ssrDisabled }) => (
@@ -231,7 +232,8 @@ Defaults to `false`.  Setting to `true` will prevent automatic retrieval of stat
   ```js
   // src/components/SomeComponent.js
 
-  import React, { PropTypes } from 'React';
+  import React from 'react';
+  import PropTypes from 'prop-types';
   import { Form } from 'provide-page';
 
   const SomeComponent = ({ formId }) => (

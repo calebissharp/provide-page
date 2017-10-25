@@ -1,8 +1,9 @@
 import './init';
 import 'react-redux-provide/lib/install';
 import expect from 'expect';
-import React, { PropTypes } from 'react';
-import { Simulate } from 'react-addons-test-utils';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { Simulate } from 'react-dom/test-utils';
 import { renderTest } from 'react-redux-provide-test-utils';
 import { Test } from './components/index';
 import { page, list } from './providers/index';
