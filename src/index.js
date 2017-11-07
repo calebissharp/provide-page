@@ -542,7 +542,10 @@ const subscribeTo = {
 
     if (typeof window !== 'undefined' && !routerHistory) {
       const { history, routing } = routerStore.getState();
-      const location = routing && routing.locationBeforeTransitions;
+      const location = routing && routing.locationBeforeTransitions
+        || routing && routing.location
+        || routerStore.getState().location
+        || history.location;
 
       if (history && location) {
         pageStore.dispatch(actions.syncWithRouter(history, location));

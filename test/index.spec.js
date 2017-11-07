@@ -5,50 +5,28 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Simulate } from 'react-dom/test-utils';
 import { renderTest } from 'react-redux-provide-test-utils';
-import { Test } from './components/index';
-import { page, list } from './providers/index';
-import {
-  Form, createMiddleware, defaultRenderDocumentToString
+import { Test, Title } from './components/index';
+import page, {
+  Form,
+  createMiddleware,
+  defaultRenderDocumentToString
 } from '../src/index';
 
-const defaultProps = {
-  providers: {
-    page,
-    list: {
-      ...list,
-      state: {
-        list: [
-          {
-            to: '/test-one',
-            children: 'Test One'
-          },
-          {
-            to: '/test-two',
-            children: 'Test Two'
-          },
-          {
-            to: '/test-three',
-            children: 'Test Three'
-          }
-        ]
-      }
-    }
-  }
-};
-
-const host = 'http://localhost:8080';
-const test = renderTest(Test, { ...defaultProps });
+const { getComponentInstance } = renderTest(Test, { providers: { page } });
 
 describe('provide-page', () => {
   it('should have initialized props correctly', () => {
-    expect(test.wrappedInstance.props.documentTitle).toBe('Testing');
+    expect(getComponentInstance(Title).props.documentTitle).toBe('Testing');
   });
 
-  it('should setDocumentTitle', () => {
-    test.wrappedInstance.props.setDocumentTitle('Test!!!', true);
+  it('should setDocumentTitle', done => {
+    getComponentInstance(Title).props.setDocumentTitle('Test!!!', true);
 
-    expect(test.wrappedInstance.props.documentTitle).toBe('Test!!!');
-    expect(document.title).toBe('Test!!!');
+    setTimeout(() => {
+      expect(getComponentInstance(Title).props.documentTitle).toBe('Test!!!');
+      expect(document.title).toBe('Test!!!');
+      done();
+    });
   });
 
   describe('Form component', () => {

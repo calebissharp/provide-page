@@ -214,8 +214,12 @@ export default function createMiddleware({
 
       function redirect() {
         const { router } = providerInstances;
-        const { routing } = router.store.getState();
-        const { locationBeforeTransitions: location } = routing;
+        const { history, routing } = router.store.getState();
+        const location = routing && routing.locationBeforeTransitions
+          || routing && routing.location
+          || router.store.getState().location
+          || history.location;
+
         const url = location.pathname + location.search;
 
         if (url !== request.originalUrl) {
