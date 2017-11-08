@@ -25,7 +25,7 @@ npm install provide-page --save
 
 ## Actions
 
-You can use the following `actions` via `propTypes` to manage the state of the document both client-side and server-side.  You should typically only call these `actions` within `componentWillMount` and `componentWillReceiveProps`.  See [`test/components/Test.js`](https://github.com/loggur/provide-page/blob/master/test/components/Test.js) for an example.
+You can use the following `actions` via `propTypes` to manage the state of the document both client-side and server-side.
 
 ### setHeaders (Object headers)
 
