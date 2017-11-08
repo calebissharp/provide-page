@@ -5,6 +5,8 @@
 
 Provides automatic server-side rendering and actions (regardless of whether or not client has JavaScript enabled) to React components.  Used in conjunction with [`provide-router`](https://github.com/loggur/provide-router).
 
+> If you're using `react-router` v2 or v3, you'll want [v2 of this library](https://github.com/loggur/provide-page/tree/v2).
+
 
 ## Table of contents
 
