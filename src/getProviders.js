@@ -1,5 +1,5 @@
 import provideRouter from 'provide-router';
-import { createMemoryHistory } from 'react-router';
+import createMemoryHistory from 'history/createMemoryHistory';
 
 export default function getProviders(defaultProviders, request) {
   const providers = {};
@@ -9,7 +9,9 @@ export default function getProviders(defaultProviders, request) {
   }
 
   if (!providers.router) {
-    providers.router = provideRouter(createMemoryHistory(request.originalUrl));
+    providers.router = provideRouter(createMemoryHistory({
+      initialEntries: [ request.originalUrl ]
+    }));
   }
 
   if (providers.page) {
