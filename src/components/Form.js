@@ -9,12 +9,43 @@ export default class Form extends Component {
     serverSide: PropTypes.bool,
     ssrDisabled: PropTypes.any,
     submitForm: PropTypes.func.isRequired,
+    onChange: PropTypes.func,
     onSubmit: PropTypes.func,
+    getFormData: PropTypes.func.isRequired,
     children: PropTypes.any
   };
 
   static defaultProps = {
-    method: 'post'
+    method: 'post',
+    getFormData: form => {
+      const elements = Array.prototype.slice.call(form.elements);
+      const formData = {};
+
+      for (let element of elements) {
+        if (element.name) {
+          if (element.getAttribute('data-json')) {
+            try {
+              formData[element.name] = JSON.parse(
+                element.getAttribute('data-json')
+              );
+            } catch(error) {
+            }
+          } else if (!element.value && element.innerText) {
+            formData[element.name] = element.innerText;
+          } else if (element.type === 'checkbox') {
+            formData[element.name] = element.checked ? element.value : '';
+          } else if (element.type === 'radio') {
+            if (element.checked) {
+              formData[element.name] = element.value;
+            }
+          } else {
+            formData[element.name] = element.value;
+          }
+        }
+      }
+
+      return formData;
+    }
   };
 
   componentWillMount() {
@@ -25,35 +56,23 @@ export default class Form extends Component {
     }
   }
 
+  onChange = event => {
+    const { onChange, getFormData } = this.props;
+
+    if (onChange) {
+      onChange(event, getFormData(this.refs.form));
+    }
+  };
+
   onSubmit = event => {
     const {
-      formId, submitForm, serverSide, ssrDisabled, onSubmit
+      formId,
+      submitForm,
+      serverSide,
+      ssrDisabled,
+      onSubmit
     } = this.props;
-    const elements = Array.prototype.slice.call(this.refs.form.elements);
-    const formData = {};
-
-    for (let element of elements) {
-      if (element.name) {
-        if (element.getAttribute('data-json')) {
-          try {
-            formData[element.name] = JSON.parse(
-              element.getAttribute('data-json')
-            );
-          } catch(error) {
-          }
-        } else if (!element.value && element.innerText) {
-          formData[element.name] = element.innerText;
-        } else if (element.type === 'checkbox') {
-          formData[element.name] = element.checked ? element.value : '';
-        } else if (element.type === 'radio') {
-          if (element.checked) {
-            formData[element.name] = element.value;
-          }
-        } else {
-          formData[element.name] = element.value;
-        }
-      }
-    }
+    const formData = this.props.getFormData(this.refs.form);
 
     if (event && event.stopPropagation) {
       event.stopPropagation();
@@ -84,10 +103,13 @@ export default class Form extends Component {
       serverSide,
       ssrDisabled,
       submitForm,
+      getFormData,
+      onChange,
       onSubmit,
       ...formProps
     } = this.props;
 
+    formProps.onChange = this.onChange;
     formProps.onSubmit = this.onSubmit;
     formProps.ref = 'form';
 
