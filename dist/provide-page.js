@@ -1538,6 +1538,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    });
 
+	    // Delete prop so React doesn't complain when it is passed to <a />
+	    delete aProps.pushWindowPath;
+
 	    return _react2['default'].createElement('a', aProps);
 	  };
 

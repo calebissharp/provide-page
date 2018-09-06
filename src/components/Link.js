@@ -35,6 +35,9 @@ export default class Link extends Component {
       }
     };
 
+    // Delete prop so React doesn't complain when it is passed to <a />
+    delete aProps.pushWindowPath
+
     return (
       <a { ...aProps } />
     );
