@@ -7,7 +7,7 @@
 		exports["providePage"] = factory(require("react"));
 	else
 		root["providePage"] = factory(root["React"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_3__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_2__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -62,37 +62,37 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _reduxThunk = __webpack_require__(36);
+	var _reduxThunk = __webpack_require__(37);
 
 	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
-	var _exenv = __webpack_require__(20);
+	var _exenv = __webpack_require__(24);
 
-	var _componentsForm = __webpack_require__(17);
+	var _componentsForm = __webpack_require__(21);
 
 	var _componentsForm2 = _interopRequireDefault(_componentsForm);
 
 	exports.Form = _componentsForm2['default'];
 
-	var _componentsLink = __webpack_require__(18);
+	var _componentsLink = __webpack_require__(22);
 
 	var _componentsLink2 = _interopRequireDefault(_componentsLink);
 
 	exports.Link = _componentsLink2['default'];
 
-	var _createMiddleware2 = __webpack_require__(19);
+	var _createMiddleware2 = __webpack_require__(23);
 
 	var _createMiddleware3 = _interopRequireDefault(_createMiddleware2);
 
 	exports.createMiddleware = _createMiddleware3['default'];
 
-	var _defaultRenderDocumentToString2 = __webpack_require__(8);
+	var _defaultRenderDocumentToString2 = __webpack_require__(7);
 
 	var _defaultRenderDocumentToString3 = _interopRequireDefault(_defaultRenderDocumentToString2);
 
 	exports.defaultRenderDocumentToString = _defaultRenderDocumentToString3['default'];
 
-	var _eventsPropTypes2 = __webpack_require__(4);
+	var _eventsPropTypes2 = __webpack_require__(3);
 
 	var _eventsPropTypes3 = _interopRequireDefault(_eventsPropTypes2);
 
@@ -457,7 +457,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // By explicitly using `prop-types` you are opting into new development behavior.
 	  // http://fb.me/prop-types-in-prod
 	  var throwOnDirectAccess = true;
-	  module.exports = __webpack_require__(26)(isValidElement, throwOnDirectAccess);
+	  module.exports = __webpack_require__(29)(isValidElement, throwOnDirectAccess);
 	} else {
 	  // By explicitly using `prop-types` you are opting into new production behavior.
 	  // http://fb.me/prop-types-in-prod
@@ -469,41 +469,10 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 2 */
 /***/ (function(module, exports) {
 
-	"use strict";
-
-	exports.__esModule = true;
-	exports["default"] = createKeyConcat;
-
-	function createKeyConcat(key, unshift) {
-	  return function (providers, value) {
-	    for (var providerName in providers) {
-	      var provider = providers[providerName];
-
-	      if (!provider[key]) {
-	        provider[key] = [];
-	      } else if (!Array.isArray(provider[key])) {
-	        provider[key] = [provider[key]];
-	      }
-
-	      if (unshift) {
-	        provider[key] = [].concat(value).concat(provider[key]);
-	      } else {
-	        provider[key] = provider[key].concat(value);
-	      }
-	    }
-	  };
-	}
-
-	module.exports = exports["default"];
+	module.exports = __WEBPACK_EXTERNAL_MODULE_2__;
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports) {
-
-	module.exports = __WEBPACK_EXTERNAL_MODULE_3__;
-
-/***/ }),
-/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -512,7 +481,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _react = __webpack_require__(3);
+	var _react = __webpack_require__(2);
 
 	var _react2 = _interopRequireDefault(_react);
 
@@ -565,166 +534,144 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.__esModule = true;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.unshiftClear = exports.pushClear = exports.unshiftWait = exports.pushWait = exports.unshiftReplicator = exports.pushReplicator = exports.unshiftReplication = exports.pushReplication = exports.unshiftOnReady = exports.pushOnReady = exports.unshiftOnInstantiated = exports.pushOnInstantiated = exports.unshiftEnhancer = exports.pushEnhancer = exports.unshiftMiddleware = exports.pushMiddleware = exports.handleQueries = exports.getMergedResult = exports.getQueryHandlers = exports.getQueriesOptions = exports.getQueryOptions = exports.getQuery = exports.getQueries = exports.getFunctionOrObject = exports.getQueryResults = exports.getActiveQueries = exports.getProviderInstances = exports.getProviders = exports.getFromContextOrProps = exports.instantiateProvider = exports.shallowEqual = exports.createKeyConcat = exports.getInitialState = exports.getClientState = exports.createProviderStore = exports.reloadProviders = exports.reloadFunctions = exports.provide = undefined;
 
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	exports['default'] = createProviderStore;
-
-	var _redux = __webpack_require__(7);
-
-	/**
-	 * Creates and returns a store specifically for some provider.
-	 *
-	 * @param {Object} provider
-	 * @param {Object} initialState Optional
-	 * @return {Object}
-	 * @api public
-	 */
-
-	function createProviderStore(provider, initialState) {
-	  var reducers = provider.reducers;
-	  var middleware = provider.middleware;
-	  var enhancer = provider.enhancer;
-
-	  var enhancers = [];
-	  var create = undefined;
-
-	  if (middleware) {
-	    enhancers.push(_redux.applyMiddleware.apply(null, [].concat(middleware)));
-	  }
-
-	  if (enhancer) {
-	    enhancers = enhancers.concat(enhancer);
-	  }
-
-	  if (initialState) {
-	    initialState = _extends({}, initialState);
-
-	    for (var key in initialState) {
-	      if (reducers[key] === undefined) {
-	        delete initialState[key];
-	      }
-	    }
-	  }
-
-	  if (enhancers.length) {
-	    create = _redux.compose.apply(undefined, enhancers)(_redux.createStore);
-	  } else {
-	    create = _redux.createStore;
-	  }
-
-	  return create(_redux.combineReducers(reducers), initialState);
-	}
-
-	module.exports = exports['default'];
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	exports.__esModule = true;
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _provide = __webpack_require__(27);
+	var _provide = __webpack_require__(30);
 
 	var _provide2 = _interopRequireDefault(_provide);
 
-	var _createProviderStore = __webpack_require__(5);
+	var _createProviderStore = __webpack_require__(10);
 
 	var _createProviderStore2 = _interopRequireDefault(_createProviderStore);
 
-	var _createCombinedStore = __webpack_require__(10);
+	var _createKeyConcat = __webpack_require__(9);
 
-	var _createCombinedStore2 = _interopRequireDefault(_createCombinedStore);
+	var _createKeyConcat2 = _interopRequireDefault(_createKeyConcat);
 
-	var _pushMiddleware = __webpack_require__(29);
+	var _shallowEqual = __webpack_require__(5);
 
-	var _pushMiddleware2 = _interopRequireDefault(_pushMiddleware);
+	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
 
-	var _unshiftMiddleware = __webpack_require__(31);
+	var _instantiateProvider = __webpack_require__(12);
 
-	var _unshiftMiddleware2 = _interopRequireDefault(_unshiftMiddleware);
+	var _instantiateProvider2 = _interopRequireDefault(_instantiateProvider);
 
-	var _pushEnhancer = __webpack_require__(28);
+	var _keyConcats = __webpack_require__(13);
 
-	var _pushEnhancer2 = _interopRequireDefault(_pushEnhancer);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var _unshiftEnhancer = __webpack_require__(30);
-
-	var _unshiftEnhancer2 = _interopRequireDefault(_unshiftEnhancer);
-
-	exports['default'] = _provide2['default'];
-	exports.provide = _provide2['default'];
+	exports.default = _provide2.default;
+	exports.provide = _provide2.default;
+	exports.reloadFunctions = _provide.reloadFunctions;
 	exports.reloadProviders = _provide.reloadProviders;
-	exports.createProviderStore = _createProviderStore2['default'];
-	exports.createCombinedStore = _createCombinedStore2['default'];
-	exports.pushMiddleware = _pushMiddleware2['default'];
-	exports.unshiftMiddleware = _unshiftMiddleware2['default'];
-	exports.pushEnhancer = _pushEnhancer2['default'];
-	exports.unshiftEnhancer = _unshiftEnhancer2['default'];
+	exports.createProviderStore = _createProviderStore2.default;
+	exports.getClientState = _createProviderStore.getClientState;
+	exports.getInitialState = _createProviderStore.getInitialState;
+	exports.createKeyConcat = _createKeyConcat2.default;
+	exports.shallowEqual = _shallowEqual2.default;
+	exports.instantiateProvider = _instantiateProvider2.default;
+	exports.getFromContextOrProps = _instantiateProvider.getFromContextOrProps;
+	exports.getProviders = _instantiateProvider.getProviders;
+	exports.getProviderInstances = _instantiateProvider.getProviderInstances;
+	exports.getActiveQueries = _instantiateProvider.getActiveQueries;
+	exports.getQueryResults = _instantiateProvider.getQueryResults;
+	exports.getFunctionOrObject = _instantiateProvider.getFunctionOrObject;
+	exports.getQueries = _instantiateProvider.getQueries;
+	exports.getQuery = _instantiateProvider.getQuery;
+	exports.getQueryOptions = _instantiateProvider.getQueryOptions;
+	exports.getQueriesOptions = _instantiateProvider.getQueriesOptions;
+	exports.getQueryHandlers = _instantiateProvider.getQueryHandlers;
+	exports.getMergedResult = _instantiateProvider.getMergedResult;
+	exports.handleQueries = _instantiateProvider.handleQueries;
+	exports.pushMiddleware = _keyConcats.pushMiddleware;
+	exports.unshiftMiddleware = _keyConcats.unshiftMiddleware;
+	exports.pushEnhancer = _keyConcats.pushEnhancer;
+	exports.unshiftEnhancer = _keyConcats.unshiftEnhancer;
+	exports.pushOnInstantiated = _keyConcats.pushOnInstantiated;
+	exports.unshiftOnInstantiated = _keyConcats.unshiftOnInstantiated;
+	exports.pushOnReady = _keyConcats.pushOnReady;
+	exports.unshiftOnReady = _keyConcats.unshiftOnReady;
+	exports.pushReplication = _keyConcats.pushReplication;
+	exports.unshiftReplication = _keyConcats.unshiftReplication;
+	exports.pushReplicator = _keyConcats.pushReplicator;
+	exports.unshiftReplicator = _keyConcats.unshiftReplicator;
+	exports.pushWait = _keyConcats.pushWait;
+	exports.unshiftWait = _keyConcats.unshiftWait;
+	exports.pushClear = _keyConcats.pushClear;
+	exports.unshiftClear = _keyConcats.unshiftClear;
 
 /***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 5 */
+/***/ (function(module, exports) {
 
 	'use strict';
 
-	exports.__esModule = true;
-	exports.compose = exports.applyMiddleware = exports.bindActionCreators = exports.combineReducers = exports.createStore = undefined;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	var _createStore = __webpack_require__(13);
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-	var _createStore2 = _interopRequireDefault(_createStore);
+	exports.default = shallowEqual;
+	function shallowEqual(objA, objB) {
+	  if (objA === objB) {
+	    return true;
+	  }
 
-	var _combineReducers = __webpack_require__(39);
+	  if (!objA || (typeof objA === 'undefined' ? 'undefined' : _typeof(objA)) !== 'object' || !objB || (typeof objB === 'undefined' ? 'undefined' : _typeof(objB)) !== 'object') {
+	    return false;
+	  }
 
-	var _combineReducers2 = _interopRequireDefault(_combineReducers);
+	  var keysA = Object.keys(objA);
+	  var keysB = Object.keys(objB);
 
-	var _bindActionCreators = __webpack_require__(38);
+	  if (keysA.length !== keysB.length) {
+	    return false;
+	  }
 
-	var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
+	  // Test for A's keys different from B.
+	  var hasOwn = Object.prototype.hasOwnProperty;
+	  for (var i = 0; i < keysA.length; i++) {
+	    if (!hasOwn.call(objB, keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
+	      return false;
+	    }
+	  }
 
-	var _applyMiddleware = __webpack_require__(37);
-
-	var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
-
-	var _compose = __webpack_require__(12);
-
-	var _compose2 = _interopRequireDefault(_compose);
-
-	var _warning = __webpack_require__(14);
-
-	var _warning2 = _interopRequireDefault(_warning);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	/*
-	* This is a dummy function to check if the function name has been altered by minification.
-	* If the function has been minified and NODE_ENV !== 'production', warn the user.
-	*/
-	function isCrushed() {}
-
-	if (("development") !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
-	  (0, _warning2['default'])('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
+	  return true;
 	}
 
-	exports.createStore = _createStore2['default'];
-	exports.combineReducers = _combineReducers2['default'];
-	exports.bindActionCreators = _bindActionCreators2['default'];
-	exports.applyMiddleware = _applyMiddleware2['default'];
-	exports.compose = _compose2['default'];
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var prefix = "@@redux-replicate";
+
+	var GET_INITIAL_STATE = exports.GET_INITIAL_STATE = prefix + "/GET_INITIAL_STATE";
+	var GOT_INITIAL_STATE = exports.GOT_INITIAL_STATE = prefix + "/GOT_INITIAL_STATE";
+	var INITIAL_STATE_ERROR = exports.INITIAL_STATE_ERROR = prefix + "/INITIAL_STATE_ERROR";
+	var REPLICATE_INITIAL_STATE = exports.REPLICATE_INITIAL_STATE = prefix + "/REPLICATE_INITIAL_STATE";
+	var REPLICATED_INITIAL_STATE = exports.REPLICATED_INITIAL_STATE = prefix + "/REPLICATED_INITIAL_STATE";
+	var REPLICATE_STATE = exports.REPLICATE_STATE = prefix + "/REPLICATE_STATE";
+	var REPLICATED_STATE = exports.REPLICATED_STATE = prefix + "/REPLICATED_STATE";
+	var STATE_CHANGE_ERROR = exports.STATE_CHANGE_ERROR = prefix + "/STATE_CHANGE_ERROR";
+	var SET_STATE = exports.SET_STATE = prefix + "/SET_STATE";
+	var FULLY_INITIALIZED = exports.FULLY_INITIALIZED = prefix + "/FULLY_INITIALIZED";
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -755,7 +702,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports) {
 
 	/**
@@ -773,84 +720,1761 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = createKeyConcat;
+	function createKeyConcat(keys, unshift) {
+	  var key = keys;
+	  var getTarget = function getTarget(provider) {
+	    return provider;
+	  };
+
+	  if (Array.isArray(keys)) {
+	    keys = [].concat(keys);
+	    key = keys.pop();
+	    getTarget = function getTarget(provider) {
+	      return keys.reduce(function (obj, key) {
+	        return obj[key];
+	      }, provider);
+	    };
+	  }
+
+	  return function (providers, value) {
+	    for (var providerKey in providers) {
+	      var target = getTarget(providers[providerKey]);
+
+	      if (target) {
+	        if (!target[key]) {
+	          target[key] = [];
+	        } else if (!Array.isArray(target[key])) {
+	          target[key] = [target[key]];
+	        }
+
+	        if (unshift) {
+	          target[key] = [].concat(value).concat(target[key]);
+	        } else {
+	          target[key] = target[key].concat(value);
+	        }
+	      }
+	    }
+	  };
+	}
+
+/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.__esModule = true;
-	exports['default'] = createdCombinedStore;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var _createProviderStore = __webpack_require__(5);
+	exports.getClientState = getClientState;
+	exports.getInitialState = getInitialState;
+	exports.default = createProviderStore;
 
-	var _createProviderStore2 = _interopRequireDefault(_createProviderStore);
+	var _redux = __webpack_require__(41);
+
+	var _reduxReplicate = __webpack_require__(33);
+
+	var _reduxReplicate2 = _interopRequireDefault(_reduxReplicate);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	function getClientState(_ref) {
+	  var providerKey = _ref.providerKey;
+
+	  if (typeof window !== 'undefined' && window.clientStates) {
+	    var clientState = window.clientStates[providerKey];
+
+	    if (typeof clientState !== 'undefined') {
+	      return clientState;
+	    }
+	  }
+
+	  return null;
+	}
+
+	function getInitialState(_ref2) {
+	  var providerKey = _ref2.providerKey,
+	      state = _ref2.state;
+
+	  var clientState = getClientState({ providerKey: providerKey, state: state });
+
+	  if (clientState) {
+	    delete window.clientStates[providerKey];
+
+	    return state ? _extends({}, state, clientState) : clientState;
+	  }
+
+	  return state || {};
+	}
 
 	/**
-	 * Creates and returns a shared store based on the combined providers.
+	 * Creates and returns a store specifically for some provider instance.
 	 *
-	 * @param {Object} providers
-	 * @param {Object} initialState Optional
+	 * @param {Object} providerInstance
+	 * @param {Mixed} storeKey Optional
+	 * @param {Object} createState Optional
+	 * @param {Function} createFunction Optional
+	 * @param {Object} creatorStore Optional
 	 * @return {Object}
 	 * @api public
 	 */
+	function createProviderStore(providerInstance, storeKey, createState, createFunction, creatorStore) {
+	  var reducers = providerInstance.reducers,
+	      middleware = providerInstance.middleware,
+	      enhancer = providerInstance.enhancer,
+	      replication = providerInstance.replication;
 
-	function createdCombinedStore(providers, initialState) {
-	  var combinedProvider = {
-	    reducers: {},
-	    middleware: [],
-	    enhancer: []
+	  var watchedReducers = {};
+	  var watching = {};
+	  var enhancers = [];
+	  var create = void 0;
+	  var store = void 0;
+	  var setState = void 0;
+	  var settingState = void 0;
+	  var combinedReducers = void 0;
+
+	  if (typeof storeKey === 'undefined') {
+	    storeKey = providerInstance.providerKey;
+	  }
+
+	  function unshiftReplication(_ref3) {
+	    var key = _ref3.key,
+	        reducerKeys = _ref3.reducerKeys,
+	        queryable = _ref3.queryable,
+	        baseQuery = _ref3.baseQuery,
+	        replicator = _ref3.replicator;
+
+	    if (replicator) {
+	      if (baseQuery) {
+	        if (Array.isArray(reducerKeys)) {
+	          for (var reducerKey in baseQuery) {
+	            if (reducerKeys.indexOf(reducerKey) < 0) {
+	              reducerKeys.push(reducerKey);
+	            }
+	          }
+	        }
+
+	        if (Array.isArray(queryable)) {
+	          for (var _reducerKey in baseQuery) {
+	            if (queryable.indexOf(_reducerKey) < 0) {
+	              queryable.push(_reducerKey);
+	            }
+	          }
+	        }
+	      }
+
+	      enhancers.unshift((0, _reduxReplicate2.default)({
+	        key: typeof key === 'undefined' ? storeKey : key,
+	        reducerKeys: reducerKeys,
+	        queryable: queryable,
+	        replicator: replicator,
+	        create: createFunction || Boolean(createState),
+	        clientState: getClientState(providerInstance),
+	        creatorStore: creatorStore
+	      }));
+	    }
+	  }
+
+	  if (middleware) {
+	    enhancers.push(_redux.applyMiddleware.apply(null, [].concat(middleware)));
+	  }
+
+	  if (enhancer) {
+	    enhancers = enhancers.concat(enhancer);
+	  }
+
+	  if (replication) {
+	    if (Array.isArray(replication)) {
+	      var _iteratorNormalCompletion = true;
+	      var _didIteratorError = false;
+	      var _iteratorError = undefined;
+
+	      try {
+	        for (var _iterator = replication[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	          var _ref5 = _step.value;
+	          var key = _ref5.key;
+
+	          if (typeof key !== 'undefined') {
+	            storeKey = key;
+	            break;
+	          }
+	        }
+	      } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion && _iterator.return) {
+	            _iterator.return();
+	          }
+	        } finally {
+	          if (_didIteratorError) {
+	            throw _iteratorError;
+	          }
+	        }
+	      }
+
+	      replication.forEach(unshiftReplication);
+	    } else {
+	      unshiftReplication(replication);
+	    }
+	  }
+
+	  if (enhancers.length) {
+	    create = _redux.compose.apply(undefined, _toConsumableArray(enhancers))(_redux.createStore);
+	  } else {
+	    create = _redux.createStore;
+	  }
+
+	  var initialState = {};
+	  var preInitialState = _extends({}, createState || getInitialState(providerInstance));
+
+	  Object.keys(reducers).forEach(function (reducerKey) {
+	    if (typeof preInitialState[reducerKey] !== 'undefined') {
+	      initialState[reducerKey] = preInitialState[reducerKey];
+	    }
+
+	    watchedReducers[reducerKey] = function (state, action) {
+	      var nextState = void 0;
+
+	      if (settingState && typeof settingState[reducerKey] !== 'undefined') {
+	        nextState = settingState[reducerKey];
+	      } else {
+	        nextState = reducers[reducerKey](state, action);
+	      }
+
+	      if (watching[reducerKey] && state !== nextState) {
+	        watching[reducerKey].forEach(function (fn) {
+	          return fn(nextState);
+	        });
+	      }
+
+	      return nextState;
+	    };
+	  });
+
+	  combinedReducers = (0, _redux.combineReducers)(watchedReducers);
+	  store = create(combinedReducers, initialState);
+
+	  // we use a custom `watch` method with instead of a replicator
+	  // since it's slightly more efficient and every clock cycle counts,
+	  // especially with potentially thousands or even millions of components
+	  store.watch = function (reducerKey, fn) {
+	    if (!watching[reducerKey]) {
+	      watching[reducerKey] = new Set();
+	    }
+
+	    watching[reducerKey].add(fn);
+
+	    return function () {
+	      return watching[reducerKey].delete(fn);
+	    };
 	  };
 
-	  for (var providerName in providers) {
-	    copyValues(combinedProvider, providers[providerName]);
-	  }
-
-	  return _createProviderStore2['default'](combinedProvider, initialState);
-	}
-
-	function copyValues(combinedProvider, provider) {
-	  for (var key in combinedProvider) {
-	    var value = combinedProvider[key];
-	    var providerValue = provider[key];
-
-	    if (!providerValue) {
-	      continue;
+	  setState = store.setState;
+	  store.setState = function () {
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
 	    }
 
-	    if (Array.isArray(value)) {
-	      if (!Array.isArray(providerValue)) {
-	        providerValue = [providerValue];
+	    var nextState = args[0];
+
+	    var state = store.getState();
+
+	    if (setState) {
+	      var _loop = function _loop(reducerKey) {
+	        var current = state[reducerKey];
+	        var next = nextState[reducerKey];
+
+	        if (watching[reducerKey] && current !== next) {
+	          watching[reducerKey].forEach(function (fn) {
+	            return fn(next);
+	          });
+	        }
+	      };
+
+	      for (var reducerKey in nextState) {
+	        _loop(reducerKey);
 	      }
 
-	      for (var _iterator = providerValue, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
-	        var _ref;
-
-	        if (_isArray) {
-	          if (_i >= _iterator.length) break;
-	          _ref = _iterator[_i++];
-	        } else {
-	          _i = _iterator.next();
-	          if (_i.done) break;
-	          _ref = _i.value;
-	        }
-
-	        var item = _ref;
-
-	        if (value.indexOf(item) < 0) {
-	          value.push(item);
-	        }
-	      }
-	    } else if (typeof providerValue === 'object') {
-	      Object.assign(value, providerValue);
+	      setState.apply(undefined, args);
+	    } else {
+	      settingState = nextState;
+	      store.replaceReducer(combinedReducers);
+	      settingState = null;
 	    }
-	  }
+	  };
+
+	  return store;
 	}
-	module.exports = exports['default'];
 
 /***/ }),
 /* 11 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	exports.default = getRelevantKeys;
+	function getRelevantKeys() {
+	  var a = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	  var b = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+	  var relevantKeys = [];
+
+	  if ((typeof b === 'undefined' ? 'undefined' : _typeof(b)) === 'object') {
+	    for (var key in b) {
+	      if (key in a) {
+	        relevantKeys.push(key);
+	      }
+	    }
+	  }
+
+	  return relevantKeys;
+	}
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	exports.default = instantiateProvider;
+	exports.getTempFauxInstance = getTempFauxInstance;
+	exports.getFromContextOrProps = getFromContextOrProps;
+	exports.getProviders = getProviders;
+	exports.getProviderInstances = getProviderInstances;
+	exports.getActiveQueries = getActiveQueries;
+	exports.getQueryResults = getQueryResults;
+	exports.getPartialStates = getPartialStates;
+	exports.getFunctionOrObject = getFunctionOrObject;
+	exports.getQueries = getQueries;
+	exports.getQuery = getQuery;
+	exports.getQueryOptions = getQueryOptions;
+	exports.getQueriesOptions = getQueriesOptions;
+	exports.getQueryHandlers = getQueryHandlers;
+	exports.getMergedResult = getMergedResult;
+	exports.resultsEqual = resultsEqual;
+	exports.handleQueries = handleQueries;
+
+	var _shallowEqual = __webpack_require__(5);
+
+	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
+
+	var _getRelevantKeys = __webpack_require__(11);
+
+	var _getRelevantKeys2 = _interopRequireDefault(_getRelevantKeys);
+
+	var _createProviderStore = __webpack_require__(10);
+
+	var _createProviderStore2 = _interopRequireDefault(_createProviderStore);
+
+	var _keyConcats = __webpack_require__(13);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	var isServerSide = typeof window === 'undefined';
+	var isTesting = typeof process !== 'undefined' && process.env && ("development") === 'test';
+
+	var globalProviderInstances = {};
+
+	// TODO: we'll use this at some point to select only component propTypes
+	/*
+	function hasReducerKeys(providerInstance, getReducerKeys) {
+	  if (!getReducerKeys) {
+	    return true;
+	  }
+
+	  const { hasReducerKeys = {} } = providerInstance;
+
+	  for (let reducerKey in getReducerKeys) {
+	    if (!hasReducerKeys[reducerKey]) {
+	      providerInstance.hasReducerKeys = {
+	        ...hasReducerKeys,
+	        ...getReducerKeys
+	      };
+
+	      return false;
+	    }
+	  }
+
+	  return true;
+	}*/
+
+	/**
+	 * Instantiates a provider with its own store.
+	 *
+	 * @param {Object} fauxInstance resembles { props, context }
+	 * @param {Object} provider
+	 * @param {String|Function} providerKey Optional
+	 * @param {Function} readyCallback Optional
+	 * @param {Object} createState Optional
+	 * @param {Object} getReducerKeys Optional
+	 * @param {Boolean} useCreator Optional
+	 * @return {Object}
+	 * @api public
+	 */
+	function instantiateProvider(fauxInstance, provider, providerKey, readyCallback, createState, getReducerKeys, useCreator // TODO: clean this up
+	) {
+	  if (arguments.length === 1) {
+	    fauxInstance = arguments[0].fauxInstance;
+	    provider = arguments[0].provider;
+	    providerKey = arguments[0].providerKey;
+	    readyCallback = arguments[0].readyCallback;
+	    createState = arguments[0].createState;
+	    getReducerKeys = arguments[0].getReducerKeys;
+	    useCreator = arguments[0].useCreator;
+
+	    if (!fauxInstance) {
+	      provider = arguments[0];
+	      fauxInstance = {};
+	    }
+	  }
+
+	  if (!fauxInstance.props) {
+	    fauxInstance.props = {};
+	  }
+
+	  if (typeof providerKey === 'undefined') {
+	    providerKey = provider.key;
+	  }
+
+	  if (!provider.actions) {
+	    provider.actions = {};
+	  }
+	  if (!provider.reducers) {
+	    provider.reducers = {};
+	  }
+
+	  if (getReducerKeys === true) {
+	    getReducerKeys = provider.reducers;
+	  }
+
+	  var providers = getProviders(fauxInstance);
+	  var providerInstances = getProviderInstances(fauxInstance);
+	  var providerInstance = void 0;
+	  var isStatic = typeof providerKey !== 'function';
+	  var storeKey = void 0;
+	  var creator = void 0;
+
+	  if (typeof provider.key === 'string') {
+	    if (!providers[provider.key]) {
+	      providers[provider.key] = provider;
+	    }
+	  } else if (provider.defaultKey) {
+	    if (!providers[provider.defaultKey]) {
+	      providers[provider.defaultKey] = provider;
+	    }
+	  } else if (!provider.key || !provider.key.toString) {
+	    console.warn('Missing or invalid provider key!');
+	  } else if (!providers[provider.key.toString()]) {
+	    providers[provider.key.toString()] = provider;
+	  }
+
+	  if (!isStatic) {
+	    // get actual `providerKey`
+	    providerKey = providerKey(fauxInstance);
+	    // if actual `providerKey` matches `key`, treat as static provider
+	    isStatic = providerKey === provider.key;
+	  }
+
+	  if (providerKey === null) {
+	    storeKey = null;
+	    providerKey = provider.defaultKey;
+	    isStatic = true;
+	  }
+
+	  providerInstance = provider.isGlobal ? globalProviderInstances[providerKey] : providerInstances && providerInstances[providerKey];
+
+	  if (fauxInstance.relevantProviders) {
+	    fauxInstance.relevantProviders[providerKey] = true;
+	  }
+
+	  if (createState && (typeof createState === 'undefined' ? 'undefined' : _typeof(createState)) === 'object' && provider.state && _typeof(provider.state) === 'object') {
+	    createState = _extends({}, provider.state, createState);
+	  }
+
+	  // TODO: we'll use this at some point
+	  //if (providerInstance && hasReducerKeys(providerInstance, getReducerKeys)) {
+	  if (providerInstance) {
+	    if (createState) {
+	      if (useCreator) {
+	        // TODO: clean this up
+	        creator = providerInstance;
+	      } else {
+	        providerInstances[providerKey] = providerInstance;
+	        providerInstance.store.setState(createState, false, true);
+	        if (readyCallback) {
+	          if (providerInstance.ready) {
+	            readyCallback(providerInstance);
+	          } else {
+	            (0, _keyConcats.pushOnReady)({ providerInstance: providerInstance }, readyCallback);
+	          }
+	        }
+	        return providerInstance;
+	      }
+	    } else {
+	      providerInstances[providerKey] = providerInstance;
+	      if (readyCallback) {
+	        if (providerInstance.ready) {
+	          readyCallback(providerInstance);
+	        } else {
+	          (0, _keyConcats.pushOnReady)({ providerInstance: providerInstance }, readyCallback);
+	        }
+	      }
+	      return providerInstance;
+	    }
+	  }
+
+	  if (!provider.hasThunk) {
+	    var findProvider = function findProvider(props) {
+	      if ((0, _getRelevantKeys2.default)(provider.reducers, props).length) {
+	        return provider;
+	      }
+
+	      for (var key in providers) {
+	        if ((0, _getRelevantKeys2.default)(providers[key].reducers, props).length) {
+	          return providers[key];
+	        }
+	      }
+
+	      return provider;
+	    };
+
+	    var getResultInstances = function getResultInstances(result, callback) {
+	      var resultInstances = [];
+	      var semaphore = result && result.length;
+	      function clear() {
+	        if (--semaphore === 0) {
+	          callback(resultInstances);
+	        }
+	      }
+
+	      if (!semaphore) {
+	        semaphore = 1;
+	        clear();
+	        return;
+	      }
+
+	      result.forEach(function (resultProps, index) {
+	        resultInstances[index] = null;
+
+	        instantiateProvider({
+	          fauxInstance: getTempFauxInstance(fauxInstance, resultProps),
+	          provider: findProvider(resultProps),
+	          readyCallback: function readyCallback(resultInstance) {
+	            resultInstances[index] = resultInstance;
+	            clear();
+	          }
+	        });
+	      });
+	    };
+
+	    var getInstance = function getInstance(props, callback, create, useCreator) {
+	      var provider = void 0;
+	      var providerKey = void 0;
+
+	      if (typeof props === 'string') {
+	        // key is already known
+	        if (providerInstances[props]) {
+	          providerKey = props;
+	        }
+
+	        provider = providers[props] || providerInstances[props];
+	        props = {};
+	      } else {
+	        provider = findProvider(props);
+	      }
+
+	      return instantiateProvider({
+	        fauxInstance: getTempFauxInstance(fauxInstance, props),
+	        provider: provider,
+	        providerKey: providerKey,
+	        readyCallback: callback,
+	        createState: create ? props : null,
+	        useCreator: useCreator
+	      });
+	    };
+
+	    var getInstances = function getInstances(propsArray, callback, create, useCreator) {
+	      var instances = [];
+	      var getCount = propsArray.length;
+	      var clear = function clear() {
+	        if (--getCount === 0) {
+	          if (callback) {
+	            callback(instances);
+	          }
+	        }
+	      };
+
+	      propsArray.forEach(function (props, index) {
+	        getInstance(props, function (instance) {
+	          instances[index] = instance;
+	          clear();
+	        }, create);
+	      });
+
+	      return instances;
+	    };
+
+	    var createInstance = function createInstance(props, callback, useCreator) {
+	      return getInstance(props, callback, true, useCreator);
+	    };
+
+	    var createInstances = function createInstances(propsArray, callback, useCreator) {
+	      return getInstances(propsArray, callback, true, useCreator);
+	    };
+
+	    var setStates = function setStates(states) {
+	      var gettingInstances = [];
+	      var settingStates = [];
+	      var clientStates = null;
+
+	      if (!isServerSide) {
+	        if (!window.clientStates) {
+	          window.clientStates = {};
+	        }
+
+	        clientStates = window.clientStates;
+	      }
+
+	      var _loop = function _loop(_providerKey) {
+	        var state = states[_providerKey];
+	        var providerInstance = providerInstances[_providerKey];
+
+	        if (providerInstance) {
+	          if (providerInstance.store.setState) {
+	            settingStates.push(function () {
+	              return providerInstance.store.setState(state);
+	            });
+	          }
+	        } else {
+	          if (clientStates) {
+	            clientStates[_providerKey] = state;
+	          }
+
+	          gettingInstances.push(state);
+	        }
+	      };
+
+	      for (var _providerKey in states) {
+	        _loop(_providerKey);
+	      }
+
+	      // now that `clientStates` are cached...
+	      while (gettingInstances.length) {
+	        getInstance(gettingInstances.shift());
+	      }
+	      while (settingStates.length) {
+	        settingStates.shift()();
+	      }
+	    };
+
+	    var find = function find(props, doInstantiate, callback) {
+	      if (arguments.length === 2) {
+	        callback = doInstantiate;
+	        doInstantiate = false;
+	      }
+
+	      handleQueries(getTempFauxInstance(fauxInstance, props), function () {
+	        if (!doInstantiate) {
+	          callback(props.query ? props.result : props.results);
+	          return;
+	        }
+
+	        if (props.query) {
+	          getResultInstances(props.result, callback);
+	          return;
+	        }
+
+	        var results = props.results;
+
+	        var resultsInstances = {};
+	        var resultsKeys = results && Object.keys(results);
+	        var semaphore = resultsKeys && resultsKeys.length;
+	        function clear() {
+	          if (--semaphore === 0) {
+	            callback(resultsInstances);
+	          }
+	        }
+
+	        if (!semaphore) {
+	          semaphore = 1;
+	          clear();
+	        }
+
+	        resultsKeys.forEach(function (resultKey) {
+	          resultsInstances[resultKey] = [];
+
+	          getResultInstances(results[resultKey], function (resultInstances) {
+	            resultsInstances[resultKey] = resultInstances;
+	            clear();
+	          });
+	        });
+	      });
+	    };
+
+	    provider.hasThunk = true;
+
+	    if (provider.wait && !Array.isArray(provider.wait)) {
+	      provider.wait = [provider.wait];
+	    }
+
+	    if (provider.clear && !Array.isArray(provider.clear)) {
+	      provider.clear = [provider.clear];
+	    }
+
+	    var providerApi = {
+	      getInstance: getInstance,
+	      getInstances: getInstances,
+	      createInstance: createInstance,
+	      createInstances: createInstances,
+	      setStates: setStates,
+	      find: find
+	    };
+
+	    (0, _keyConcats.unshiftMiddleware)({ provider: provider }, function (_ref) {
+	      var dispatch = _ref.dispatch,
+	          getState = _ref.getState;
+
+	      return function (next) {
+	        return function (action) {
+	          if (typeof action !== 'function') {
+	            return next(action);
+	          }
+
+	          if (provider.wait) {
+	            provider.wait.forEach(function (fn) {
+	              return fn();
+	            });
+	          }
+
+	          return action(function (action) {
+	            var state = store.getState();
+	            var storeChanged = false;
+
+	            dispatch(action);
+
+	            if (provider.clear) {
+	              storeChanged = state !== store.getState();
+	              provider.clear.forEach(function (fn) {
+	                return fn(storeChanged);
+	              });
+	            }
+	          }, getState, providerApi);
+	        };
+	      };
+	    });
+	  }
+
+	  if (provider.wait) {
+	    provider.wait.forEach(function (fn) {
+	      return fn();
+	    });
+	  }
+
+	  providerInstance = Object.create(provider);
+	  providerInstance.providerKey = providerKey;
+	  providerInstance.isStatic = isStatic;
+
+	  var store = (0, _createProviderStore2.default)(providerInstance, storeKey, createState, createState ? function (state) {
+	    var _providerInstance = providerInstance,
+	        onReady = _providerInstance.onReady;
+
+
+	    providerInstance = instantiateProvider({
+	      fauxInstance: getTempFauxInstance(fauxInstance, state),
+	      provider: provider,
+	      readyCallback: function readyCallback(createdInstance) {
+	        if (Array.isArray(onReady)) {
+	          onReady.forEach(function (fn) {
+	            return fn(createdInstance);
+	          });
+	        } else if (onReady) {
+	          onReady(createdInstance);
+	        }
+	      }
+	    });
+	  } : null,
+	  // TODO: we need a better way to create + replicate   
+	  creator && creator.store);
+
+	  var initialState = store.getState();
+	  var _providerInstance2 = providerInstance,
+	      actions = _providerInstance2.actions;
+
+	  var actionCreators = {};
+	  var setKey = store.setKey;
+
+	  if (setKey) {
+	    store.setKey = function (newKey, readyCallback) {
+	      if (provider.wait) {
+	        provider.wait.forEach(function (fn) {
+	          return fn();
+	        });
+	      }
+
+	      setKey(newKey, function () {
+	        if (Array.isArray(providerInstance.onReady)) {
+	          providerInstance.onReady.forEach(function (fn) {
+	            return fn(providerInstance);
+	          });
+	        } else if (providerInstance.onReady) {
+	          providerInstance.onReady(providerInstance);
+	        }
+
+	        if (readyCallback) {
+	          readyCallback();
+	        }
+
+	        if (provider.clear) {
+	          provider.clear.forEach(function (fn) {
+	            return fn(true);
+	          });
+	        }
+	      });
+	    };
+	  }
+
+	  var _loop2 = function _loop2(actionKey) {
+	    actionCreators[actionKey] = function () {
+	      return store.dispatch(actions[actionKey].apply(this, arguments));
+	    };
+	  };
+
+	  for (var actionKey in actions) {
+	    _loop2(actionKey);
+	  }
+
+	  providerInstance.store = store;
+	  providerInstance.actionCreators = actionCreators;
+
+	  if (!createState) {
+	    if (provider.isGlobal) {
+	      globalProviderInstances[providerKey] = providerInstance;
+	    }
+	    if (providerInstances) {
+	      providerInstances[providerKey] = providerInstance;
+	    }
+	    if (!provider.instances) {
+	      provider.instances = [];
+	    }
+	    provider.instances.push(providerInstance);
+	  }
+
+	  if (provider.subscribers) {
+	    Object.keys(provider.subscribers).forEach(function (key) {
+	      var handler = provider.subscribers[key];
+	      var subProvider = providers[key];
+	      var subKey = provider.defaultKey || (typeof provider.key === 'function' ? provider.key({}) : String(provider.key));
+
+	      var callHandler = function callHandler() {
+	        var subProviderInstances = subProvider && subProvider.instances;
+
+	        if (subProviderInstances) {
+	          subProviderInstances.forEach(function (subProviderInstance) {
+	            handler(providerInstance, subProviderInstance);
+	          });
+	        }
+	      };
+
+	      if (subProvider) {
+	        if (!subProvider.subscribeTo) {
+	          subProvider.subscribeTo = {};
+	        }
+	        if (!subProvider.subscribeTo[subKey]) {
+	          subProvider.subscribeTo[subKey] = handler;
+	        }
+	      }
+
+	      providerInstance.store.subscribe(callHandler);
+	      callHandler();
+	    });
+	  }
+
+	  if (provider.subscribeTo) {
+	    Object.keys(provider.subscribeTo).forEach(function (key) {
+	      var handler = provider.subscribeTo[key];
+	      var supProvider = providers[key];
+	      var supKey = provider.defaultKey || (typeof provider.key === 'function' ? provider.key({}) : String(provider.key));
+
+	      if (!supProvider) {
+	        return;
+	      }
+
+	      if (!supProvider.subscribers) {
+	        supProvider.subscribers = {};
+	      }
+	      if (!supProvider.subscribers[supKey]) {
+	        supProvider.subscribers[supKey] = handler;
+
+	        if (supProvider.instances) {
+	          supProvider.instances.forEach(function (supProviderInstance) {
+	            supProviderInstance.store.subscribe(function () {
+	              provider.instances.forEach(function (providerInstance) {
+	                handler(supProviderInstance, providerInstance);
+	              });
+	            });
+	          });
+	        }
+	      }
+
+	      if (supProvider.instances) {
+	        supProvider.instances.forEach(function (supProviderInstance) {
+	          handler(supProviderInstance, providerInstance);
+	        });
+	      }
+	    });
+	  }
+
+	  if (!createState) {
+	    if (Array.isArray(providerInstance.onInstantiated)) {
+	      providerInstance.onInstantiated.forEach(function (fn) {
+	        return fn(providerInstance);
+	      });
+	    } else if (providerInstance.onInstantiated) {
+	      providerInstance.onInstantiated(providerInstance);
+	    }
+	  }
+
+	  (0, _keyConcats.unshiftOnReady)({ providerInstance: providerInstance }, function () {
+	    providerInstance.ready = true;
+	  });
+
+	  if (readyCallback) {
+	    (0, _keyConcats.pushOnReady)({ providerInstance: providerInstance }, readyCallback);
+	  }
+
+	  function done() {
+	    if (Array.isArray(providerInstance.onReady)) {
+	      providerInstance.onReady.forEach(function (fn) {
+	        return fn(providerInstance);
+	      });
+	    } else if (providerInstance.onReady) {
+	      providerInstance.onReady(providerInstance);
+	    }
+
+	    if (provider.clear) {
+	      var storeChanged = initialState !== providerInstance.store.getState();
+	      provider.clear.forEach(function (fn) {
+	        return fn(storeChanged);
+	      });
+	    }
+	  }
+
+	  if (provider.replication && store.onReady && !store.initializedReplication) {
+	    store.onReady(done);
+	  } else {
+	    done();
+	  }
+
+	  return providerInstance;
+	}
+
+	function getContext(fauxInstance) {
+	  if (!fauxInstance.context) {
+	    fauxInstance.context = {};
+	  }
+
+	  return fauxInstance.context;
+	}
+
+	function getTempFauxInstance(fauxInstance, props) {
+	  return {
+	    props: props,
+	    context: getContext(fauxInstance),
+	    providers: getProviders(fauxInstance),
+	    providerInstances: getProviderInstances(fauxInstance),
+	    activeQueries: getActiveQueries(fauxInstance),
+	    queryResults: getQueryResults(fauxInstance),
+	    partialStates: getPartialStates(fauxInstance)
+	  };
+	}
+
+	function getFromContextOrProps(fauxInstance, key, defaultValue) {
+	  if (typeof fauxInstance[key] === 'undefined') {
+	    var props = fauxInstance.props;
+
+	    var context = getContext(fauxInstance);
+
+	    if (typeof props[key] !== 'undefined') {
+	      fauxInstance[key] = props[key];
+	    } else if (typeof context[key] !== 'undefined') {
+	      fauxInstance[key] = context[key];
+	    } else {
+	      fauxInstance[key] = defaultValue;
+	    }
+	  }
+
+	  return fauxInstance[key];
+	}
+
+	function getProviders(fauxInstance) {
+	  return getFromContextOrProps(fauxInstance, 'providers', {});
+	}
+
+	function getProviderInstances(fauxInstance) {
+	  return getFromContextOrProps(fauxInstance, 'providerInstances', {});
+	}
+
+	function getActiveQueries(fauxInstance) {
+	  return getFromContextOrProps(fauxInstance, 'activeQueries', {});
+	}
+
+	function getQueryResults(fauxInstance) {
+	  return getFromContextOrProps(fauxInstance, 'queryResults', {});
+	}
+
+	function getPartialStates(fauxInstance) {
+	  return getFromContextOrProps(fauxInstance, 'partialStates', {});
+	}
+
+	function getFunctionOrObject(fauxInstance, key) {
+	  var defaultValue = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
+	  if (typeof fauxInstance[key] !== 'undefined') {
+	    return fauxInstance[key];
+	  }
+
+	  var value = fauxInstance.props[key];
+
+	  if (typeof value === 'function') {
+	    value = value(fauxInstance);
+	  }
+
+	  fauxInstance[key] = value || defaultValue;
+
+	  return fauxInstance[key];
+	}
+
+	function getQueries(fauxInstance) {
+	  if (getQueries.disabled) {
+	    return false;
+	  }
+
+	  if (typeof fauxInstance.queries !== 'undefined') {
+	    return fauxInstance.queries;
+	  }
+
+	  var props = fauxInstance.props,
+	      relevantProviders = fauxInstance.relevantProviders;
+
+	  var providers = getProviders(fauxInstance);
+	  var query = getQuery(fauxInstance);
+	  var queries = getFunctionOrObject(fauxInstance, 'queries');
+	  var hasQueries = false;
+
+	  if (query) {
+	    // we need to map the query to relevant provider(s)
+	    if (!queries) {
+	      queries = {};
+	    } else if (typeof props.queries !== 'function') {
+	      queries = _extends({}, queries);
+	    }
+
+	    for (var key in providers) {
+	      var provider = providers[key];
+	      var queryKeys = (0, _getRelevantKeys2.default)(provider.reducers, query);
+
+	      if (queryKeys.length) {
+	        // provider is relevant, so we map it within the queries object
+	        if (!queries[key]) {
+	          queries[key] = {};
+	        }
+
+	        var _iteratorNormalCompletion = true;
+	        var _didIteratorError = false;
+	        var _iteratorError = undefined;
+
+	        try {
+	          for (var _iterator = queryKeys[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	            var queryKey = _step.value;
+
+	            queries[key][queryKey] = query[queryKey];
+	          }
+	        } catch (err) {
+	          _didIteratorError = true;
+	          _iteratorError = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion && _iterator.return) {
+	              _iterator.return();
+	            }
+	          } finally {
+	            if (_didIteratorError) {
+	              throw _iteratorError;
+	            }
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  for (var _key in queries) {
+	    var _query = queries[_key];
+
+	    if (typeof _query === 'function') {
+	      queries[_key] = _query(fauxInstance);
+	    }
+
+	    // make sure each provider is instantiated
+	    instantiateProvider(fauxInstance, providers[_key]);
+	    hasQueries = true;
+	  }
+
+	  if (!hasQueries) {
+	    queries = null;
+
+	    if (props.query) {
+	      props.result = null;
+	    }
+
+	    if (props.queries) {
+	      props.results = {};
+	    }
+	  }
+
+	  fauxInstance.queries = queries;
+	  return queries;
+	}
+
+	function getQuery(fauxInstance) {
+	  return getFunctionOrObject(fauxInstance, 'query');
+	}
+
+	function getQueryOptions(fauxInstance) {
+	  return getFunctionOrObject(fauxInstance, 'queryOptions');
+	}
+
+	function getQueriesOptions(fauxInstance) {
+	  return getFunctionOrObject(fauxInstance, 'queriesOptions', {});
+	}
+
+	// gets all `handleQuery` functions within replicators
+	function getQueryHandlers(provider) {
+	  var queryHandlers = [];
+	  var replication = provider.replication;
+
+
+	  if (replication) {
+	    if (!Array.isArray(replication)) {
+	      replication = [replication];
+	    }
+
+	    var _iteratorNormalCompletion2 = true;
+	    var _didIteratorError2 = false;
+	    var _iteratorError2 = undefined;
+
+	    try {
+	      for (var _iterator2 = replication[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	        var _ref3 = _step2.value;
+	        var replicator = _ref3.replicator,
+	            reducerKeys = _ref3.reducerKeys,
+	            baseQuery = _ref3.baseQuery,
+	            baseQueryOptions = _ref3.baseQueryOptions;
+
+	        if (replicator) {
+	          if (!Array.isArray(replicator)) {
+	            replicator = [replicator];
+	          }
+
+	          var _iteratorNormalCompletion3 = true;
+	          var _didIteratorError3 = false;
+	          var _iteratorError3 = undefined;
+
+	          try {
+	            for (var _iterator3 = replicator[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+	              var _ref5 = _step3.value;
+	              var handleQuery = _ref5.handleQuery;
+
+	              if (handleQuery) {
+	                queryHandlers.push({
+	                  handleQuery: handleQuery,
+	                  reducerKeys: reducerKeys || Object.keys(provider.reducers),
+	                  baseQuery: baseQuery,
+	                  baseQueryOptions: baseQueryOptions
+	                });
+	              }
+	            }
+	          } catch (err) {
+	            _didIteratorError3 = true;
+	            _iteratorError3 = err;
+	          } finally {
+	            try {
+	              if (!_iteratorNormalCompletion3 && _iterator3.return) {
+	                _iterator3.return();
+	              }
+	            } finally {
+	              if (_didIteratorError3) {
+	                throw _iteratorError3;
+	              }
+	            }
+	          }
+	        }
+	      }
+	    } catch (err) {
+	      _didIteratorError2 = true;
+	      _iteratorError2 = err;
+	    } finally {
+	      try {
+	        if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	          _iterator2.return();
+	        }
+	      } finally {
+	        if (_didIteratorError2) {
+	          throw _iteratorError2;
+	        }
+	      }
+	    }
+	  }
+
+	  return queryHandlers;
+	}
+
+	function getMergedResult(mergedResult, result) {
+	  if (Array.isArray(result)) {
+	    return [].concat(_toConsumableArray(mergedResult || []), _toConsumableArray(result));
+	  } else if (result && (typeof result === 'undefined' ? 'undefined' : _typeof(result)) === 'object' && result.constructor === Object) {
+	    return _extends({}, mergedResult || {}, result);
+	  } else if (typeof result !== 'undefined') {
+	    return result;
+	  } else {
+	    return mergedResult;
+	  }
+	}
+
+	function resultsEqual(result, previousResult) {
+	  if (result === previousResult) {
+	    return true;
+	  }
+
+	  if ((typeof result === 'undefined' ? 'undefined' : _typeof(result)) !== (typeof previousResult === 'undefined' ? 'undefined' : _typeof(previousResult))) {
+	    return false;
+	  }
+
+	  if (Array.isArray(result)) {
+	    if (Array.isArray(previousResult)) {
+	      var i = 0;
+	      var length = result.length;
+
+	      if (length !== previousResult.length) {
+	        return false;
+	      }
+
+	      while (i < length) {
+	        if (!(0, _shallowEqual2.default)(result[i], previousResult[i])) {
+	          return false;
+	        }
+
+	        i++;
+	      }
+	    } else {
+	      return false;
+	    }
+	  } else if (Array.isArray(previousResult)) {
+	    return false;
+	  }
+
+	  return (0, _shallowEqual2.default)(result, previousResult);
+	}
+
+	// this is admittedly a mess... :(
+	// we're accounting for both synchronous and asynchronous query handling
+	// where asynchronous results will override the synchronous results
+	function handleQueries(fauxInstance, callback, previousResults) {
+	  var doUpdate = false;
+	  var queries = getQueries(fauxInstance);
+
+	  if (!queries) {
+	    if (callback) {
+	      callback(doUpdate);
+	    }
+
+	    return false;
+	  }
+
+	  var props = fauxInstance.props;
+
+	  var context = getContext(fauxInstance);
+	  var originalResult = props.result,
+	      originalResults = props.results;
+
+	  var validQuery = false;
+
+	  // for determining whether or not we should update
+	  if (!previousResults) {
+	    previousResults = _extends({}, props.results);
+	  }
+
+	  // get what we need to handle the queries
+	  var query = getQuery(fauxInstance);
+	  var queryOptions = getQueryOptions(fauxInstance);
+	  var queriesOptions = getQueriesOptions(fauxInstance);
+	  var activeQueries = getActiveQueries(fauxInstance);
+	  var queryResults = getQueryResults(fauxInstance);
+	  var partialStates = getPartialStates(fauxInstance);
+	  var providers = getProviders(fauxInstance);
+	  var providerInstances = getProviderInstances(fauxInstance);
+
+	  // TODO: we should probably do something better at some point
+	  var setPartialStates = function setPartialStates(provider, result) {
+	    if (!result || typeof result.map !== 'function' || !isServerSide) {
+	      return;
+	    }
+
+	    var _iteratorNormalCompletion4 = true;
+	    var _didIteratorError4 = false;
+	    var _iteratorError4 = undefined;
+
+	    try {
+	      for (var _iterator4 = result[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+	        var partialState = _step4.value;
+
+	        var providerKey = provider.key;
+
+	        if (typeof providerKey === 'function') {
+	          providerKey = providerKey({ props: partialState, context: context });
+	        }
+
+	        if (providerKey !== null && !providerInstances[providerKey]) {
+	          partialStates[providerKey] = partialState;
+	        }
+	      }
+	    } catch (err) {
+	      _didIteratorError4 = true;
+	      _iteratorError4 = err;
+	    } finally {
+	      try {
+	        if (!_iteratorNormalCompletion4 && _iterator4.return) {
+	          _iterator4.return();
+	        }
+	      } finally {
+	        if (_didIteratorError4) {
+	          throw _iteratorError4;
+	        }
+	      }
+	    }
+	  };
+
+	  // most queries should be async
+	  var queryCount = Object.keys(queries).length;
+	  var queryClear = function queryClear() {
+	    if (--queryCount === 0) {
+	      // at this point we have all our results
+	      if (callback) {
+	        callback(doUpdate);
+	      }
+	    }
+	  };
+
+	  // merge each result into `props.result` if using `props.query`
+	  var setMergedResult = function setMergedResult(result) {
+	    if (props.query) {
+	      props.result = getMergedResult(props.result, result);
+	    }
+	  };
+
+	  // go ahead and set null value if using `props.query`
+	  if (props.query) {
+	    props.result = null;
+	  }
+
+	  // results start out as an empty object
+	  props.results = {};
+
+	  // check each query
+	  Object.keys(queries).forEach(function (key) {
+	    var provider = providers[key];
+	    var queryHandlers = getQueryHandlers(provider);
+	    var handlerCount = queryHandlers.length;
+
+	    // no handlers?  Y U DO DIS?
+	    if (!handlerCount) {
+	      queryClear();
+	      return;
+	    }
+
+	    validQuery = true;
+
+	    // let the provider know we're waiting for all of the handlers to finish
+	    if (Array.isArray(provider.wait)) {
+	      provider.wait.forEach(function (fn) {
+	        return fn();
+	      });
+	    } else if (provider.wait) {
+	      provider.wait();
+	    }
+
+	    // here we determine the `resultKey` used for caching the results
+	    // in the current context
+	    var query = queries[key];
+	    var options = queryOptions || queriesOptions[key] || {};
+	    var resultKey = JSON.stringify({ query: query, options: options });
+	    var queryResult = queryResults[resultKey];
+	    var queryResultExists = typeof queryResult !== 'undefined';
+
+	    // subscribe to all of this provider's instances' stores for requeries
+	    subscribeToAll(key, provider, fauxInstance, resultKey, query, callback);
+
+	    // result handler for both sync and async queries
+	    var setResult = function setResult(result) {
+	      if (!activeQueries[resultKey]) {
+	        console.warn('setResult was called but the following query is no longer active:', { query: query, options: options });
+	        return;
+	      }
+
+	      var first = activeQueries[resultKey].values().next().value;
+	      var leader = setResult === first;
+	      var previousResult = queryResultExists ? queryResult : previousResults[key];
+	      var asyncReset = setResult.asyncReset;
+
+	      // if new result, set `doUpdate` flag
+
+	      if (!doUpdate && !resultsEqual(result, previousResult)) {
+	        doUpdate = true;
+	      }
+
+	      // a special `asyncReset` flag is set if async handler is detected;
+	      // we want async results to override sync
+	      if (asyncReset) {
+	        // this should only occur once, at the start of setting async results
+	        setResult.asyncReset = false;
+
+	        props.results = {};
+
+	        if (props.query) {
+	          props.result = null;
+	        }
+	      }
+
+	      props.results[key] = result;
+	      previousResults[key] = result;
+	      queryResults[resultKey] = result;
+	      setMergedResult(result);
+
+	      // if this handler is the leader, we pass the result onto the others
+	      if (leader && activeQueries[resultKey]) {
+	        activeQueries[resultKey].forEach(function (otherSetResult) {
+	          if (otherSetResult !== setResult) {
+	            otherSetResult(result);
+	          }
+	        });
+	      }
+
+	      if (--handlerCount === 0) {
+	        // handler is done, so remove self
+	        activeQueries[resultKey].delete(setResult);
+
+	        // if there are no handlers remaining, this query is no longer active
+	        if (!activeQueries[resultKey].size) {
+	          delete activeQueries[resultKey];
+	          setPartialStates(provider, result);
+	        }
+
+	        // no more query handlers, so let the provider know we're done
+	        if (Array.isArray(provider.clear)) {
+	          provider.clear.forEach(function (fn) {
+	            return fn(doUpdate);
+	          });
+	        } else if (provider.clear) {
+	          provider.clear(doUpdate);
+	        }
+
+	        // and this query is clear
+	        queryClear();
+
+	        // we want to remove the cached query results on the client/tests
+	        // so that it will always update
+	        if (!isServerSide || isTesting) {
+	          delete queryResults[resultKey];
+	        }
+	      }
+	    };
+
+	    var setError = function setError(error) {
+	      console.error(error);
+	    };
+
+	    // this query is currently taking place, make the handler follow the leader
+	    if (activeQueries[resultKey]) {
+	      activeQueries[resultKey].add(setResult);
+	      return;
+	    }
+
+	    // this is a new query, so this handler is a leader;
+	    // other handlers matching this `resultKey` will check
+	    // if the query is active and become a follower
+	    activeQueries[resultKey] = new Set();
+	    activeQueries[resultKey].add(setResult);
+
+	    // already have our query result cached?
+	    // no point in calling any handlers; go ahead and set the result
+	    if (queryResultExists) {
+	      handlerCount = 1;
+	      setResult(queryResult);
+	      return;
+	    }
+
+	    // now we need to run the query through each `handleQuery` function,
+	    // which may or may not be synchronous
+	    queryHandlers.forEach(function (_ref6) {
+	      var handleQuery = _ref6.handleQuery,
+	          reducerKeys = _ref6.reducerKeys,
+	          baseQuery = _ref6.baseQuery,
+	          baseQueryOptions = _ref6.baseQueryOptions;
+
+	      // we can determine whether or not its synchronous by checking the 
+	      // `handlerCount` immediately after `handleQuery` is called
+	      var handlerCountBefore = handlerCount;
+
+	      // normalize the query + options so that people can be lazy
+	      var normalizedQuery = _extends({}, baseQuery, query);
+	      var normalizedOptions = _extends({}, baseQueryOptions, options);
+
+	      if (typeof normalizedOptions.select === 'undefined') {
+	        normalizedOptions.select = reducerKeys === true ? Object.keys(provider.reducers) : reducerKeys;
+	      } else if (!Array.isArray(normalizedOptions.select)) {
+	        normalizedOptions.select = [normalizedOptions.select];
+	      }
+
+	      if (Array.isArray(normalizedOptions.select)) {
+	        for (var reducerKey in normalizedQuery) {
+	          if (normalizedOptions.select.indexOf(reducerKey) < 0) {
+	            normalizedOptions.select.push(reducerKey);
+	          }
+	        }
+	      }
+
+	      handleQuery({
+	        query: normalizedQuery,
+	        options: normalizedOptions,
+	        setResult: setResult,
+	        setError: setError
+	      });
+
+	      if (handlerCount === handlerCountBefore) {
+	        // asynchronous query, so we set the `asyncReset` flags to true
+	        // only if they haven't been set to false yet
+	        activeQueries[resultKey].forEach(function (setResult) {
+	          setResult.asyncReset = setResult.asyncReset !== false;
+	        });
+	      }
+	    });
+	  });
+
+	  if (!validQuery) {
+	    props.result = originalResult;
+	    props.results = originalResults;
+	  }
+
+	  return validQuery;
+	}
+
+	function subscribeToAll(key, provider, fauxInstance, resultKey, query, callback) {
+	  if (isServerSide || !fauxInstance.props.__wrapper) {
+	    return;
+	  }
+
+	  fauxInstance.requeryCallback = callback;
+
+	  if (!provider.subscribedFauxInstances) {
+	    provider.subscribedFauxInstances = {};
+	  }
+
+	  if (provider.subscribedFauxInstances[resultKey]) {
+	    provider.subscribedFauxInstances[resultKey].add(fauxInstance);
+	    return;
+	  }
+
+	  var subscribedFauxInstances = new Set();
+	  provider.subscribedFauxInstances[resultKey] = subscribedFauxInstances;
+	  subscribedFauxInstances.add(fauxInstance);
+
+	  var timeout = void 0;
+	  var requery = function requery(providerInstance) {
+	    clearTimeout(timeout);
+	    timeout = setTimeout(function () {
+	      var _iteratorNormalCompletion5 = true;
+	      var _didIteratorError5 = false;
+	      var _iteratorError5 = undefined;
+
+	      try {
+	        for (var _iterator5 = subscribedFauxInstances[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+	          var _fauxInstance = _step5.value;
+
+	          if (_fauxInstance.props.__wrapper.unmounted) {
+	            subscribedFauxInstances.delete(_fauxInstance);
+	          } else {
+	            handleQueries(_fauxInstance, _fauxInstance.requeryCallback);
+	          }
+	        }
+	      } catch (err) {
+	        _didIteratorError5 = true;
+	        _iteratorError5 = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion5 && _iterator5.return) {
+	            _iterator5.return();
+	          }
+	        } finally {
+	          if (_didIteratorError5) {
+	            throw _iteratorError5;
+	          }
+	        }
+	      }
+	    });
+	  };
+
+	  (0, _keyConcats.pushOnReady)({ provider: provider }, requery);
+
+	  if (!provider.subscriber) {
+	    provider.subscriber = {};
+	  }
+
+	  var subscriber = provider.subscriber[key];
+	  provider.subscriber[key] = function (providerInstance, providerInstance2) {
+	    if (subscriber) {
+	      subscriber(providerInstance, providerInstance2);
+	    }
+
+	    if (shouldRequery(providerInstance, query)) {
+	      requery(providerInstance);
+	    }
+	  };
+
+	  if (provider.instances) {
+	    provider.instances.forEach(function (providerInstance) {
+	      providerInstance.store.subscribe(function () {
+	        if (shouldRequery(providerInstance, query)) {
+	          requery(providerInstance);
+	        }
+	      });
+	    });
+	  }
+	}
+
+	function shouldRequery(providerInstance, query) {
+	  var currentState = providerInstance.store.getState();
+	  var lastQueriedState = providerInstance.lastQueriedState;
+
+
+	  providerInstance.lastQueriedState = currentState;
+
+	  if (!lastQueriedState) {
+	    return true;
+	  }
+
+	  if (currentState !== lastQueriedState) {
+	    if ((typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
+	      for (var key in query) {
+	        if (currentState[key] !== lastQueriedState[key]) {
+	          return true;
+	        }
+	      }
+	    } else {
+	      return true;
+	    }
+	  }
+
+	  return false;
+	}
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.unshiftClear = exports.pushClear = exports.unshiftWait = exports.pushWait = exports.unshiftReplicator = exports.pushReplicator = exports.unshiftReplication = exports.pushReplication = exports.unshiftOnReady = exports.pushOnReady = exports.unshiftOnInstantiated = exports.pushOnInstantiated = exports.unshiftEnhancer = exports.pushEnhancer = exports.unshiftMiddleware = exports.pushMiddleware = undefined;
+
+	var _createKeyConcat = __webpack_require__(9);
+
+	var _createKeyConcat2 = _interopRequireDefault(_createKeyConcat);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var middlewareKey = 'middleware';
+	var pushMiddleware = exports.pushMiddleware = (0, _createKeyConcat2.default)(middlewareKey);
+	var unshiftMiddleware = exports.unshiftMiddleware = (0, _createKeyConcat2.default)(middlewareKey, true);
+
+	var enhancerKey = 'enhancer';
+	var pushEnhancer = exports.pushEnhancer = (0, _createKeyConcat2.default)(enhancerKey);
+	var unshiftEnhancer = exports.unshiftEnhancer = (0, _createKeyConcat2.default)(enhancerKey, true);
+
+	var onInstantiatedKey = 'onInstantiated';
+	var pushOnInstantiated = exports.pushOnInstantiated = (0, _createKeyConcat2.default)(onInstantiatedKey);
+	var unshiftOnInstantiated = exports.unshiftOnInstantiated = (0, _createKeyConcat2.default)(onInstantiatedKey, true);
+
+	var onReadyKey = 'onReady';
+	var pushOnReady = exports.pushOnReady = (0, _createKeyConcat2.default)(onReadyKey);
+	var unshiftOnReady = exports.unshiftOnReady = (0, _createKeyConcat2.default)(onReadyKey, true);
+
+	var replicationKey = 'replication';
+	var pushReplication = exports.pushReplication = (0, _createKeyConcat2.default)(replicationKey);
+	var unshiftReplication = exports.unshiftReplication = (0, _createKeyConcat2.default)(replicationKey, true);
+
+	var replicatorKey = [replicationKey, 'replicator'];
+	var pushReplicator = exports.pushReplicator = (0, _createKeyConcat2.default)(replicatorKey);
+	var unshiftReplicator = exports.unshiftReplicator = (0, _createKeyConcat2.default)(replicatorKey, true);
+
+	var waitKey = 'wait';
+	var pushWait = exports.pushWait = (0, _createKeyConcat2.default)(waitKey);
+	var unshiftWait = exports.unshiftWait = (0, _createKeyConcat2.default)(waitKey, true);
+
+	var clearKey = 'clear';
+	var pushClear = exports.pushClear = (0, _createKeyConcat2.default)(clearKey);
+	var unshiftClear = exports.unshiftClear = (0, _createKeyConcat2.default)(clearKey, true);
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var storeKeysEqual = function storeKeysEqual(a, b) {
+	  return a === b || a && a.toString && b && b.toString && a.toString() === b.toString();
+	};
+
+	exports.default = storeKeysEqual;
+
+/***/ }),
+/* 15 */
 /***/ (function(module, exports) {
 
 	/**
@@ -912,7 +2536,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ }),
-/* 12 */
+/* 16 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -953,7 +2577,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 13 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -962,11 +2586,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ActionTypes = undefined;
 	exports['default'] = createStore;
 
-	var _isPlainObject = __webpack_require__(16);
+	var _isPlainObject = __webpack_require__(20);
 
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-	var _symbolObservable = __webpack_require__(48);
+	var _symbolObservable = __webpack_require__(50);
 
 	var _symbolObservable2 = _interopRequireDefault(_symbolObservable);
 
@@ -1219,7 +2843,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 14 */
+/* 18 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -1249,10 +2873,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 15 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(46);
+	var root = __webpack_require__(48);
 
 	/** Built-in value references. */
 	var Symbol = root.Symbol;
@@ -1261,12 +2885,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 16 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var baseGetTag = __webpack_require__(40),
-	    getPrototype = __webpack_require__(42),
-	    isObjectLike = __webpack_require__(47);
+	var baseGetTag = __webpack_require__(42),
+	    getPrototype = __webpack_require__(44),
+	    isObjectLike = __webpack_require__(49);
 
 	/** `Object#toString` result references. */
 	var objectTag = '[object Object]';
@@ -1329,7 +2953,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 17 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1346,7 +2970,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _react = __webpack_require__(3);
+	var _react = __webpack_require__(2);
 
 	var _react2 = _interopRequireDefault(_react);
 
@@ -1354,11 +2978,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _propTypes2 = _interopRequireDefault(_propTypes);
 
-	var _reactReduxProvide = __webpack_require__(6);
+	var _reactReduxProvide = __webpack_require__(4);
 
 	var _reactReduxProvide2 = _interopRequireDefault(_reactReduxProvide);
 
-	var _eventsPropTypes = __webpack_require__(4);
+	var _eventsPropTypes = __webpack_require__(3);
 
 	var _eventsPropTypes2 = _interopRequireDefault(_eventsPropTypes);
 
@@ -1477,7 +3101,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ }),
-/* 18 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1494,7 +3118,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _react = __webpack_require__(3);
+	var _react = __webpack_require__(2);
 
 	var _react2 = _interopRequireDefault(_react);
 
@@ -1502,11 +3126,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _propTypes2 = _interopRequireDefault(_propTypes);
 
-	var _reactReduxProvide = __webpack_require__(6);
+	var _reactReduxProvide = __webpack_require__(4);
 
 	var _reactReduxProvide2 = _interopRequireDefault(_reactReduxProvide);
 
-	var _eventsPropTypes = __webpack_require__(4);
+	var _eventsPropTypes = __webpack_require__(3);
 
 	var _eventsPropTypes2 = _interopRequireDefault(_eventsPropTypes);
 
@@ -1570,7 +3194,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ }),
-/* 19 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1583,11 +3207,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _reactReduxProvide = __webpack_require__(6);
+	var _reactReduxProvide = __webpack_require__(4);
 
-	var _reduxReplicate = __webpack_require__(34);
+	var _reduxReplicate = __webpack_require__(35);
 
-	var _defaultRenderDocumentToString = __webpack_require__(8);
+	var _defaultRenderDocumentToString = __webpack_require__(7);
 
 	var _defaultRenderDocumentToString2 = _interopRequireDefault(_defaultRenderDocumentToString);
 
@@ -1774,7 +3398,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ }),
-/* 20 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -1820,7 +3444,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 21 */
+/* 25 */
 /***/ (function(module, exports) {
 
 	/**
@@ -1876,68 +3500,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/*!
-	 * is-plain-object <https://github.com/jonschlinkert/is-plain-object>
-	 *
-	 * Copyright (c) 2014-2017, Jon Schlinkert.
-	 * Released under the MIT License.
-	 */
-
-	'use strict';
-
-	var isObject = __webpack_require__(23);
-
-	function isObjectObject(o) {
-	  return isObject(o) === true
-	    && Object.prototype.toString.call(o) === '[object Object]';
-	}
-
-	module.exports = function isPlainObject(o) {
-	  var ctor,prot;
-
-	  if (isObjectObject(o) === false) return false;
-
-	  // If has modified constructor
-	  ctor = o.constructor;
-	  if (typeof ctor !== 'function') return false;
-
-	  // If has modified prototype
-	  prot = ctor.prototype;
-	  if (isObjectObject(prot) === false) return false;
-
-	  // If constructor does not have an Object-specific method
-	  if (prot.hasOwnProperty('isPrototypeOf') === false) {
-	    return false;
-	  }
-
-	  // Most likely a plain Object
-	  return true;
-	};
-
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports) {
-
-	/*!
-	 * isobject <https://github.com/jonschlinkert/isobject>
-	 *
-	 * Copyright (c) 2014-2017, Jon Schlinkert.
-	 * Released under the MIT License.
-	 */
-
-	'use strict';
-
-	module.exports = function isObject(val) {
-	  return val != null && typeof val === 'object' && Array.isArray(val) === false;
-	};
-
-
-/***/ }),
-/* 24 */
+/* 26 */
 /***/ (function(module, exports) {
 
 	/*
@@ -2033,7 +3596,197 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 25 */
+/* 27 */
+/***/ (function(module, exports) {
+
+	// shim for using process in browser
+	var process = module.exports = {};
+
+	// cached from whatever global is present so that test runners that stub it
+	// don't break things.  But we need to wrap it in a try catch in case it is
+	// wrapped in strict mode code which doesn't define any globals.  It's inside a
+	// function because try/catches deoptimize in certain engines.
+
+	var cachedSetTimeout;
+	var cachedClearTimeout;
+
+	function defaultSetTimout() {
+	    throw new Error('setTimeout has not been defined');
+	}
+	function defaultClearTimeout () {
+	    throw new Error('clearTimeout has not been defined');
+	}
+	(function () {
+	    try {
+	        if (typeof setTimeout === 'function') {
+	            cachedSetTimeout = setTimeout;
+	        } else {
+	            cachedSetTimeout = defaultSetTimout;
+	        }
+	    } catch (e) {
+	        cachedSetTimeout = defaultSetTimout;
+	    }
+	    try {
+	        if (typeof clearTimeout === 'function') {
+	            cachedClearTimeout = clearTimeout;
+	        } else {
+	            cachedClearTimeout = defaultClearTimeout;
+	        }
+	    } catch (e) {
+	        cachedClearTimeout = defaultClearTimeout;
+	    }
+	} ())
+	function runTimeout(fun) {
+	    if (cachedSetTimeout === setTimeout) {
+	        //normal enviroments in sane situations
+	        return setTimeout(fun, 0);
+	    }
+	    // if setTimeout wasn't available but was latter defined
+	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+	        cachedSetTimeout = setTimeout;
+	        return setTimeout(fun, 0);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedSetTimeout(fun, 0);
+	    } catch(e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+	            return cachedSetTimeout.call(null, fun, 0);
+	        } catch(e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+	            return cachedSetTimeout.call(this, fun, 0);
+	        }
+	    }
+
+
+	}
+	function runClearTimeout(marker) {
+	    if (cachedClearTimeout === clearTimeout) {
+	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
+	    }
+	    // if clearTimeout wasn't available but was latter defined
+	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+	        cachedClearTimeout = clearTimeout;
+	        return clearTimeout(marker);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedClearTimeout(marker);
+	    } catch (e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+	            return cachedClearTimeout.call(null, marker);
+	        } catch (e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+	            return cachedClearTimeout.call(this, marker);
+	        }
+	    }
+
+
+
+	}
+	var queue = [];
+	var draining = false;
+	var currentQueue;
+	var queueIndex = -1;
+
+	function cleanUpNextTick() {
+	    if (!draining || !currentQueue) {
+	        return;
+	    }
+	    draining = false;
+	    if (currentQueue.length) {
+	        queue = currentQueue.concat(queue);
+	    } else {
+	        queueIndex = -1;
+	    }
+	    if (queue.length) {
+	        drainQueue();
+	    }
+	}
+
+	function drainQueue() {
+	    if (draining) {
+	        return;
+	    }
+	    var timeout = runTimeout(cleanUpNextTick);
+	    draining = true;
+
+	    var len = queue.length;
+	    while(len) {
+	        currentQueue = queue;
+	        queue = [];
+	        while (++queueIndex < len) {
+	            if (currentQueue) {
+	                currentQueue[queueIndex].run();
+	            }
+	        }
+	        queueIndex = -1;
+	        len = queue.length;
+	    }
+	    currentQueue = null;
+	    draining = false;
+	    runClearTimeout(timeout);
+	}
+
+	process.nextTick = function (fun) {
+	    var args = new Array(arguments.length - 1);
+	    if (arguments.length > 1) {
+	        for (var i = 1; i < arguments.length; i++) {
+	            args[i - 1] = arguments[i];
+	        }
+	    }
+	    queue.push(new Item(fun, args));
+	    if (queue.length === 1 && !draining) {
+	        runTimeout(drainQueue);
+	    }
+	};
+
+	// v8 likes predictible objects
+	function Item(fun, array) {
+	    this.fun = fun;
+	    this.array = array;
+	}
+	Item.prototype.run = function () {
+	    this.fun.apply(null, this.array);
+	};
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+	process.version = ''; // empty string to avoid regexp issues
+	process.versions = {};
+
+	function noop() {}
+
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+	process.prependListener = noop;
+	process.prependOnceListener = noop;
+
+	process.listeners = function (name) { return [] }
+
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	};
+
+	process.cwd = function () { return '/' };
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
+	process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -2048,7 +3801,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var printWarning = function() {};
 
 	if (true) {
-	  var ReactPropTypesSecret = __webpack_require__(9);
+	  var ReactPropTypesSecret = __webpack_require__(8);
 	  var loggedTypeFailures = {};
 
 	  printWarning = function(text) {
@@ -2130,7 +3883,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 26 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -2142,10 +3895,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var assign = __webpack_require__(24);
+	var assign = __webpack_require__(26);
 
-	var ReactPropTypesSecret = __webpack_require__(9);
-	var checkPropTypes = __webpack_require__(25);
+	var ReactPropTypesSecret = __webpack_require__(8);
+	var checkPropTypes = __webpack_require__(28);
 
 	var printWarning = function() {};
 
@@ -2691,27 +4444,24 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 27 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.__esModule = true;
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	exports['default'] = provide;
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	exports.default = provide;
+	exports.reloadFunctions = reloadFunctions;
 	exports.reloadProviders = reloadProviders;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var _react = __webpack_require__(3);
+	var _react = __webpack_require__(2);
 
 	var _react2 = _interopRequireDefault(_react);
 
@@ -2719,806 +4469,1353 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _propTypes2 = _interopRequireDefault(_propTypes);
 
-	var _isPlainObject = __webpack_require__(22);
-
-	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
-
-	var _redux = __webpack_require__(7);
-
-	var _reactReduxLibUtilsShallowEqual = __webpack_require__(32);
-
-	var _reactReduxLibUtilsShallowEqual2 = _interopRequireDefault(_reactReduxLibUtilsShallowEqual);
-
-	var _reactReduxLibUtilsWrapActionCreators = __webpack_require__(33);
-
-	var _reactReduxLibUtilsWrapActionCreators2 = _interopRequireDefault(_reactReduxLibUtilsWrapActionCreators);
-
-	var _createProviderStore = __webpack_require__(5);
-
-	var _createProviderStore2 = _interopRequireDefault(_createProviderStore);
-
-	var _createCombinedStore = __webpack_require__(10);
-
-	var _createCombinedStore2 = _interopRequireDefault(_createCombinedStore);
-
-	var _hoistNonReactStatics = __webpack_require__(21);
+	var _hoistNonReactStatics = __webpack_require__(25);
 
 	var _hoistNonReactStatics2 = _interopRequireDefault(_hoistNonReactStatics);
 
-	var defaultMapState = function defaultMapState() {
-	  return {};
-	};
-	var defaultMapDispatch = function defaultMapDispatch(dispatch) {
-	  return { dispatch: dispatch };
-	};
-	var defaultMerge = function defaultMerge(stateProps, dispatchProps, parentProps) {
-	  return _extends({}, stateProps, parentProps, dispatchProps);
-	};
+	var _shallowEqual = __webpack_require__(5);
+
+	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
+
+	var _getRelevantKeys = __webpack_require__(11);
+
+	var _getRelevantKeys2 = _interopRequireDefault(_getRelevantKeys);
+
+	var _instantiateProvider = __webpack_require__(12);
+
+	var _instantiateProvider2 = _interopRequireDefault(_instantiateProvider);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var isServerSide = typeof window === 'undefined';
+	var allComponentInstances = [];
 
 	var contextTypes = {
-	  providedState: _propTypes2['default'].object,
-	  providers: _propTypes2['default'].object,
-	  combinedProviders: _propTypes2['default'].oneOfType([_propTypes2['default'].object, _propTypes2['default'].arrayOf(_propTypes2['default'].object)]),
-	  combinedProviderStores: _propTypes2['default'].object,
-	  providerReady: _propTypes2['default'].arrayOf(_propTypes2['default'].func)
+	  providers: _propTypes2.default.object,
+	  providerInstances: _propTypes2.default.object,
+	  activeQueries: _propTypes2.default.object,
+	  queryResults: _propTypes2.default.object,
+	  partialStates: _propTypes2.default.object,
+	  forceDeepUpdate: _propTypes2.default.bool
 	};
 
-	var wrappedInstances = {};
-	var rootInstance = null;
+	function provide(ComponentClass) {
+	  var _class, _temp;
 
-	function provide(WrappedComponent) {
-	  var stateless = typeof WrappedComponent.prototype.render === 'undefined';
-	  var wrappedName = WrappedComponent.displayName || WrappedComponent.name;
-	  var instances = wrappedInstances[wrappedName] || new Set();
-	  var pure = WrappedComponent.pure !== false;
-	  var doSubscribe = false;
-	  var statePropsDepend = false;
-	  var dispatchPropsDepend = false;
-
-	  if (!wrappedInstances[wrappedName]) {
-	    wrappedInstances[wrappedName] = instances;
+	  if (ComponentClass.ComponentClass) {
+	    return ComponentClass;
 	  }
+
+	  var componentName = ComponentClass.displayName || ComponentClass.name;
 
 	  function getDisplayName() {
-	    var providers = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	    var providers = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-	    return 'Provide' + wrappedName + '(' + Object.keys(providers).join(',') + ')';
+	    return 'Provide' + componentName + '(' + Object.keys(providers).join(',') + ')';
 	  }
 
-	  function getReduced(reducers) {
-	    var reduced = {};
-
-	    for (var key in reducers) {
-	      reduced[key] = reducers[key](undefined, {});
-	    }
-
-	    return reduced;
-	  }
-
-	  var Provide = (function (_Component) {
+	  var Provide = (_temp = _class = function (_Component) {
 	    _inherits(Provide, _Component);
 
-	    Provide.prototype.getChildContext = function getChildContext() {
-	      return {
-	        providedState: this.providedState,
-	        providers: this.contextProviders,
-	        combinedProviders: this.contextCombinedProviders,
-	        combinedProviderStores: this.contextCombinedProviderStores,
-	        providerReady: this.providerReady
-	      };
-	    };
+	    _createClass(Provide, [{
+	      key: 'getChildContext',
+	      value: function getChildContext() {
+	        return {
+	          providers: this.getProviders(),
+	          providerInstances: this.getProviderInstances(),
+	          activeQueries: this.getActiveQueries(),
+	          queryResults: this.getQueryResults(),
+	          partialStates: this.getPartialStates(),
+	          forceDeepUpdate: this.forceDeepUpdate
+	        };
+	      }
+	    }, {
+	      key: 'getProviders',
+	      value: function getProviders() {
+	        var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.props;
+	        var context = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.context;
 
-	    _createClass(Provide, null, [{
-	      key: 'WrappedComponent',
-	      value: WrappedComponent,
-	      enumerable: true
+	        this.providers = this.providers || props.providers || context.providers || {};
+
+	        return this.providers;
+	      }
 	    }, {
-	      key: 'displayName',
-	      value: getDisplayName(),
-	      enumerable: true
+	      key: 'getProviderInstances',
+	      value: function getProviderInstances() {
+	        var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.props;
+	        var context = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.context;
+
+	        this.providerInstances = this.providerInstances || props.providerInstances || context.providerInstances || {};
+
+	        return this.providerInstances;
+	      }
 	    }, {
-	      key: 'propTypes',
-	      value: contextTypes,
-	      enumerable: true
+	      key: 'getActiveQueries',
+	      value: function getActiveQueries() {
+	        var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.props;
+	        var context = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.context;
+
+	        this.activeQueries = this.activeQueries || props.activeQueries || context.activeQueries || {};
+
+	        return this.activeQueries;
+	      }
 	    }, {
-	      key: 'contextTypes',
-	      value: contextTypes,
-	      enumerable: true
+	      key: 'getQueryResults',
+	      value: function getQueryResults() {
+	        var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.props;
+	        var context = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.context;
+
+	        this.queryResults = this.queryResults || props.queryResults || context.queryResults || {};
+
+	        return this.queryResults;
+	      }
 	    }, {
-	      key: 'childContextTypes',
-	      value: contextTypes,
-	      enumerable: true
+	      key: 'getPartialStates',
+	      value: function getPartialStates() {
+	        var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.props;
+	        var context = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.context;
+
+	        this.partialStates = this.partialStates || props.partialStates || context.partialStates || {};
+
+	        return this.partialStates;
+	      }
 	    }]);
 
 	    function Provide(props, context) {
 	      _classCallCheck(this, Provide);
 
-	      _Component.call(this, props);
+	      var _this = _possibleConstructorReturn(this, (Provide.__proto__ || Object.getPrototypeOf(Provide)).call(this, props));
 
-	      if (!context.providers) {
-	        rootInstance = this;
+	      _this.render = isServerSide ? function () {
+	        var wrappedInstance = _this.getWrappedInstance();
+
+	        _this.deinitialize();
+	        return wrappedInstance;
+	      } : function () {
+	        return _this.getWrappedInstance();
+	      };
+
+
+	      if (!isServerSide && !context.providers) {
+	        window.rootInstance = _this;
+	        _this.initializeClientStates(props, context);
 	      }
 
-	      this.prerenders = 1;
-	      this.renders = 0;
-	      this.initialize(props, context);
+	      _this.renders = 0;
+	      _this.componentName = componentName;
+	      _this.unmounted = true;
+	      _this.initialize(props, context);
+	      return _this;
 	    }
 
-	    Provide.prototype.initialize = function initialize(props, context) {
-	      this.stores = new Set();
-	      this.storesStates = new WeakMap();
-	      this.providedState = props.providedState || context.providedState || {};
-	      this.providerReady = props.providerReady || context.providerReady;
-	      this.initCombinedProviderStores(props, context);
-	      this.initProviders(props, context);
-	      this.initState(props, context);
-	    };
-
-	    Provide.prototype.reinitialize = function reinitialize(props, context, newWrappedComponent) {
-	      if (newWrappedComponent) {
-	        this.setWrappedComponent(newWrappedComponent);
+	    _createClass(Provide, [{
+	      key: 'componentDidMount',
+	      value: function componentDidMount() {
+	        this.unmounted = isServerSide;
 	      }
-	      this.initialize(props, context);
-	      this.tryUnsubscribe();
-	      this.trySubscribe();
-	      this.forceUpdate();
-	    };
-
-	    Provide.prototype.setWrappedComponent = function setWrappedComponent(newWrappedComponent) {
-	      var prevWrappedName = wrappedName;
-
-	      WrappedComponent = newWrappedComponent;
-	      Provide.WrappedComponent = WrappedComponent;
-	      wrappedName = WrappedComponent.displayName || WrappedComponent.name;
-	      if (prevWrappedName !== wrappedName) {
-	        wrappedInstances[wrappedName] = instances;
-	        delete wrappedInstances[prevWrappedName];
+	    }, {
+	      key: 'componentWillUnmount',
+	      value: function componentWillUnmount() {
+	        this.unmounted = true;
+	        this.deinitialize();
 	      }
-	      pure = WrappedComponent.pure !== false;
-	      doSubscribe = false;
-	      statePropsDepend = false;
-	      dispatchPropsDepend = false;
-	    };
-
-	    Provide.prototype.initCombinedProviderStores = function initCombinedProviderStores(props, context) {
-	      if (!props.providers && context.combinedProviderStores) {
-	        this.contextCombinedProviders = context.combinedProviders;
-	        this.contextCombinedProviderStores = context.combinedProviderStores;
-	        return;
-	      }
-
-	      var _props$combinedProviders = props.combinedProviders;
-	      var combinedProviders = _props$combinedProviders === undefined ? [] : _props$combinedProviders;
-
-	      if (!Array.isArray(combinedProviders)) {
-	        combinedProviders = [combinedProviders];
-	      }
-
-	      if (this.contextCombinedProviderStores) {
-	        var removed = new WeakSet();
-
-	        for (var _name in this.contextCombinedProviderStores) {
-	          var store = this.contextCombinedProviderStores[_name];
-
-	          if (store && store.remove && !removed.has(store)) {
-	            store.remove();
-	            removed.add(store);
-	          }
+	    }, {
+	      key: 'componentWillReceiveProps',
+	      value: function componentWillReceiveProps(nextProps) {
+	        if (!(0, _shallowEqual2.default)(nextProps, this.props)) {
+	          this.deinitialize();
+	          this.initialize(nextProps, this.context);
+	          this.receivedNewProps = true;
 	        }
 	      }
-
-	      this.contextCombinedProviders = combinedProviders;
-	      this.contextCombinedProviderStores = {};
-
-	      for (var _iterator = combinedProviders, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
-	        var _ref;
-
-	        if (_isArray) {
-	          if (_i >= _iterator.length) break;
-	          _ref = _iterator[_i++];
+	    }, {
+	      key: 'shouldComponentUpdate',
+	      value: function shouldComponentUpdate() {
+	        if (this.forceDeepUpdate || this.context.forceDeepUpdate) {
+	          return true;
+	        } else if (this.receivedNewProps) {
+	          this.receivedNewProps = false;
+	          return true;
 	        } else {
-	          _i = _iterator.next();
-	          if (_i.done) break;
-	          _ref = _i.value;
-	        }
-
-	        var providers = _ref;
-
-	        var store = _createCombinedStore2['default'](providers, this.providedState);
-
-	        for (var _name2 in providers) {
-	          this.contextCombinedProviderStores[_name2] = store;
+	          return false;
 	        }
 	      }
-	    };
-
-	    Provide.prototype.initProviders = function initProviders(props, context) {
-	      var _WrappedComponent = WrappedComponent;
-	      var _WrappedComponent$propTypes = _WrappedComponent.propTypes;
-	      var propTypes = _WrappedComponent$propTypes === undefined ? {} : _WrappedComponent$propTypes;
-
-	      if (props.providers) {
-	        if (this.contextProviders) {
-	          var removed = new WeakSet();
-
-	          for (var _name3 in this.contextProviders) {
-	            var store = this.contextProviders[_name3].store;
-
-	            if (store && store.remove && !removed.has(store)) {
-	              store.remove();
-	              removed.add(store);
-	            }
-	          }
-	        }
-
-	        this.contextProviders = {};
-
-	        for (var _name4 in props.providers) {
-	          this.initProvider(_name4, props.providers[_name4]);
-	        }
-	      } else {
-	        this.contextProviders = context.providers;
-	      }
-
-	      this.providers = {};
-
-	      for (var _name5 in this.contextProviders) {
-	        var provider = this.contextProviders[_name5];
-	        var _provider$actions = provider.actions;
-	        var actions = _provider$actions === undefined ? {} : _provider$actions;
-	        var _provider$reducers = provider.reducers;
-	        var reducers = _provider$reducers === undefined ? {} : _provider$reducers;
-	        var merge = provider.merge;
-
-	        var merged = merge && merge(getReduced(reducers), {}, {}) || {};
-
-	        for (var propKey in propTypes) {
-	          if (propKey in actions || propKey in reducers || propKey in merged) {
-	            this.providers[_name5] = provider;
-	            this.addStore(provider.store);
-
-	            if (provider.shouldSubscribe) {
-	              doSubscribe = true;
-	            }
-	            if (provider.mapStateProps) {
-	              statePropsDepend = true;
-	            }
-	            if (provider.mapDispatchProps) {
-	              dispatchPropsDepend = true;
-	            }
-
-	            break;
-	          }
+	    }, {
+	      key: 'update',
+	      value: function update() {
+	        if (!this.unmounted) {
+	          this.forceUpdate();
 	        }
 	      }
 
-	      Provide.displayName = getDisplayName(this.providers);
-	    };
+	      // TODO: improve this
 
-	    Provide.prototype.initProvider = function initProvider(name, provider) {
-	      var _provider$actions2 = provider.actions;
-	      var actions = _provider$actions2 === undefined ? {} : _provider$actions2;
-	      var _provider$reducers2 = provider.reducers;
-	      var reducers = _provider$reducers2 === undefined ? {} : _provider$reducers2;
-	      var mapState = provider.mapState;
-	      var mapDispatch = provider.mapDispatch;
-	      var merge = provider.merge;
+	    }, {
+	      key: 'initializeClientStates',
+	      value: function initializeClientStates() {
+	        var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.props;
+	        var context = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.context;
+	        var _window = window,
+	            clientStates = _window.clientStates;
 
-	      var shouldSubscribe = false;
+	        var fauxInstance = this.getFauxInstance(props, context);
+	        var providers = this.getProviders(props, context);
+	        var findProvider = function findProvider(props) {
+	          for (var key in providers) {
+	            var provider = providers[key];
 
-	      if (typeof mapState === 'undefined') {
-	        mapState = function (state) {
-	          var props = {};
+	            if ((0, _getRelevantKeys2.default)(provider.reducers, props).length) {
+	              if (typeof provider.defaultKey === 'undefined') {
+	                provider.defaultKey = key;
+	              }
+	              if (typeof provider.key === 'undefined') {
+	                provider.key = provider.defaultKey;
+	              }
 
-	          for (var key in reducers) {
-	            props[key] = state[key];
+	              return provider;
+	            }
 	          }
-
-	          return props;
 	        };
+
+	        if (clientStates) {
+	          for (var providerKey in clientStates) {
+	            var state = clientStates[providerKey];
+	            var provider = findProvider(state);
+
+	            if (provider) {
+	              (0, _instantiateProvider2.default)((0, _instantiateProvider.getTempFauxInstance)(fauxInstance, state), provider);
+	            }
+	          }
+	        }
 	      }
+	    }, {
+	      key: 'initialize',
+	      value: function initialize() {
+	        var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.props;
+	        var context = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.context;
 
-	      if (typeof mapState === 'function') {
-	        shouldSubscribe = true;
-	      } else {
-	        mapState = defaultMapState;
-	      }
+	        var providers = this.getProviders(props, context);
 
-	      if (typeof mapDispatch === 'undefined') {
-	        mapDispatch = function (dispatch) {
-	          return _redux.bindActionCreators(actions, dispatch);
-	        };
-	      } else if (_isPlainObject2['default'](mapDispatch)) {
-	        mapDispatch = _reactReduxLibUtilsWrapActionCreators2['default'](mapDispatch);
-	      } else if (typeof mapDispatch !== 'function') {
-	        mapDispatch = defaultMapDispatch;
-	      }
+	        this.relevantProviders = {};
 
-	      if (!merge) {
-	        merge = defaultMerge;
-	      }
+	        for (var key in providers) {
+	          var provider = providers[key];
+	          var shouldSubscribe = false;
 
-	      var mapStateProps = mapState.length !== 1;
-	      var mapDispatchProps = mapDispatch.length !== 1;
-
-	      this.contextProviders[name] = this.setProviderStore(_extends({
-	        name: name
-	      }, provider, {
-	        shouldSubscribe: shouldSubscribe,
-	        mapState: mapState,
-	        mapStateProps: mapStateProps,
-	        mapDispatch: mapDispatch,
-	        mapDispatchProps: mapDispatchProps,
-	        merge: merge
-	      }));
-	    };
-
-	    Provide.prototype.addStore = function addStore(store) {
-	      this.stores.add(store);
-	      this.storesStates.set(store, store.getState());
-	    };
-
-	    Provide.prototype.setProviderStore = function setProviderStore(provider) {
-	      if (!provider.store) {
-	        provider.store = this.contextCombinedProviderStores[provider.name] || _createProviderStore2['default'](provider, this.providedState);
-
-	        this.setProviderReady(provider);
-	      }
-
-	      return provider;
-	    };
-
-	    Provide.prototype.setProviderReady = function setProviderReady(provider) {
-	      if (this.providerReady) {
-	        for (var _iterator2 = this.providerReady, _isArray2 = Array.isArray(_iterator2), _i2 = 0, _iterator2 = _isArray2 ? _iterator2 : _iterator2[Symbol.iterator]();;) {
-	          var _ref2;
-
-	          if (_isArray2) {
-	            if (_i2 >= _iterator2.length) break;
-	            _ref2 = _iterator2[_i2++];
-	          } else {
-	            _i2 = _iterator2.next();
-	            if (_i2.done) break;
-	            _ref2 = _i2.value;
+	          if (typeof provider.defaultKey === 'undefined') {
+	            provider.defaultKey = key;
+	          }
+	          if (typeof provider.key === 'undefined') {
+	            provider.key = provider.defaultKey;
 	          }
 
-	          var ready = _ref2;
+	          this.assignActionCreators(props, context, provider);
 
-	          ready(provider);
-	        }
-	      }
-	    };
-
-	    Provide.prototype.initState = function initState(props, context) {
-	      this.state = { storesStates: this.storesStates };
-	      this.setStateProps(props);
-	      this.setDispatchProps(props);
-	      this.setMergedProps(props);
-	    };
-
-	    Provide.prototype.setStateProps = function setStateProps(props) {
-	      var stateProps = this.stateProps;
-
-	      var nextStateProps = this.computeStateProps(props);
-
-	      if (stateProps && _reactReduxLibUtilsShallowEqual2['default'](nextStateProps, stateProps)) {
-	        return false;
-	      }
-
-	      this.stateProps = nextStateProps;
-	      return true;
-	    };
-
-	    Provide.prototype.computeStateProps = function computeStateProps(props) {
-	      var stateProps = {};
-
-	      for (var _name6 in this.providers) {
-	        var provider = this.providers[_name6];
-	        var state = provider.store.getState();
-	        var providerStateProps = provider.mapStateProps ? provider.mapState(state, props) : provider.mapState(state);
-
-	        if (!_isPlainObject2['default'](providerStateProps)) {
-	          throw new Error('`mapState` must return an object. Instead received %s.', providerStateProps);
-	        }
-
-	        Object.assign(stateProps, providerStateProps);
-	      }
-
-	      return stateProps;
-	    };
-
-	    Provide.prototype.setDispatchProps = function setDispatchProps(props) {
-	      var dispatchProps = this.dispatchProps;
-
-	      var nextDispatchProps = this.computeDispatchProps(props);
-	      if (dispatchProps && _reactReduxLibUtilsShallowEqual2['default'](nextDispatchProps, dispatchProps)) {
-	        return false;
-	      }
-
-	      this.dispatchProps = nextDispatchProps;
-	      return true;
-	    };
-
-	    Provide.prototype.computeDispatchProps = function computeDispatchProps(props) {
-	      var dispatchProps = {};
-
-	      for (var _name7 in this.providers) {
-	        var provider = this.providers[_name7];
-	        var dispatch = provider.store.dispatch;
-
-	        var providerDispatchProps = provider.mapDispatchProps ? provider.mapDispatch(dispatch, props) : provider.mapDispatch(dispatch);
-
-	        if (!_isPlainObject2['default'](providerDispatchProps)) {
-	          throw new Error('`mapDispatch` must return an object. Instead received %s.', providerDispatchProps);
-	        }
-
-	        Object.assign(dispatchProps, providerDispatchProps);
-	      }
-
-	      return dispatchProps;
-	    };
-
-	    Provide.prototype.setMergedProps = function setMergedProps(props) {
-	      var stateProps = this.stateProps;
-	      var dispatchProps = this.dispatchProps;
-	      var mergedProps = this.mergedProps;
-
-	      this.mergedProps = this.computeMergedProps(stateProps, dispatchProps, WrappedComponent.defaultProps ? _extends({}, WrappedComponent.defaultProps, props) : props);
-
-	      return !mergedProps || !_reactReduxLibUtilsShallowEqual2['default'](mergedProps, this.mergedProps);
-	    };
-
-	    Provide.prototype.computeMergedProps = function computeMergedProps(stateProps, dispatchProps, parentProps) {
-	      var mergedProps = defaultMerge(stateProps, dispatchProps, parentProps);
-	      var filtered = {};
-
-	      for (var _name8 in this.providers) {
-	        var provider = this.providers[_name8];
-	        var providerMergedProps = provider.merge(stateProps, dispatchProps, mergedProps);
-
-	        if (!_isPlainObject2['default'](providerMergedProps)) {
-	          throw new Error('`merge` must return an object. Instead received %s.', providerMergedProps);
-	        }
-
-	        Object.assign(mergedProps, providerMergedProps);
-	      }
-
-	      for (var key in WrappedComponent.propTypes) {
-	        if (mergedProps[key] !== undefined) {
-	          filtered[key] = mergedProps[key];
-	        }
-	      }
-
-	      return filtered;
-	    };
-
-	    Provide.prototype.componentDidMount = function componentDidMount() {
-	      this.trySubscribe();
-	      instances.add(this);
-	    };
-
-	    Provide.prototype.componentWillUnmount = function componentWillUnmount() {
-	      this.tryUnsubscribe();
-	      instances['delete'](this);
-	    };
-
-	    Provide.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
-	      if (!pure || !_reactReduxLibUtilsShallowEqual2['default'](nextProps, this.props)) {
-	        this.propsChanged = true;
-	      }
-	    };
-
-	    Provide.prototype.isSubscribed = function isSubscribed() {
-	      return this.unsubscribe && typeof this.unsubscribe[0] === 'function';
-	    };
-
-	    Provide.prototype.trySubscribe = function trySubscribe() {
-	      var _this = this;
-
-	      if (doSubscribe && !this.unsubscribe) {
-	        this.unsubscribe = Array.from(this.stores).map(function (store) {
-	          return store.subscribe(_this.handleChange.bind(_this));
-	        });
-	        this.handleChange();
-	      }
-	    };
-
-	    Provide.prototype.tryUnsubscribe = function tryUnsubscribe() {
-	      if (this.unsubscribe) {
-	        for (var _iterator3 = this.unsubscribe, _isArray3 = Array.isArray(_iterator3), _i3 = 0, _iterator3 = _isArray3 ? _iterator3 : _iterator3[Symbol.iterator]();;) {
-	          var _ref3;
-
-	          if (_isArray3) {
-	            if (_i3 >= _iterator3.length) break;
-	            _ref3 = _iterator3[_i3++];
-	          } else {
-	            _i3 = _iterator3.next();
-	            if (_i3.done) break;
-	            _ref3 = _i3.value;
+	          if (this.assignReducers(props, context, provider)) {
+	            shouldSubscribe = true;
 	          }
 
-	          var unsubscribe = _ref3;
+	          if (this.assignMergers(props, context, provider)) {
+	            shouldSubscribe = true;
+	          }
+
+	          if (shouldSubscribe) {
+	            this.subscribeToProvider(props, context, provider);
+	          }
+	        }
+
+	        this.handleQueries(props, context);
+	        this.setDisplayName(props, context);
+
+	        if (this.doUpdate) {
+	          this.update();
+	        }
+	      }
+	    }, {
+	      key: 'deinitialize',
+	      value: function deinitialize() {
+	        this.unsubscribe();
+
+	        delete this.relevantProviders;
+	        delete this.componentProps;
+	        delete this.fauxInstance;
+	        delete this.subbedAll;
+	        delete this.query;
+	        delete this.queryOptions;
+	        delete this.queries;
+	        delete this.queriesOptions;
+	        delete this.subscriptions;
+	        delete this.mergers;
+	        delete this.wrappedInstance;
+	      }
+	    }, {
+	      key: 'unsubscribe',
+	      value: function unsubscribe() {
+	        var subscriptions = this.getSubscriptions();
+
+	        while (subscriptions.length) {
+	          var unsubscribe = subscriptions.shift();
 
 	          unsubscribe();
 	        }
-	        this.unsubscribe = null;
 	      }
-	    };
-
-	    Provide.prototype.handleChange = function handleChange() {
-	      if (!this.unsubscribe) {
-	        return;
+	    }, {
+	      key: 'setDisplayName',
+	      value: function setDisplayName(props, context) {
+	        Provide.displayName = getDisplayName(this.relevantProviders);
 	      }
+	    }, {
+	      key: 'getComponentProps',
+	      value: function getComponentProps() {
+	        var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.props;
+	        var context = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.context;
 
-	      if (!pure || this.storesDidChange()) {
-	        this.storesChanged = true;
-	        this.setState({ storesStates: this.storesStates });
-	      }
-	    };
+	        if (!this.componentProps) {
+	          this.componentProps = _extends({}, ComponentClass.defaultProps, props, { __wrapper: this
+	          });
 
-	    Provide.prototype.storesDidChange = function storesDidChange() {
-	      var stores = this.stores;
-	      var storesStates = this.storesStates;
-
-	      var changed = false;
-
-	      this.storesStates = new WeakMap();
-
-	      for (var _iterator4 = stores, _isArray4 = Array.isArray(_iterator4), _i4 = 0, _iterator4 = _isArray4 ? _iterator4 : _iterator4[Symbol.iterator]();;) {
-	        var _ref4;
-
-	        if (_isArray4) {
-	          if (_i4 >= _iterator4.length) break;
-	          _ref4 = _iterator4[_i4++];
-	        } else {
-	          _i4 = _iterator4.next();
-	          if (_i4.done) break;
-	          _ref4 = _i4.value;
+	          if (!this.componentProps.ref && ComponentClass.prototype.render) {
+	            this.componentProps.ref = 'wrappedInstance';
+	          }
 	        }
 
-	        var store = _ref4;
+	        return this.componentProps;
+	      }
+	    }, {
+	      key: 'getFauxInstance',
+	      value: function getFauxInstance(props, context) {
+	        var _this2 = this;
 
-	        var prevStoreState = storesStates.get(store);
-	        var storeState = store.getState();
+	        if (!this.fauxInstance) {
+	          var componentProps = this.getComponentProps(props, context);
 
-	        if (prevStoreState !== storeState && !_reactReduxLibUtilsShallowEqual2['default'](prevStoreState, storeState)) {
-	          changed = true;
+	          this.getProviders(props, context);
+	          this.getProviderInstances(props, context);
+	          this.getActiveQueries(props, context);
+	          this.getQueryResults(props, context);
+	          this.getPartialStates(props, context);
+	          this.getSubscriptions(props, context);
+	          this.fauxInstance = _extends({}, Object.getOwnPropertyNames(this).reduce(function (prev, propName) {
+	            return _extends({}, prev, _defineProperty({}, propName, _this2[propName]));
+	          }, {}), {
+	            props: componentProps
+	          });
 	        }
 
-	        this.storesStates.set(store, storeState);
+	        this.fauxInstance.context = context;
+
+	        return this.fauxInstance;
 	      }
+	    }, {
+	      key: 'getSubscriptions',
+	      value: function getSubscriptions() {
+	        if (!this.subscriptions) {
+	          this.subscriptions = [];
+	        }
 
-	      return changed;
-	    };
-
-	    Provide.prototype.getCurrentProvidedState = function getCurrentProvidedState() {
-	      var contextProviders = this.contextProviders;
-
-	      var providedState = {};
-
-	      for (var _name9 in contextProviders) {
-	        Object.assign(providedState, contextProviders[_name9].store.getState());
+	        return this.subscriptions;
 	      }
+	    }, {
+	      key: 'getMergers',
+	      value: function getMergers() {
+	        if (!this.mergers) {
+	          this.mergers = {};
+	        }
 
-	      return providedState;
-	    };
+	        return this.mergers;
+	      }
+	    }, {
+	      key: 'getWrappedInstance',
+	      value: function getWrappedInstance() {
+	        if (this.context.forceDeepUpdate) {
+	          this.doUpdate = true;
+	        }
 
-	    Provide.prototype.shouldComponentUpdate = function shouldComponentUpdate(props) {
-	      var propsChanged = this.propsChanged;
-	      var storesChanged = this.storesChanged;
+	        if (!this.wrappedInstance || this.doUpdate) {
+	          this.renders++;
+	          this.doUpdate = false;
+	          this.wrappedInstance = _react2.default.createElement(ComponentClass, this.getComponentProps());
+	        }
 
-	      var statePropsChanged = false;
-	      var dispatchPropsChanged = false;
-	      var mergedPropsChanged = false;
+	        return this.wrappedInstance;
+	      }
+	    }, {
+	      key: 'getProviderInstance',
+	      value: function getProviderInstance(props, context, provider, getReducerKeys) {
+	        return (0, _instantiateProvider2.default)({
+	          fauxInstance: this.getFauxInstance(props, context),
+	          provider: provider,
+	          getReducerKeys: getReducerKeys
+	        });
+	      }
+	    }, {
+	      key: 'assignActionCreators',
+	      value: function assignActionCreators(props, context, provider) {
+	        var actionKeys = (0, _getRelevantKeys2.default)(provider.actions, ComponentClass.propTypes);
 
-	      if (!pure) {
+	        if (!actionKeys.length) {
+	          return false;
+	        }
+
+	        var componentProps = this.getComponentProps(props, context);
+
+	        var _getProviderInstance = this.getProviderInstance(props, context, provider, true),
+	            actionCreators = _getProviderInstance.actionCreators;
+
+	        // assign relevant action creators to wrapped component's props
+
+
+	        var _iteratorNormalCompletion = true;
+	        var _didIteratorError = false;
+	        var _iteratorError = undefined;
+
+	        try {
+	          for (var _iterator = actionKeys[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	            var actionKey = _step.value;
+
+	            if (!props[actionKey]) {
+	              componentProps[actionKey] = actionCreators[actionKey];
+	            }
+	          }
+	        } catch (err) {
+	          _didIteratorError = true;
+	          _iteratorError = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion && _iterator.return) {
+	              _iterator.return();
+	            }
+	          } finally {
+	            if (_didIteratorError) {
+	              throw _iteratorError;
+	            }
+	          }
+	        }
+
 	        return true;
 	      }
+	    }, {
+	      key: 'assignReducers',
+	      value: function assignReducers(props, context, provider) {
+	        var _this3 = this;
 
-	      if (!propsChanged && !storesChanged) {
-	        return false;
+	        var reducerKeys = (0, _getRelevantKeys2.default)(provider.reducers, ComponentClass.propTypes);
+
+	        if (!reducerKeys.length) {
+	          return false;
+	        }
+
+	        var getReducerKeys = {};
+	        var shouldSubscribe = false;
+
+	        var _iteratorNormalCompletion2 = true;
+	        var _didIteratorError2 = false;
+	        var _iteratorError2 = undefined;
+
+	        try {
+	          for (var _iterator2 = reducerKeys[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	            var reducerKey = _step2.value;
+
+	            if (typeof props[reducerKey] === 'undefined') {
+	              getReducerKeys[reducerKey] = true;
+	              shouldSubscribe = true;
+	            }
+	          }
+	        } catch (err) {
+	          _didIteratorError2 = true;
+	          _iteratorError2 = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	              _iterator2.return();
+	            }
+	          } finally {
+	            if (_didIteratorError2) {
+	              throw _iteratorError2;
+	            }
+	          }
+	        }
+
+	        if (!shouldSubscribe) {
+	          return false;
+	        }
+
+	        var subscriptions = this.getSubscriptions();
+	        var componentProps = this.getComponentProps(props, context);
+
+	        var _getProviderInstance2 = this.getProviderInstance(props, context, provider, getReducerKeys),
+	            store = _getProviderInstance2.store;
+
+	        var state = store.getState();
+
+	        // copy the relevant states to the wrapped component's props
+	        // and whenever some state changes, update (mutate) the wrapped props
+	        // and raise the `doUpdate` flag to indicate that the component
+	        // should be updated after the action has taken place
+
+	        var _loop = function _loop(reducerKey) {
+	          componentProps[reducerKey] = state[reducerKey];
+
+	          subscriptions.push(store.watch(reducerKey, function (nextState) {
+	            componentProps[reducerKey] = nextState;
+	            _this3.doUpdate = true;
+	          }));
+	        };
+
+	        for (var reducerKey in getReducerKeys) {
+	          _loop(reducerKey);
+	        }
+
+	        return true;
 	      }
+	    }, {
+	      key: 'assignMergers',
+	      value: function assignMergers(props, context, provider) {
+	        var _this4 = this;
 
-	      if (storesChanged || propsChanged && statePropsDepend) {
-	        statePropsChanged = this.setStateProps(props);
+	        var merge = provider.merge;
+
+	        var mergeKeys = (0, _getRelevantKeys2.default)(merge, ComponentClass.propTypes);
+
+	        if (!mergeKeys.length) {
+	          return false;
+	        }
+
+	        var getReducerKeys = {};
+	        var shouldSubscribe = false;
+
+	        var _iteratorNormalCompletion3 = true;
+	        var _didIteratorError3 = false;
+	        var _iteratorError3 = undefined;
+
+	        try {
+	          for (var _iterator3 = mergeKeys[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+	            var mergeKey = _step3.value;
+
+	            if (typeof props[mergeKey] === 'undefined') {
+	              var merger = merge[mergeKey];
+
+	              var _iteratorNormalCompletion5 = true;
+	              var _didIteratorError5 = false;
+	              var _iteratorError5 = undefined;
+
+	              try {
+	                for (var _iterator5 = merger.keys[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+	                  var reducerKey = _step5.value;
+
+	                  getReducerKeys[reducerKey] = true;
+	                  shouldSubscribe = true;
+	                }
+	              } catch (err) {
+	                _didIteratorError5 = true;
+	                _iteratorError5 = err;
+	              } finally {
+	                try {
+	                  if (!_iteratorNormalCompletion5 && _iterator5.return) {
+	                    _iterator5.return();
+	                  }
+	                } finally {
+	                  if (_didIteratorError5) {
+	                    throw _iteratorError5;
+	                  }
+	                }
+	              }
+	            }
+	          }
+	        } catch (err) {
+	          _didIteratorError3 = true;
+	          _iteratorError3 = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion3 && _iterator3.return) {
+	              _iterator3.return();
+	            }
+	          } finally {
+	            if (_didIteratorError3) {
+	              throw _iteratorError3;
+	            }
+	          }
+	        }
+
+	        if (!shouldSubscribe) {
+	          return false;
+	        }
+
+	        var mergers = this.getMergers();
+	        var subscriptions = this.getSubscriptions();
+	        var componentProps = this.getComponentProps(props, context);
+
+	        var _getProviderInstance3 = this.getProviderInstance(props, context, provider, getReducerKeys),
+	            store = _getProviderInstance3.store;
+
+	        var state = store.getState();
+
+	        // some of the wrapped component's props might depend on some state,
+	        // possibly merged with props and/or context,
+	        // so we watch for changes to certain `keys`
+	        // and only update props when those `keys` have changed
+	        var _iteratorNormalCompletion4 = true;
+	        var _didIteratorError4 = false;
+	        var _iteratorError4 = undefined;
+
+	        try {
+	          var _loop2 = function _loop2() {
+	            var mergeKey = _step4.value;
+
+	            if (!props[mergeKey]) {
+	              (function () {
+	                var merger = merge[mergeKey];
+
+	                componentProps[mergeKey] = merger.get(state, componentProps, context);
+
+	                var _iteratorNormalCompletion6 = true;
+	                var _didIteratorError6 = false;
+	                var _iteratorError6 = undefined;
+
+	                try {
+	                  for (var _iterator6 = merger.keys[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+	                    var _reducerKey = _step6.value;
+
+	                    subscriptions.push(store.watch(_reducerKey, function (nextState) {
+	                      // we store the merger temporarily so that we may
+	                      // `get` the value only after the action has completed
+	                      mergers[mergeKey] = merger;
+	                      _this4.doMerge = true;
+	                    }));
+	                  }
+	                } catch (err) {
+	                  _didIteratorError6 = true;
+	                  _iteratorError6 = err;
+	                } finally {
+	                  try {
+	                    if (!_iteratorNormalCompletion6 && _iterator6.return) {
+	                      _iterator6.return();
+	                    }
+	                  } finally {
+	                    if (_didIteratorError6) {
+	                      throw _iteratorError6;
+	                    }
+	                  }
+	                }
+	              })();
+	            }
+	          };
+
+	          for (var _iterator4 = mergeKeys[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+	            _loop2();
+	          }
+	        } catch (err) {
+	          _didIteratorError4 = true;
+	          _iteratorError4 = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion4 && _iterator4.return) {
+	              _iterator4.return();
+	            }
+	          } finally {
+	            if (_didIteratorError4) {
+	              throw _iteratorError4;
+	            }
+	          }
+	        }
+
+	        return true;
 	      }
-	      if (propsChanged && dispatchPropsDepend) {
-	        dispatchPropsChanged = this.setDispatchProps(props);
+	    }, {
+	      key: 'subscribeToProvider',
+	      value: function subscribeToProvider(props, context, provider) {
+	        var _this5 = this;
+
+	        var subscriptions = this.getSubscriptions();
+
+	        var _getProviderInstance4 = this.getProviderInstance(props, context, provider),
+	            store = _getProviderInstance4.store;
+
+	        // if any states are relevant, we subscribe to the provider's store;
+	        // and since we're reflecting any changes to relevant states
+	        // by mutating `componentProps` and raising the `doUpdate` flag,
+	        // it's more efficient to simply call `forceUpdate` here
+
+
+	        subscriptions.push(store.subscribe(function () {
+	          if (_this5.doMerge) {
+	            var mergers = _this5.getMergers();
+	            var componentProps = _this5.getComponentProps(props, context);
+	            var state = store.getState();
+
+	            // this is where we `get` any new values which depend on
+	            // some state, possibly merged with props and/or context
+	            for (var mergeKey in mergers) {
+	              var get = mergers[mergeKey].get;
+
+	              var value = get(state, componentProps, context);
+
+	              if (componentProps[mergeKey] !== value) {
+	                componentProps[mergeKey] = value;
+	                _this5.doUpdate = true;
+	              }
+
+	              delete mergers[mergeKey];
+	            }
+
+	            _this5.doMerge = false;
+	          }
+
+	          if (_this5.doUpdate) {
+	            _this5.handleQueries(props, context);
+	            _this5.setDisplayName(props, context);
+	            _this5.update();
+	          }
+	        }));
 	      }
-	      if (statePropsChanged || dispatchPropsChanged || propsChanged) {
-	        mergedPropsChanged = this.setMergedProps(props);
+	    }, {
+	      key: 'handleQueries',
+	      value: function handleQueries(props, context) {
+	        var _this6 = this;
+
+	        var fauxInstance = this.getFauxInstance(props, context);
+
+	        return (0, _instantiateProvider.handleQueries)(fauxInstance, function (doUpdate) {
+	          if (doUpdate) {
+	            // TODO: should mergers be checked (again) ??
+	            _this6.doUpdate = true;
+	            _this6.update();
+	          }
+	        });
 	      }
-
-	      this.prerenders++;
-	      this.propsChanged = false;
-	      this.storesChanged = false;
-
-	      return mergedPropsChanged;
-	    };
-
-	    Provide.prototype.render = function render() {
-	      this.renders++;
-
-	      return stateless ? _react2['default'].createElement(WrappedComponent, this.mergedProps) : _react2['default'].createElement(WrappedComponent, _extends({ ref: 'wrappedInstance' }, this.mergedProps));
-	    };
+	    }]);
 
 	    return Provide;
-	  })(_react.Component);
+	  }(_react.Component), _class.ComponentClass = ComponentClass, _class.displayName = getDisplayName(), _class.propTypes = contextTypes, _class.contextTypes = contextTypes, _class.childContextTypes = contextTypes, _class.defaultProps = ComponentClass.defaultProps, _temp);
 
 	  if (true) {
-	    for (var _iterator5 = instances, _isArray5 = Array.isArray(_iterator5), _i5 = 0, _iterator5 = _isArray5 ? _iterator5 : _iterator5[Symbol.iterator]();;) {
-	      var _ref5;
+	    var componentInstances = ComponentClass.__componentInstances;
 
-	      if (_isArray5) {
-	        if (_i5 >= _iterator5.length) break;
-	        _ref5 = _iterator5[_i5++];
-	      } else {
-	        _i5 = _iterator5.next();
-	        if (_i5.done) break;
-	        _ref5 = _i5.value;
+	    if (typeof componentInstances === 'undefined') {
+	      componentInstances = new Set();
+	      ComponentClass.__componentInstances = componentInstances;
+	      allComponentInstances.push(componentInstances);
+	    }
+
+	    ComponentClass.Provide = Provide;
+	    ComponentClass.setComponentClass = function (NextClass) {
+	      componentInstances = ComponentClass.__componentInstances;
+	      NextClass.__componentInstances = componentInstances;
+	      ComponentClass = NextClass;
+	      Provide.ComponentClass = ComponentClass;
+	      componentName = ComponentClass.displayName || ComponentClass.name;
+	    };
+
+	    Provide.prototype.componentDidMount = function () {
+	      this.unmounted = isServerSide;
+	      componentInstances.add(this);
+	    };
+
+	    Provide.prototype.componentWillUnmount = function () {
+	      this.unmounted = true;
+	      this.deinitialize();
+	      componentInstances.delete(this);
+	    };
+
+	    Provide.prototype.reinitialize = function (props, context, NextClass) {
+	      var _this7 = this;
+
+	      if (NextClass) {
+	        this.setComponentClass(NextClass);
 	      }
 
-	      var instance = _ref5;
-	      var props = instance.props;
-	      var context = instance.context;
+	      setTimeout(function () {
+	        _this7.doUpdate = true;
+	        _this7.deinitialize();
+	        _this7.initialize(props, context);
+	      });
+	    };
 
-	      instance.reinitialize(props, context, WrappedComponent);
+	    Provide.prototype.setComponentClass = function (NextClass) {
+	      Provide.setComponentClass(NextClass);
+	      this.componentName = componentName;
+	    };
+
+	    var _iteratorNormalCompletion7 = true;
+	    var _didIteratorError7 = false;
+	    var _iteratorError7 = undefined;
+
+	    try {
+	      for (var _iterator7 = componentInstances[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+	        var componentInstance = _step7.value;
+	        var props = componentInstance.props,
+	            context = componentInstance.context;
+
+
+	        componentInstance.reinitialize(props, context, ComponentClass);
+	      }
+	    } catch (err) {
+	      _didIteratorError7 = true;
+	      _iteratorError7 = err;
+	    } finally {
+	      try {
+	        if (!_iteratorNormalCompletion7 && _iterator7.return) {
+	          _iterator7.return();
+	        }
+	      } finally {
+	        if (_didIteratorError7) {
+	          throw _iteratorError7;
+	        }
+	      }
 	    }
 	  }
 
-	  return _hoistNonReactStatics2['default'](Provide, WrappedComponent);
+	  return (0, _hoistNonReactStatics2.default)(Provide, ComponentClass);
 	}
 
-	function reloadProviders(_ref7) {
-	  var providers = _ref7.providers;
-	  var combinedProviders = _ref7.combinedProviders;
+	function reloadFunctions(oldFunctions, newFunctions) {
+	  for (var key in newFunctions) {
+	    var newFunction = newFunctions[key];
+	    var oldFunction = oldFunctions[key];
 
-	  rootInstance.reinitialize(_extends({}, rootInstance.props, {
-	    providedState: rootInstance.getCurrentProvidedState(),
-	    providers: providers,
-	    combinedProviders: combinedProviders
-	  }), rootInstance.context);
+	    if (typeof newFunction === 'function' && newFunction.propTypes && !newFunction.Provide && oldFunction && oldFunction.Provide) {
+	      newFunction.Provide = provide(newFunction);
+	      oldFunction.setComponentClass(newFunction);
+	      newFunction.setComponentClass = oldFunction.setComponentClass;
 
-	  var _rootInstance = rootInstance;
-	  var contextProviders = _rootInstance.contextProviders;
-	  var contextCombinedProviders = _rootInstance.contextCombinedProviders;
-	  var contextCombinedProviderStores = _rootInstance.contextCombinedProviderStores;
+	      var _iteratorNormalCompletion8 = true;
+	      var _didIteratorError8 = false;
+	      var _iteratorError8 = undefined;
 
-	  for (var wrappedName in wrappedInstances) {
-	    var instances = wrappedInstances[wrappedName];
+	      try {
+	        for (var _iterator8 = oldFunction.__componentInstances[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+	          var componentInstance = _step8.value;
+	          var props = componentInstance.props,
+	              context = componentInstance.context;
 
-	    for (var _iterator6 = instances, _isArray6 = Array.isArray(_iterator6), _i6 = 0, _iterator6 = _isArray6 ? _iterator6 : _iterator6[Symbol.iterator]();;) {
-	      var _ref6;
 
-	      if (_isArray6) {
-	        if (_i6 >= _iterator6.length) break;
-	        _ref6 = _iterator6[_i6++];
-	      } else {
-	        _i6 = _iterator6.next();
-	        if (_i6.done) break;
-	        _ref6 = _i6.value;
-	      }
-
-	      var instance = _ref6;
-	      var props = instance.props;
-	      var context = instance.context;
-
-	      if (instance !== rootInstance) {
-	        context.providers = contextProviders;
-	        context.combinedProviders = contextCombinedProviders;
-	        context.combinedProviderStores = contextCombinedProviderStores;
-	        instance.reinitialize(props, context);
+	          componentInstance.forceDeepUpdate = true;
+	          componentInstance.reinitialize(props, context, newFunction);
+	          componentInstance.forceDeepUpdate = false;
+	        }
+	      } catch (err) {
+	        _didIteratorError8 = true;
+	        _iteratorError8 = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion8 && _iterator8.return) {
+	            _iterator8.return();
+	          }
+	        } finally {
+	          if (_didIteratorError8) {
+	            throw _iteratorError8;
+	          }
+	        }
 	      }
 	    }
 	  }
+
+	  if (false) {
+	    console.warn('You should only use `reloadInstances` in development!');
+	  }
 	}
 
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
+	function reloadProviders(providers, providerInstances) {
+	  var _window2 = window,
+	      rootInstance = _window2.rootInstance,
+	      clientStates = _window2.clientStates;
+	  var oldProviders = rootInstance.providers,
+	      oldProviderInstances = rootInstance.providerInstances;
 
-	'use strict';
 
-	exports.__esModule = true;
+	  for (var key in providers) {
+	    var provider = providers[key];
+	    var oldProvider = oldProviders[key];
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	    if (!providers.replication && oldProvider && oldProvider.replication) {
+	      provider.replication = oldProvider.replication;
+	    }
+	  }
 
-	var _createKeyConcat = __webpack_require__(2);
+	  for (var providerKey in oldProviderInstances) {
+	    var oldProviderInstance = oldProviderInstances[providerKey];
 
-	var _createKeyConcat2 = _interopRequireDefault(_createKeyConcat);
+	    if (clientStates) {
+	      clientStates[providerKey] = oldProviderInstance.store.getState();
+	    }
 
-	var pushEnhancer = _createKeyConcat2['default']('enhancer');
+	    delete oldProviderInstances[providerKey];
+	  }
 
-	exports['default'] = pushEnhancer;
-	module.exports = exports['default'];
+	  rootInstance.providers = providers;
+	  rootInstance.providerInstances = providerInstances || oldProviderInstances;
+	  rootInstance.reinitialize(rootInstance.props, rootInstance.context);
 
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
+	  var _iteratorNormalCompletion9 = true;
+	  var _didIteratorError9 = false;
+	  var _iteratorError9 = undefined;
 
-	'use strict';
+	  try {
+	    for (var _iterator9 = allComponentInstances[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+	      var componentInstances = _step9.value;
+	      var _iteratorNormalCompletion10 = true;
+	      var _didIteratorError10 = false;
+	      var _iteratorError10 = undefined;
 
-	exports.__esModule = true;
+	      try {
+	        for (var _iterator10 = componentInstances[Symbol.iterator](), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
+	          var componentInstance = _step10.value;
+	          var props = componentInstance.props,
+	              context = componentInstance.context;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _createKeyConcat = __webpack_require__(2);
+	          if (componentInstance !== rootInstance) {
+	            context.providers = rootInstance.providers;
+	            context.providerInstances = rootInstance.providerInstances;
+	            componentInstance.providers = rootInstance.providers;
+	            componentInstance.providerInstances = rootInstance.providerInstances;
+	            componentInstance.reinitialize(props, context);
+	          }
+	        }
+	      } catch (err) {
+	        _didIteratorError10 = true;
+	        _iteratorError10 = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion10 && _iterator10.return) {
+	            _iterator10.return();
+	          }
+	        } finally {
+	          if (_didIteratorError10) {
+	            throw _iteratorError10;
+	          }
+	        }
+	      }
+	    }
+	  } catch (err) {
+	    _didIteratorError9 = true;
+	    _iteratorError9 = err;
+	  } finally {
+	    try {
+	      if (!_iteratorNormalCompletion9 && _iterator9.return) {
+	        _iterator9.return();
+	      }
+	    } finally {
+	      if (_didIteratorError9) {
+	        throw _iteratorError9;
+	      }
+	    }
+	  }
 
-	var _createKeyConcat2 = _interopRequireDefault(_createKeyConcat);
-
-	var pushMiddleware = _createKeyConcat2['default']('middleware');
-
-	exports['default'] = pushMiddleware;
-	module.exports = exports['default'];
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	exports.__esModule = true;
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _createKeyConcat = __webpack_require__(2);
-
-	var _createKeyConcat2 = _interopRequireDefault(_createKeyConcat);
-
-	var unshiftEnhancer = _createKeyConcat2['default']('enhancer', true);
-
-	exports['default'] = unshiftEnhancer;
-	module.exports = exports['default'];
+	  if (false) {
+	    console.warn('You should only use `reloadProviders` in development!');
+	  }
+	}
 
 /***/ }),
 /* 31 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = extractReducerKeys;
+	function extractReducerKeys(replication, state) {
+	  var clientState = replication.clientState;
+	  var reducerKeys = replication.reducerKeys;
+
+	  var getReducerKeys = reducerKeys;
+	  var setReducerKeys = null;
+
+	  if (reducerKeys === true) {
+	    reducerKeys = Object.keys(state);
+	    getReducerKeys = reducerKeys;
+	  }
+
+	  // here we want the client to get only the undefined initial states
+	  if (clientState) {
+	    getReducerKeys = [];
+	    setReducerKeys = [];
+
+	    if (Array.isArray(reducerKeys)) {
+	      var _iteratorNormalCompletion = true;
+	      var _didIteratorError = false;
+	      var _iteratorError = undefined;
+
+	      try {
+	        for (var _iterator = reducerKeys[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	          var reducerKey = _step.value;
+
+	          if (typeof clientState[reducerKey] === 'undefined') {
+	            getReducerKeys.push(reducerKey);
+	          } else {
+	            setReducerKeys.push(reducerKey);
+	          }
+	        }
+	      } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion && _iterator.return) {
+	            _iterator.return();
+	          }
+	        } finally {
+	          if (_didIteratorError) {
+	            throw _iteratorError;
+	          }
+	        }
+	      }
+	    } else {
+	      // if reducerKeys is an object, truthy values indicate keys that
+	      // can be overridden by the client
+	      for (var _reducerKey in reducerKeys) {
+	        if (reducerKeys[_reducerKey] && typeof clientState[_reducerKey] === 'undefined') {
+	          getReducerKeys.push(_reducerKey);
+	        } else {
+	          setReducerKeys.push(_reducerKey);
+	        }
+	      }
+
+	      reducerKeys = Object.keys(reducerKeys);
+	    }
+	  }
+
+	  replication.reducerKeys = reducerKeys;
+
+	  return { getReducerKeys: getReducerKeys, setReducerKeys: setReducerKeys };
+	}
+
+/***/ }),
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.__esModule = true;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var _createKeyConcat = __webpack_require__(2);
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-	var _createKeyConcat2 = _interopRequireDefault(_createKeyConcat);
+	var _extractReducerKeys2 = __webpack_require__(31);
 
-	var unshiftMiddleware = _createKeyConcat2['default']('middleware', true);
+	var _extractReducerKeys3 = _interopRequireDefault(_extractReducerKeys2);
 
-	exports['default'] = unshiftMiddleware;
-	module.exports = exports['default'];
+	var _storeKeysEqual = __webpack_require__(14);
 
-/***/ }),
-/* 32 */
-/***/ (function(module, exports) {
+	var _storeKeysEqual2 = _interopRequireDefault(_storeKeysEqual);
 
-	"use strict";
+	var _actionTypes = __webpack_require__(6);
 
-	exports.__esModule = true;
-	exports["default"] = shallowEqual;
-	function shallowEqual(objA, objB) {
-	  if (objA === objB) {
-	    return true;
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var getInitialState = function getInitialState(store, replication) {
+	  var replicators = [].concat(replication.replicator);
+	  var initReplicators = replicators.filter(function (replicator) {
+	    if (replicator.onReady) {
+	      store.onReady(replicator.onReady);
+	    }
+	    // just the replicators with `getInitialState`
+	    return typeof replicator.getInitialState === 'function';
+	  });
+
+	  // need this for multiple replication enhancers
+	  store.initializingReplication = (store.initializingReplication || 0) + 1;
+	  store.initializedReplication = false;
+
+	  var waitCount = 1;
+	  var setInitialState = false;
+	  var actualInitialState = replication.reducerKeys ? {} : null;
+	  var clear = function clear() {
+	    if (--waitCount === 0) {
+	      if (setInitialState) {
+	        store.setState(actualInitialState, true);
+	      }
+
+	      if (--store.initializingReplication === 0) {
+	        // all replication enhancers initialized, so we can clear all callbacks
+	        while (store.readyCallbacks.length) {
+	          store.readyCallbacks.shift()({ store: store });
+	        }
+	        store.initializedReplication = true;
+	        // these are only used during initialization
+	        delete replication.create;
+	        delete replication.clientState;
+	        delete replication.creatorStore;
+	        store.dispatch({ type: _actionTypes.FULLY_INITIALIZED });
+	      }
+	    }
+	  };
+
+	  if (!store.key) {
+	    clear();
+	    return;
 	  }
 
-	  var keysA = Object.keys(objA);
-	  var keysB = Object.keys(objB);
+	  var key = store.key;
 
-	  if (keysA.length !== keysB.length) {
-	    return false;
-	  }
+	  var currentState = store.getState();
 
-	  // Test for A's keys different from B.
-	  var hasOwn = Object.prototype.hasOwnProperty;
-	  for (var i = 0; i < keysA.length; i++) {
-	    if (!hasOwn.call(objB, keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
-	      return false;
+	  var shouldReplicate = function shouldReplicate(reducerKey) {
+	    return replication.create || replication.clientState && (!reducerKey || typeof replication.clientState[reducerKey] !== 'undefined');
+	  };
+
+	  var initState = function initState(_ref) {
+	    var getInitialState = _ref.getInitialState,
+	        onStateChange = _ref.onStateChange;
+	    return function (reducerKey) {
+	      var clientState = reducerKey ? replication.clientState && replication.clientState[reducerKey] : replication.clientState;
+	      var initProps = {
+	        reducerKey: reducerKey,
+	        nextState: reducerKey ? currentState[reducerKey] : currentState,
+	        queryable: _typeof(replication.queryable) === 'object' ? replication.queryable[reducerKey] : replication.queryable,
+	        create: replication.create,
+	        clientState: clientState
+	      };
+
+	      store.dispatch(_extends({ type: _actionTypes.GET_INITIAL_STATE }, initProps));
+	      waitCount++;
+
+	      getInitialState({
+	        store: store,
+	        reducerKey: reducerKey,
+	        clientState: clientState,
+	        setState: function setState(state) {
+	          if (typeof state === 'undefined') {
+	            if (onStateChange && shouldReplicate(reducerKey)) {
+	              var action = _extends({ type: _actionTypes.REPLICATE_INITIAL_STATE }, initProps);
+
+	              store.dispatch(action);
+	              waitCount++;
+
+	              onStateChange(_extends({}, initProps, {
+	                store: store,
+	                action: action,
+	                setState: function setState(state) {
+	                  store.setState(state, true);
+	                  store.dispatch(_extends({
+	                    type: _actionTypes.REPLICATED_INITIAL_STATE }, initProps, { state: state
+	                  }));
+	                  clear();
+	                },
+	                setStatus: function setStatus(status) {
+	                  store.dispatch(_extends({
+	                    type: _actionTypes.REPLICATED_INITIAL_STATE }, initProps, { status: status
+	                  }));
+	                  clear();
+	                },
+	                setError: function setError(error) {
+	                  store.dispatch(_extends({
+	                    type: _actionTypes.STATE_CHANGE_ERROR }, initProps, { error: error
+	                  }));
+	                  clear();
+	                }
+	              }));
+	            }
+	          } else if ((0, _storeKeysEqual2.default)(key, store.key)) {
+	            if (reducerKey) {
+	              actualInitialState[reducerKey] = state;
+	            } else {
+	              actualInitialState = state;
+	            }
+	            setInitialState = true;
+	          }
+
+	          store.dispatch(_extends({ type: _actionTypes.GOT_INITIAL_STATE }, initProps, { state: state }));
+	          clear();
+	        },
+	        setError: function setError(error) {
+	          store.dispatch(_extends({ type: _actionTypes.INITIAL_STATE_ERROR }, initProps, { error: error }));
+	          clear();
+	        }
+	      });
+	    };
+	  };
+
+	  if (replication.reducerKeys) {
+	    var _extractReducerKeys = (0, _extractReducerKeys3.default)(replication, currentState),
+	        getReducerKeys = _extractReducerKeys.getReducerKeys,
+	        setReducerKeys = _extractReducerKeys.setReducerKeys;
+
+	    if (setReducerKeys) {
+	      var _iteratorNormalCompletion = true;
+	      var _didIteratorError = false;
+	      var _iteratorError = undefined;
+
+	      try {
+	        for (var _iterator = replicators[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	          var replicator = _step.value;
+
+	          if (replicator.onStateChange) {
+	            var _iteratorNormalCompletion2 = true;
+	            var _didIteratorError2 = false;
+	            var _iteratorError2 = undefined;
+
+	            try {
+	              for (var _iterator2 = setReducerKeys[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	                var reducerKey = _step2.value;
+
+	                if (shouldReplicate(reducerKey)) {
+	                  (function () {
+	                    var setProps = {
+	                      reducerKey: reducerKey,
+	                      nextState: reducerKey ? currentState[reducerKey] : currentState,
+	                      queryable: _typeof(replication.queryable) === 'object' ? replication.queryable[reducerKey] : replication.queryable,
+	                      create: replication.create,
+	                      clientState: reducerKey ? replication.clientState && replication.clientState[reducerKey] : replication.clientState
+	                    };
+
+	                    var action = _extends({ type: _actionTypes.REPLICATE_INITIAL_STATE }, setProps);
+
+	                    store.dispatch(action);
+	                    waitCount++;
+
+	                    replicator.onStateChange(_extends({}, setProps, {
+	                      store: store,
+	                      action: action,
+	                      setState: function setState(state) {
+	                        store.setState(state, true);
+	                        store.dispatch(_extends({
+	                          type: _actionTypes.REPLICATED_INITIAL_STATE }, setProps, { state: state
+	                        }));
+	                        clear();
+	                      },
+	                      setStatus: function setStatus(status) {
+	                        store.dispatch(_extends({
+	                          type: _actionTypes.REPLICATED_INITIAL_STATE }, setProps, { status: status
+	                        }));
+	                        clear();
+	                      },
+	                      setError: function setError(error) {
+	                        store.dispatch(_extends({
+	                          type: _actionTypes.STATE_CHANGE_ERROR }, setProps, { error: error
+	                        }));
+	                        clear();
+	                      }
+	                    }));
+	                  })();
+	                }
+	              }
+	            } catch (err) {
+	              _didIteratorError2 = true;
+	              _iteratorError2 = err;
+	            } finally {
+	              try {
+	                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	                  _iterator2.return();
+	                }
+	              } finally {
+	                if (_didIteratorError2) {
+	                  throw _iteratorError2;
+	                }
+	              }
+	            }
+	          }
+	        }
+	      } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion && _iterator.return) {
+	            _iterator.return();
+	          }
+	        } finally {
+	          if (_didIteratorError) {
+	            throw _iteratorError;
+	          }
+	        }
+	      }
+	    }
+
+	    var _iteratorNormalCompletion3 = true;
+	    var _didIteratorError3 = false;
+	    var _iteratorError3 = undefined;
+
+	    try {
+	      for (var _iterator3 = initReplicators[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+	        var _replicator = _step3.value;
+
+	        var initReducerState = initState(_replicator);
+
+	        var _iteratorNormalCompletion4 = true;
+	        var _didIteratorError4 = false;
+	        var _iteratorError4 = undefined;
+
+	        try {
+	          for (var _iterator4 = getReducerKeys[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+	            var _reducerKey = _step4.value;
+
+	            initReducerState(_reducerKey);
+	          }
+	        } catch (err) {
+	          _didIteratorError4 = true;
+	          _iteratorError4 = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion4 && _iterator4.return) {
+	              _iterator4.return();
+	            }
+	          } finally {
+	            if (_didIteratorError4) {
+	              throw _iteratorError4;
+	            }
+	          }
+	        }
+	      }
+	    } catch (err) {
+	      _didIteratorError3 = true;
+	      _iteratorError3 = err;
+	    } finally {
+	      try {
+	        if (!_iteratorNormalCompletion3 && _iterator3.return) {
+	          _iterator3.return();
+	        }
+	      } finally {
+	        if (_didIteratorError3) {
+	          throw _iteratorError3;
+	        }
+	      }
+	    }
+	  } else {
+	    var _iteratorNormalCompletion5 = true;
+	    var _didIteratorError5 = false;
+	    var _iteratorError5 = undefined;
+
+	    try {
+	      for (var _iterator5 = initReplicators[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+	        var _replicator2 = _step5.value;
+
+	        initState(_replicator2)();
+	      }
+	    } catch (err) {
+	      _didIteratorError5 = true;
+	      _iteratorError5 = err;
+	    } finally {
+	      try {
+	        if (!_iteratorNormalCompletion5 && _iterator5.return) {
+	          _iterator5.return();
+	        }
+	      } finally {
+	        if (_didIteratorError5) {
+	          throw _iteratorError5;
+	        }
+	      }
 	    }
 	  }
 
-	  return true;
-	}
+	  clear();
+	};
+
+	exports.default = getInitialState;
 
 /***/ }),
 /* 33 */
@@ -3526,19 +5823,363 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	exports.__esModule = true;
-	exports["default"] = wrapActionCreators;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.FULLY_INITIALIZED = exports.SET_STATE = exports.STATE_CHANGE_ERROR = exports.REPLICATED_STATE = exports.REPLICATE_STATE = exports.REPLICATED_INITIAL_STATE = exports.REPLICATE_INITIAL_STATE = exports.INITIAL_STATE_ERROR = exports.GOT_INITIAL_STATE = exports.GET_INITIAL_STATE = exports.storeKeysEqual = exports.replicate = undefined;
 
-	var _redux = __webpack_require__(7);
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	function wrapActionCreators(actionCreators) {
-	  return function (dispatch) {
-	    return (0, _redux.bindActionCreators)(actionCreators, dispatch);
+	var _getInitialState = __webpack_require__(32);
+
+	var _getInitialState2 = _interopRequireDefault(_getInitialState);
+
+	var _performReplication = __webpack_require__(34);
+
+	var _performReplication2 = _interopRequireDefault(_performReplication);
+
+	var _storeKeysEqual = __webpack_require__(14);
+
+	var _storeKeysEqual2 = _interopRequireDefault(_storeKeysEqual);
+
+	var _actionTypes = __webpack_require__(6);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	/**
+	 * Creates a Redux store enhancer designed to replicate actions and states.
+	 *
+	 * @param {Object} options
+	 * @return {Function}
+	 * @api public
+	 */
+	var replicate = function replicate(replication) {
+	  return function (next) {
+	    return function (reducer, initialState, enhancer) {
+	      var store = null;
+
+	      replication = _extends({}, replication);
+
+	      var replicatedReducer = function replicatedReducer(state, action) {
+	        var nextState = state;
+
+	        if (action.type === _actionTypes.SET_STATE && !action.mergedState) {
+	          if (replication.reducerKeys) {
+	            nextState = _extends({}, state, action.nextState);
+	          } else {
+	            nextState = action.nextState;
+	          }
+
+	          // if replication applied multiple times, ensure merge occurs only once
+	          action.mergedState = true;
+	        }
+
+	        nextState = reducer(nextState, action);
+
+	        if (!action._skipReplication) {
+	          (0, _performReplication2.default)(store, replication, state, nextState, action);
+	        }
+
+	        return nextState;
+	      };
+
+	      store = next(replicatedReducer, initialState, enhancer);
+
+	      if (!store.replication) {
+	        store.replication = [];
+	      }
+	      store.replication.push(replication);
+
+	      if (!store.onReady) {
+	        store.readyCallbacks = [];
+	        store.onReady = function (readyCallback) {
+	          return store.readyCallbacks.push(readyCallback);
+	        };
+	      }
+
+	      if (typeof replication.key !== 'undefined') {
+	        store.key = replication.key;
+	      }
+
+	      if (!store.setKey) {
+	        store.setKey = function (key, readyCallback) {
+	          store.key = key;
+
+	          if (readyCallback) {
+	            store.onReady(readyCallback);
+	          }
+
+	          store.replication.forEach(function (replication) {
+	            (0, _getInitialState2.default)(store, replication);
+	          });
+	        };
+	      }
+
+	      if (!store.setState) {
+	        store.setState = function (nextState, _skipReplication, __create) {
+	          store.dispatch({
+	            type: _actionTypes.SET_STATE,
+	            nextState: nextState,
+	            _skipReplication: _skipReplication,
+	            __create: __create // TODO: clean this up
+	          });
+	        };
+	      }
+
+	      (0, _getInitialState2.default)(store, replication);
+	      return store;
+	    };
 	  };
-	}
+	};
+
+	exports.default = replicate;
+	exports.replicate = replicate;
+	exports.storeKeysEqual = _storeKeysEqual2.default;
+	exports.GET_INITIAL_STATE = _actionTypes.GET_INITIAL_STATE;
+	exports.GOT_INITIAL_STATE = _actionTypes.GOT_INITIAL_STATE;
+	exports.INITIAL_STATE_ERROR = _actionTypes.INITIAL_STATE_ERROR;
+	exports.REPLICATE_INITIAL_STATE = _actionTypes.REPLICATE_INITIAL_STATE;
+	exports.REPLICATED_INITIAL_STATE = _actionTypes.REPLICATED_INITIAL_STATE;
+	exports.REPLICATE_STATE = _actionTypes.REPLICATE_STATE;
+	exports.REPLICATED_STATE = _actionTypes.REPLICATED_STATE;
+	exports.STATE_CHANGE_ERROR = _actionTypes.STATE_CHANGE_ERROR;
+	exports.SET_STATE = _actionTypes.SET_STATE;
+	exports.FULLY_INITIALIZED = _actionTypes.FULLY_INITIALIZED;
 
 /***/ }),
 /* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	var _actionTypes = __webpack_require__(6);
+
+	var actionTypes = _interopRequireWildcard(_actionTypes);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	var REPLICATE_STATE = actionTypes.REPLICATE_STATE,
+	    REPLICATED_STATE = actionTypes.REPLICATED_STATE,
+	    STATE_CHANGE_ERROR = actionTypes.STATE_CHANGE_ERROR;
+
+
+	var actionTypeValueMap = {};
+	for (var key in actionTypes) {
+	  actionTypeValueMap[actionTypes[key]] = true;
+	}
+
+	var performReplication = function performReplication(store, replication, state, nextState, action) {
+	  if (replication.creatorStore && actionTypeValueMap[action.type]) {
+	    // TODO: we need a better way to create + replicate
+	    replication.creatorStore.dispatch(action);
+	  }
+
+	  if (!store || !store.key || !store.initializedReplication) {
+	    return;
+	  }
+
+	  var replicators = [].concat(replication.replicator);
+
+	  var _iteratorNormalCompletion = true;
+	  var _didIteratorError = false;
+	  var _iteratorError = undefined;
+
+	  try {
+	    for (var _iterator = replicators[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	      var replicator = _step.value;
+
+	      if (replicator.onStateChange) {
+	        if (replication.reducerKeys) {
+	          var _iteratorNormalCompletion2 = true;
+	          var _didIteratorError2 = false;
+	          var _iteratorError2 = undefined;
+
+	          try {
+	            for (var _iterator2 = replication.reducerKeys[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	              var reducerKey = _step2.value;
+
+	              if (state[reducerKey] !== nextState[reducerKey]) {
+	                (function () {
+	                  var setProps = {
+	                    reducerKey: reducerKey,
+	                    state: state[reducerKey],
+	                    nextState: nextState[reducerKey],
+	                    queryable: _typeof(replication.queryable) === 'object' ? replication.queryable[reducerKey] : replication.queryable,
+	                    create: action.__create // TODO: clean this up
+	                    ? function (state) {
+	                      return setTimeout(function () {
+	                        store.setState(state, true);
+	                        store.dispatch(_extends({
+	                          type: REPLICATED_STATE }, setProps, { state: state
+	                        }));
+	                      });
+	                    } : false
+	                  };
+
+	                  setTimeout(function () {
+	                    // not liking this at all, but it should be ok given that
+	                    // 99.9999% of data sources are async anyway
+	                    store.dispatch(_extends({ type: REPLICATE_STATE }, setProps));
+	                  });
+
+	                  replicator.onStateChange(_extends({}, setProps, {
+	                    store: store,
+	                    action: action,
+	                    setState: function setState(state) {
+	                      return setTimeout(function () {
+	                        store.setState(state, true);
+	                        store.dispatch(_extends({
+	                          type: REPLICATED_STATE }, setProps, { state: state
+	                        }));
+
+	                        if (action.__callback) {
+	                          // TODO: clean this up
+	                          action.__callback();
+	                        }
+	                      });
+	                    },
+	                    setStatus: function setStatus(status) {
+	                      return setTimeout(function () {
+	                        store.dispatch(_extends({
+	                          type: REPLICATED_STATE }, setProps, { status: status
+	                        }));
+
+	                        if (action.__callback) {
+	                          // TODO: clean this up
+	                          action.__callback();
+	                        }
+	                      });
+	                    },
+	                    setError: function setError(error) {
+	                      return setTimeout(function () {
+	                        store.dispatch(_extends({
+	                          type: STATE_CHANGE_ERROR }, setProps, { error: error
+	                        }));
+
+	                        if (action.__callback) {
+	                          // TODO: clean this up
+	                          action.__callback();
+	                        }
+	                      });
+	                    }
+	                  }));
+	                })();
+	              }
+	            }
+	          } catch (err) {
+	            _didIteratorError2 = true;
+	            _iteratorError2 = err;
+	          } finally {
+	            try {
+	              if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	                _iterator2.return();
+	              }
+	            } finally {
+	              if (_didIteratorError2) {
+	                throw _iteratorError2;
+	              }
+	            }
+	          }
+	        } else if (state !== nextState) {
+	          (function () {
+	            var setProps = {
+	              state: state,
+	              nextState: nextState,
+	              queryable: replication.queryable,
+	              create: action.__create // TODO: clean this up
+	              ? function (state) {
+	                return setTimeout(function () {
+	                  store.setState(state, true);
+	                  store.dispatch(_extends({
+	                    type: REPLICATED_STATE }, setProps, { state: state
+	                  }));
+	                });
+	              } : false
+	            };
+
+	            setTimeout(function () {
+	              // not liking this at all, but it should be ok given that
+	              // 99.9999% of data sources are async anyway
+	              store.dispatch(_extends({ type: REPLICATE_STATE }, setProps));
+	            });
+
+	            replicator.onStateChange(_extends({}, setProps, {
+	              store: store,
+	              action: action,
+	              setState: function setState(state) {
+	                return setTimeout(function () {
+	                  store.setState(state, true);
+	                  store.dispatch(_extends({
+	                    type: REPLICATED_STATE }, setProps, { state: state
+	                  }));
+
+	                  if (action.__callback) {
+	                    // TODO: clean this up
+	                    action.__callback();
+	                  }
+	                });
+	              },
+	              setStatus: function setStatus(status) {
+	                return setTimeout(function () {
+	                  store.dispatch(_extends({
+	                    type: REPLICATED_STATE }, setProps, { status: status
+	                  }));
+
+	                  if (action.__callback) {
+	                    // TODO: clean this up
+	                    action.__callback();
+	                  }
+	                });
+	              },
+	              setError: function setError(error) {
+	                return setTimeout(function () {
+	                  store.dispatch(_extends({
+	                    type: STATE_CHANGE_ERROR }, setProps, { error: error
+	                  }));
+
+	                  if (action.__callback) {
+	                    // TODO: clean this up
+	                    action.__callback();
+	                  }
+	                });
+	              }
+	            }));
+	          })();
+	        }
+	      }
+
+	      if (replicator.postReduction) {
+	        replicator.postReduction({ store: store, state: state, nextState: nextState, action: action });
+	      }
+	    }
+	  } catch (err) {
+	    _didIteratorError = true;
+	    _iteratorError = err;
+	  } finally {
+	    try {
+	      if (!_iteratorNormalCompletion && _iterator.return) {
+	        _iterator.return();
+	      }
+	    } finally {
+	      if (_didIteratorError) {
+	        throw _iteratorError;
+	      }
+	    }
+	  }
+	};
+
+	exports.default = performReplication;
+
+/***/ }),
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3551,11 +6192,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _selectKeys = __webpack_require__(11);
+	var _selectKeys = __webpack_require__(15);
 
 	var _selectKeys2 = _interopRequireDefault(_selectKeys);
 
-	var _mergeStoresStates = __webpack_require__(35);
+	var _mergeStoresStates = __webpack_require__(36);
 
 	var _mergeStoresStates2 = _interopRequireDefault(_mergeStoresStates);
 
@@ -3696,7 +6337,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3705,7 +6346,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _selectKeys = __webpack_require__(11);
+	var _selectKeys = __webpack_require__(15);
 
 	var _selectKeys2 = _interopRequireDefault(_selectKeys);
 
@@ -3733,7 +6374,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -3752,7 +6393,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = thunkMiddleware;
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3763,7 +6404,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports['default'] = applyMiddleware;
 
-	var _compose = __webpack_require__(12);
+	var _compose = __webpack_require__(16);
 
 	var _compose2 = _interopRequireDefault(_compose);
 
@@ -3815,7 +6456,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -3871,7 +6512,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3879,13 +6520,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 	exports['default'] = combineReducers;
 
-	var _createStore = __webpack_require__(13);
+	var _createStore = __webpack_require__(17);
 
-	var _isPlainObject = __webpack_require__(16);
+	var _isPlainObject = __webpack_require__(20);
 
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-	var _warning = __webpack_require__(14);
+	var _warning = __webpack_require__(18);
 
 	var _warning2 = _interopRequireDefault(_warning);
 
@@ -4019,12 +6660,63 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(15),
-	    getRawTag = __webpack_require__(43),
-	    objectToString = __webpack_require__(44);
+	'use strict';
+
+	exports.__esModule = true;
+	exports.compose = exports.applyMiddleware = exports.bindActionCreators = exports.combineReducers = exports.createStore = undefined;
+
+	var _createStore = __webpack_require__(17);
+
+	var _createStore2 = _interopRequireDefault(_createStore);
+
+	var _combineReducers = __webpack_require__(40);
+
+	var _combineReducers2 = _interopRequireDefault(_combineReducers);
+
+	var _bindActionCreators = __webpack_require__(39);
+
+	var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
+
+	var _applyMiddleware = __webpack_require__(38);
+
+	var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
+
+	var _compose = __webpack_require__(16);
+
+	var _compose2 = _interopRequireDefault(_compose);
+
+	var _warning = __webpack_require__(18);
+
+	var _warning2 = _interopRequireDefault(_warning);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	/*
+	* This is a dummy function to check if the function name has been altered by minification.
+	* If the function has been minified and NODE_ENV !== 'production', warn the user.
+	*/
+	function isCrushed() {}
+
+	if (("development") !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
+	  (0, _warning2['default'])('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
+	}
+
+	exports.createStore = _createStore2['default'];
+	exports.combineReducers = _combineReducers2['default'];
+	exports.bindActionCreators = _bindActionCreators2['default'];
+	exports.applyMiddleware = _applyMiddleware2['default'];
+	exports.compose = _compose2['default'];
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var Symbol = __webpack_require__(19),
+	    getRawTag = __webpack_require__(45),
+	    objectToString = __webpack_require__(46);
 
 	/** `Object#toString` result references. */
 	var nullTag = '[object Null]',
@@ -4053,7 +6745,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 41 */
+/* 43 */
 /***/ (function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
@@ -4064,10 +6756,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 42 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var overArg = __webpack_require__(45);
+	var overArg = __webpack_require__(47);
 
 	/** Built-in value references. */
 	var getPrototype = overArg(Object.getPrototypeOf, Object);
@@ -4076,10 +6768,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 43 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(15);
+	var Symbol = __webpack_require__(19);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -4128,7 +6820,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 44 */
+/* 46 */
 /***/ (function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -4156,7 +6848,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 45 */
+/* 47 */
 /***/ (function(module, exports) {
 
 	/**
@@ -4177,10 +6869,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 46 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var freeGlobal = __webpack_require__(41);
+	var freeGlobal = __webpack_require__(43);
 
 	/** Detect free variable `self`. */
 	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
@@ -4192,7 +6884,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 47 */
+/* 49 */
 /***/ (function(module, exports) {
 
 	/**
@@ -4227,7 +6919,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 48 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, module) {'use strict';
@@ -4236,7 +6928,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	var _ponyfill = __webpack_require__(49);
+	var _ponyfill = __webpack_require__(51);
 
 	var _ponyfill2 = _interopRequireDefault(_ponyfill);
 
@@ -4259,10 +6951,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var result = (0, _ponyfill2['default'])(root);
 	exports['default'] = result;
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(50)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(52)(module)))
 
 /***/ }),
-/* 49 */
+/* 51 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -4290,7 +6982,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
-/* 50 */
+/* 52 */
 /***/ (function(module, exports) {
 
 	module.exports = function(module) {

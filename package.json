@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "exenv": "^1.2.0",
-    "react": "^16.4.2",
+    "react": "^16.5.2",
     "react-dom": "^16.4.2",
     "react-redux-provide": "^7.0.0",
     "redux-replicate": "^0.3.0",
