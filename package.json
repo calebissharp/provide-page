@@ -53,7 +53,7 @@
     "exenv": "^1.2.0",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
-    "react-redux-provide": "git+ssh://git@github.com/calebissharp/react-redux-provide.git#react16-patch",
+    "react-redux-provide": "^7.0.0",
     "redux-replicate": "^0.3.0",
     "redux-thunk": "^1.0.3"
   }
